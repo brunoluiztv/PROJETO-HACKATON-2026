@@ -175,6 +175,21 @@ th, td { padding: .5rem; text-align: left; border-bottom: 1px solid var(--borda)
 .barra-receita .seg.i3 { background: #6a1b9a; }
 .custo { font-size: 1.1rem; }
 
+/* Rodapé comemorativo Hackathon UERGS 2026 */
+.rodape-evento {
+  margin-top: 2rem;
+  padding: 1.25rem 1rem;
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  text-align: center;
+  font-size: .85rem;
+}
+.rodape-evento p { margin: .2rem 0; }
+.tag-evento { font-weight: 700; color: var(--verde); font-size: .95rem; }
+.mote-evento { font-style: italic; opacity: .9; }
+.apoio-evento { font-size: .78rem; opacity: .75; }
+
 /* Navegação inferior: zona do polegar */
 .nav-inferior {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
