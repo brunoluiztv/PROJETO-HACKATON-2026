@@ -1,5 +1,5 @@
 /* Service Worker: Cache para uso offline no campo (PhytoSense RS) */
-const VERSAO = "phytosense-v3";
+const VERSAO = "phytosense-v4";
 const ARQUIVOS = [
   "./",
   "index.html",

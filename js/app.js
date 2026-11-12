@@ -3,10 +3,10 @@
  * Hackathon das Engenharias UERGS 2026
  */
 
-import { initPlantCanvas } from './canvas_planta.js';
-import { initCharts } from './charts.js';
-import { TELEMETRIA_ESTADOS, FAQ_PRODUTOR, PILARES_ENGENHARIA } from './content.js';
-import { iniciarTelegram } from './telegram.js';
+import { initPlantCanvas } from './canvas_planta.js?v=3';
+import { initCharts } from './charts.js?v=3';
+import { TELEMETRIA_ESTADOS, FAQ_PRODUTOR, PILARES_ENGENHARIA } from './content.js?v=3';
+import { iniciarTelegram } from './telegram.js?v=3';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
