@@ -100,10 +100,21 @@ function montarReceita() {
 
 /* ---------- PWA ---------- */
 function registrarSW() {
-  if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("sw.js").then((reg) => {
-      reg.update();
-    }).catch(() => {});
+  // Em localhost, limpa qualquer SW antigo para que os testes e edicoes locais sejam sempre imediatos
+  if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        for (const reg of regs) reg.unregister();
+      });
+      if ("caches" in window) {
+        caches.keys().then((keys) => keys.forEach((k) => caches.delete(k)));
+      }
+    }
+    return;
+  }
+  // Em producao (GitHub Pages HTTPS), registra o cache-first offline
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    navigator.serviceWorker.register("sw.js").then((reg) => reg.update()).catch(() => {});
   }
 }
 
