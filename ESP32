@@ -1,0 +1,152 @@
+  }
+
+  if (potencialAtual >= LIMITE_PREVISAO_KPA) {
+    tempoHoras = 0.0f;
+    motivo = "limite_ja_atingido";
+    return true;
+  }
+
+  // kPa e kPa/h produzem horas. So previsao linear de demonstracao.
+  tempoHoras = (LIMITE_PREVISAO_KPA - potencialAtual) / taxaKPaH;
+  if (!isfinite(tempoHoras) || tempoHoras < 0.0f) {
+    tempoHoras = NAN;
+    motivo = "calculo_indisponivel";
+    return false;
+  }
+
+  motivo = "previsao_demonstrativa";
+  return true;
+}
+
+// ==================== E. Comunicacao JSON ====================
+
+String numeroJSON(float valor, uint8_t casasDecimais) {
+  if (!isfinite(valor)) {
+    return "null";  // NaN e Infinity nao pertencem ao padrao JSON.
+  }
+  return String(valor, casasDecimais);
+}
+
+String gerarDadosJSON() {
+  const float taxaKPaH = calcularTaxaSecagem();
+  float tempoHoras = NAN;
+  const char *motivoPrevisao = "dados_insuficientes";
+  bool previsaoConfiavel = false;
+  if (!MODO_DEMO_SINTETICO && !calibracaoValida()) {
+    motivoPrevisao = "calibracao_invalida";
+  } else {
+    previsaoConfiavel = estimarTempoAteLimite(
+        potencialAtualKPa, taxaKPaH, tempoHoras, motivoPrevisao);
+  }
+
+  String json;
+  json.reserve(420);
+  json += F("{\"sensor\":\"");
+  json += NOME_SENSOR;
+  json += F("\",\"tipo_medicao\":\"");
+  json += MODO_DEMO_SINTETICO ? F("sintetica") : F("fisica");
+  json += F("\",\"raw_adc\":");
+  json += (rawAtual >= 0) ? String(rawAtual) : String("null");
+  json += F(",\"umidade_indice_pct\":");
+  json += numeroJSON(umidadeAtualPct, 1);
+  json += F(",\"potencial_matricial_simulado_kpa\":");
+  json += numeroJSON(potencialAtualKPa, 2);
+  json += F(",\"taxa_secagem_simulada_kpa_h\":");
+  json += numeroJSON(taxaKPaH, 3);
+  json += F(",\"tempo_ate_limite_h\":");
+  json += numeroJSON(tempoHoras, 2);
+  json += F(",\"limite_previsao_kpa\":");
+  json += numeroJSON(LIMITE_PREVISAO_KPA, 1);
+  json += F(",\"estado\":\"");
+  json += classificarCondicaoHidrica(potencialAtualKPa);
+  json += F("\",\"previsao_confiavel\":");
+  json += previsaoConfiavel ? F("true") : F("false");
+  json += F(",\"motivo_previsao\":\"");
+  json += motivoPrevisao;
+  json += F("\",\"calibracao_valida\":");
+  json += calibracaoValida() ? F("true") : F("false");
+  json += F(",\"simulacao\":");
+  json += POTENCIAL_MATRICIAL_SIMULADO ? F("true") : F("false");
+  json += F(",\"curva_hipotetica\":");
+  json += POTENCIAL_MATRICIAL_SIMULADO ? F("true") : F("false");
+  json += F(",");
+  json += F("\"previsao_demonstrativa\":true,\"uptime_s\":");
+  json += String((uint32_t)(millis() / 1000));
+  json += F("}");
+  return json;
+}
+
+void executarLeitura() {
+  const uint32_t agora = millis();
+
+  if (MODO_DEMO_SINTETICO) {
+    rawAtual = -1;
+    umidadeDemoPct = max(0.0f, umidadeDemoPct - DEMO_QUEDA_PCT_POR_LEITURA);
+    umidadeAtualPct = umidadeDemoPct;
+  } else {
+    rawAtual = lerRawMedioADC();
+    umidadeAtualPct = converterParaIndiceUmidade(rawAtual);
+  }
+
+  potencialAtualKPa = simularPotencialMatricial(umidadeAtualPct);
+  registrarHistorico(potencialAtualKPa, agora);
+  Serial.println(gerarDadosJSON());
+}
+
+// ==================== Comandos pelo Monitor Serial ====================
+
+void processarComandosSerial() {
+  while (Serial.available() > 0) {
+    String comando = Serial.readStringUntil('\n');
+    comando.trim();
+    if (comando.length() == 0) {
+      continue;
+    }
+
+    const char c = (char)toupper((unsigned char)comando[0]);
+    if (c == 'S') {
+      monitoramentoAtivo = !monitoramentoAtivo;
+      ultimaLeituraMs = millis();
+      Serial.println(monitoramentoAtivo ? F("# Monitoramento iniciado.")
+                                        : F("# Monitoramento interrompido."));
+    } else if (c == 'R') {
+      limparHistorico();
+      if (MODO_DEMO_SINTETICO) {
+        umidadeDemoPct = DEMO_UMIDADE_INICIAL_PCT;
+      }
+      ultimaLeituraMs = millis();
+      if (MODO_DEMO_SINTETICO) {
+        Serial.println(F("# Cenario sintetico reiniciado como apos irrigacao."));
+      } else {
+        Serial.println(F("# Historico reiniciado. Irrigue a amostra fisica para alterar a leitura."));
+      }
+    } else if (c == 'H') {
+      exibirAjuda();
+    } else {
+      Serial.println(F("# Comando desconhecido. Digite H para ajuda."));
+    }
+  }
+}
+
+void exibirAjuda() {
+  Serial.println(F("# Comandos: R reinicia historico/cenario; S inicia/para; H ajuda."));
+  Serial.println(F("# A telemetria e JSON; linhas iniciadas com # sao mensagens de ajuda."));
+  Serial.print(F("# Sensor: "));
+  Serial.println(NOME_SENSOR);
+  Serial.print(F("# ADC GPIO: "));
+  Serial.println(SENSOR_ADC_PIN);
+  Serial.print(F("# RAW_SECO / RAW_UMIDO: "));
+  Serial.print(RAW_SECO);
+  Serial.print(F(" / "));
+  Serial.println(RAW_UMIDO);
+  Serial.print(F("# Calibracao valida: "));
+  Serial.println(calibracaoValida() ? F("sim") : F("nao"));
+  Serial.print(F("# Modo sintetico: "));
+  Serial.println(MODO_DEMO_SINTETICO ? F("sim") : F("nao"));
+  Serial.print(F("# Limiares ATENCAO / RISCO / previsao (kPa simulados): "));
+  Serial.print(LIMIAR_ATENCAO_KPA, 1);
+  Serial.print(F(" / "));
+  Serial.print(LIMIAR_RISCO_KPA, 1);
+  Serial.print(F(" / "));
+  Serial.println(LIMITE_PREVISAO_KPA, 1);
+}
