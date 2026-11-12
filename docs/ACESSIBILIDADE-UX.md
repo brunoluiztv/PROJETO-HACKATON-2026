@@ -24,3 +24,20 @@ Texto de 100% a 200%, alto contraste, modo escuro, foco destacado, fonte e espa�
 
 ## Bot (`bot/`)
 Teclado fixo com botões grandes, respostas curtas e acolhedoras, aceita áudio e foto, e não exige digitar. Na dúvida, não conclui e pede confirmação.
+
+---
+
+## 📱 Relatório de Validação Mobile Estrita (360×800)
+
+Em atendimento às diretrizes do Hackathon UERGS 2026 e aos critérios de usabilidade no campo, foi executada uma rodada de testes em viewport estritamente de **360×800 px** (dimensão típica de smartphones de entrada com uma mão):
+
+| Teste | Critério Avaliado | Resultado | Observações |
+|---|---|:---:|---|
+| **Aba Selo** | Responsividade sem rolagem horizontal | **APROVADO** | `scrollWidth <= 360px`, margens de toque confortáveis e laudo em alto contraste. |
+| **Aba Seca** | Simulação 80 sacos = 18 dias | **APROVADO** | Atalho "Sítio · 80" calculou exatamente `1.040 L` e `cerca de 18 dias sem regar`, com valor idêntico na tabela de acessibilidade. |
+| **Aba Receita** | Bordas coloridas e rodapé do evento | **APROVADO** | Bordas com `.i1` (verde), `.i2` (amarelo) e `.i3` (roxo) com identificação reforçada. Rodapé comemorativo do Hackathon UERGS 2026 visível no fim da rolagem sem conflito com a barra inferior. |
+| **Aba Usar** | Expansão de FAQ com leitor de tela | **APROVADO** | Accordions semânticos nativos (`<details>/<summary>`) totalmente funcionais. |
+
+Evidência visual capturada em viewport mobile de 360px:
+![Evidência Mobile 360px](evidencias/mobile_360_validado.png)
+
