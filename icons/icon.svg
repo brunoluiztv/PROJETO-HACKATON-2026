@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="AgroSponge RS">
+  <rect width="128" height="128" rx="28" fill="#1b5e20"/>
+  <path d="M64 18C46 44 36 58 36 76a28 28 0 0 0 56 0C92 58 82 44 64 18z" fill="#e8f5e9"/>
+  <path d="M64 100c0-16 6-26 18-34-2 14-8 28-18 34z" fill="#2e7d32"/>
+  <path d="M64 100c0-12-5-20-14-26 1 11 6 22 14 26z" fill="#66bb6a"/>
+</svg>

@@ -1,0 +1,16 @@
+{
+  "name": "AgroSponge RS",
+  "short_name": "AgroSponge",
+  "description": "Água limpa guardada para a seca: selo, cálculo de água e receita do saco AgroSponge.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbfaf5",
+  "theme_color": "#1b5e20",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
