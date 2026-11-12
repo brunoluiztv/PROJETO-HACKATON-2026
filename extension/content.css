@@ -1,0 +1,84 @@
+/* Estilos de acessibilidade, ativados por atributos data-a11y-* no <html>. */
+
+/* Tamanho do texto: o site usa rem, então basta mudar a base (18 px × escala). */
+html[data-a11y-escala] {
+  font-size: calc(112.5% * var(--a11y-escala, 1)) !important;
+}
+
+/* Modo escuro forçado */
+html[data-a11y-escuro] {
+  --verde: #81c784;
+  --verde-claro: #12261a;
+  --amarelo: #ffd54f;
+  --amarelo-fundo: #2b2410;
+  --vermelho: #ff8a80;
+  --vermelho-fundo: #2e1414;
+  --texto: #f1efe8;
+  --fundo: #0f1f13;
+  --cartao: #172a1c;
+  --borda: #3d5443;
+  --foco: #8ab4f8;
+  color-scheme: dark;
+}
+html[data-a11y-escuro] .mais-menos,
+html[data-a11y-escuro] .resultado { color: #0f1f13; }
+
+/* Alto contraste: preto, branco e amarelo */
+html[data-a11y-contraste] {
+  --verde: #ffff00;
+  --verde-claro: #000000;
+  --amarelo: #ffff00;
+  --amarelo-fundo: #000000;
+  --vermelho: #ff6b6b;
+  --vermelho-fundo: #000000;
+  --texto: #ffffff;
+  --fundo: #000000;
+  --cartao: #000000;
+  --borda: #ffffff;
+  --foco: #00ffff;
+  color-scheme: dark;
+}
+html[data-a11y-contraste] body { background: #000 !important; color: #fff !important; }
+html[data-a11y-contraste] .mais-menos,
+html[data-a11y-contraste] .resultado { color: #000 !important; background: #ffff00 !important; }
+html[data-a11y-contraste] .cor,
+html[data-a11y-contraste] .laudo,
+html[data-a11y-contraste] .calc,
+html[data-a11y-contraste] .grafico,
+html[data-a11y-contraste] details { border: 3px solid #fff !important; }
+html[data-a11y-contraste] .nav-inferior a[aria-current="page"] { color: #ffff00; }
+html[data-a11y-contraste] .barra-receita .seg { background: #fff !important; color: #000 !important; border-right: 2px solid #000; }
+
+/* Fonte para dislexia: sem serifa, letras mais abertas, sem itálico */
+html[data-a11y-dislexia] body,
+html[data-a11y-dislexia] button,
+html[data-a11y-dislexia] input,
+html[data-a11y-dislexia] summary {
+  font-family: Verdana, "Trebuchet MS", "Lucida Sans", Tahoma, sans-serif !important;
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.16em !important;
+  font-style: normal !important;
+  text-align: left !important;
+}
+
+/* Espaçamento maior (WCAG 1.4.12) */
+html[data-a11y-espacamento] body { line-height: 2 !important; }
+html[data-a11y-espacamento] p { margin-bottom: 2em !important; }
+html[data-a11y-espacamento] body { letter-spacing: 0.05em; word-spacing: 0.16em; }
+
+/* Foco bem visível */
+html[data-a11y-foco] :focus,
+html[data-a11y-foco] :focus-visible {
+  outline: 5px solid #ff6d00 !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 9px #ffffff !important;
+}
+
+/* Sem animações */
+html[data-a11y-sem-movimento] *,
+html[data-a11y-sem-movimento] *::before,
+html[data-a11y-sem-movimento] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}

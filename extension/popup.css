@@ -1,0 +1,28 @@
+:root { color-scheme: light dark; --verde: #1b5e20; --borda: #8a8a80; --foco: #0b57d0; }
+* { box-sizing: border-box; }
+body {
+  width: 22rem; margin: 0; padding: 0;
+  font: 16px/1.5 system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  color: CanvasText; background: Canvas;
+}
+main { padding: 1rem; }
+h1 { font-size: 1.3rem; margin: 0 0 .75rem; }
+h2 { font-size: 1rem; margin: 1rem 0 .4rem; }
+section { margin-bottom: .5rem; }
+button {
+  display: block; width: 100%; min-height: 48px; margin-bottom: .4rem; padding: 0 .75rem;
+  font: inherit; font-weight: 600; text-align: left;
+  color: CanvasText; background: Canvas;
+  border: 2px solid var(--borda); border-radius: 10px; cursor: pointer;
+}
+button:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+.linha { display: flex; gap: .4rem; }
+.linha button { text-align: center; margin-bottom: 0; }
+.chave::before { content: "○ "; }
+.chave[aria-pressed="true"] { background: var(--verde); color: #fff; border-color: var(--verde); }
+.chave[aria-pressed="true"]::before { content: "✔ "; }
+.primario { background: var(--verde); color: #fff; border-color: var(--verde); }
+.sec { margin-top: 1rem; text-align: center; }
+.dica { font-size: .85rem; margin: .4rem 0; opacity: .85; }
+kbd { border: 1px solid var(--borda); border-radius: 4px; padding: 0 .3rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

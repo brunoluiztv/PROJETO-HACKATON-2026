@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AgroSponge RS — Água limpa para a seca</title>
+  <meta name="description" content="Veja a cor do selo, calcule a água guardada para a seca e aprenda a usar o saco AgroSponge na sua terra.">
+  <meta name="theme-color" content="#1b5e20" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1f13" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <img src="icons/icon.svg" alt="" width="40" height="40">
+    <div>
+      <p class="marca">AgroSponge RS</p>
+      <p class="lema">Água limpa guardada para a seca</p>
+    </div>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+
+    <!-- 1. SELO -->
+    <section id="selo" class="aba" aria-labelledby="t-selo">
+      <h1 id="t-selo">Qual a cor do selo do seu saco?</h1>
+      <p class="intro">Toque na cor que você está vendo na fitinha colada no saco.</p>
+
+      <div class="cores" role="group" aria-label="Cor do selo">
+        <button type="button" class="cor cor-verde" data-cor="verde" aria-pressed="false">
+          <span class="cor-icone" aria-hidden="true">✔</span>
+          <span><strong>VERDE</strong><br>Água limpa</span>
+        </button>
+        <button type="button" class="cor cor-amarelo" data-cor="amarelo" aria-pressed="false">
+          <span class="cor-icone" aria-hidden="true">!</span>
+          <span><strong>AMARELO</strong><br>Com barro</span>
+        </button>
+        <button type="button" class="cor cor-vermelho" data-cor="vermelho" aria-pressed="false">
+          <span class="cor-icone" aria-hidden="true">✖</span>
+          <span><strong>VERMELHO</strong><br>Água suja ou de fossa</span>
+        </button>
+      </div>
+
+      <div id="laudo" class="laudo" role="status" aria-live="polite" hidden></div>
+    </section>
+
+    <!-- 2. SECA / GRÁFICOS -->
+    <section id="graficos" class="aba" aria-labelledby="t-seca" hidden>
+      <h1 id="t-seca">Quanta água o saco guarda para a seca?</h1>
+      <p class="intro">Cada saco cheio guarda <strong>13 litros</strong> de água em gel.</p>
+
+      <form class="calc" id="form-calc">
+        <label for="sacos">Quantos sacos você tem?</label>
+        <div class="calc-linha">
+          <button type="button" class="mais-menos" id="menos" aria-label="Diminuir 1 saco">−</button>
+          <input id="sacos" name="sacos" type="number" inputmode="numeric" min="1" max="500" value="15" autocomplete="off">
+          <button type="button" class="mais-menos" id="mais" aria-label="Aumentar 1 saco">+</button>
+        </div>
+        <input id="sacos-range" type="range" min="1" max="200" value="15" aria-label="Quantidade de sacos, deslize para ajustar">
+        <div class="atalhos">
+          <button type="button" class="botao-sec" data-sacos="15">Horta · 15</button>
+          <button type="button" class="botao-sec" data-sacos="80">Sítio · 80</button>
+        </div>
+      </form>
+
+      <div class="resultado" role="status" aria-live="polite">
+        <p><span class="num" id="r-litros">195</span> litros</p>
+        <p class="detalhe" id="r-detalhe">quase 10 bombonas de 20 L · cerca de 3 dias sem regar</p>
+      </div>
+
+      <figure class="grafico">
+        <figcaption>Água guardada (litros)</figcaption>
+        <div id="grafico" aria-hidden="true"></div>
+        <details>
+          <summary>Ver os números em tabela</summary>
+          <table id="tabela">
+            <caption class="so-leitor">Água guardada por quantidade de sacos</caption>
+            <thead><tr><th scope="col">Situação</th><th scope="col">Sacos</th><th scope="col">Litros</th><th scope="col">Dias sem regar</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </details>
+      </figure>
+    </section>
+
+    <!-- 3. COMO USAR -->
+    <section id="usar" class="aba" aria-labelledby="t-usar" hidden>
+      <h1 id="t-usar">Como usar na terra</h1>
+      <p class="intro">Respostas rápidas para as dúvidas mais comuns.</p>
+      <div id="faq"></div>
+    </section>
+
+    <!-- 4. RECEITA -->
+    <section id="receita" class="aba" aria-labelledby="t-receita" hidden>
+      <h1 id="t-receita">Fazer o saco caseiro</h1>
+      <p class="intro">Receita para <strong>1 saco de 1 kg</strong>, para fazer em casa ou na cooperativa.</p>
+      <ol id="ingredientes" class="ingredientes"></ol>
+      <div id="barra-receita" class="barra-receita" role="img" aria-label="Proporção: 700 gramas de casca de arroz com carvão, 250 gramas de pó gelificante, 50 gramas de tanino e Trichoderma"></div>
+      <p class="custo">💰 Custo: cerca de <strong>R$ 5,80</strong> por saco na cooperativa.</p>
+    </section>
+  </main>
+
+  <nav class="nav-inferior" aria-label="Seções do site">
+    <a href="#selo" data-aba="selo"><span aria-hidden="true">📷</span>Selo</a>
+    <a href="#graficos" data-aba="graficos"><span aria-hidden="true">💧</span>Seca</a>
+    <a href="#usar" data-aba="usar"><span aria-hidden="true">🌾</span>Usar</a>
+    <a href="#receita" data-aba="receita"><span aria-hidden="true">🛠️</span>Receita</a>
+  </nav>
+
+  <noscript><p class="aviso">Este site precisa de JavaScript para mostrar o conteúdo.</p></noscript>
+</body>
+</html>
