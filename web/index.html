@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>PhytoSense RS — Biossensor In-Planta & Drenagem Rural</title>
+  <meta name="description" content="Sistema de biossensor eletrofisiológico in-planta (bioimpedância de caule e ORP de raiz) para agricultura familiar no Rio Grande do Sul.">
+  <meta name="theme-color" content="#0b0b0b">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="stylesheet" href="css/styles.css?v=5">
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script type="module" src="js/app.js?v=5"></script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
+
+  <!-- Topo Fixo com Acessibilidade por Voz -->
+  <header class="topo-app">
+    <div class="topo-marca">
+      <img src="icons/icon.svg" alt="" class="topo-icone" width="36" height="36">
+      <div>
+        <p class="topo-titulo">PhytoSense RS</p>
+        <p class="topo-sub">Biossensor In-Planta · UERGS 2026</p>
+      </div>
+    </div>
+    <button type="button" class="btn-voz-topo" id="btn-ouvir-planta" aria-pressed="false" aria-label="Ouvir diagnóstico da lavoura por voz">
+      <span id="voz-icone" aria-hidden="true">🔊</span>
+      <span id="voz-texto">Ouvir Planta</span>
+    </button>
+  </header>
+
+  <!-- Região Live para Leitores de Tela -->
+  <div id="sr-anuncios" class="sr-only" role="status" aria-live="polite"></div>
+
+  <!-- Conteúdo Principal -->
+  <main id="conteudo" class="conteudo-principal" tabindex="-1">
+
+    <!-- ======================================================================
+         ABA 1: MINHA PLANTA SENTINELA
+         ====================================================================== -->
+    <section id="aba-minha-planta" class="tab-panel" aria-labelledby="t-planta">
+      <div>
+        <h1 id="t-planta" class="titulo-aba">🌱 Minha Planta Sentinela</h1>
+        <p class="desc-aba">Monitoramento bioelétrico direto no caule e rizosfera em tempo real.</p>
+      </div>
+
+      <!-- Canvas Interativo -->
+      <div class="card-canvas-planta">
+        <canvas id="canvas-planta" role="img" aria-label="Desenho animado do caule com biossensor laranja e raiz com haste bioenergética"></canvas>
+        <p class="canvas-legenda">Clipe de Grafite + Bio-hidrogel KCl (50k/1kHz) · Haste P-MFC Geobacter (ORP)</p>
+      </div>
+
+      <!-- Botões de Simulação dos 3 Estados -->
+      <div class="grupo-estados" role="group" aria-label="Simular estado da planta">
+        <button type="button" class="btn-estado ativo" data-estado="hidratada" aria-pressed="true">
+          <div class="btn-estado-info">
+            <strong>🌿 1. HIDRATADA (Seiva Normal)</strong>
+            <small>Z = 1.4 kΩ · ORP = +310 mV · Bomba Desligada</small>
+          </div>
+          <span class="indicador-ponto" aria-hidden="true"></span>
+        </button>
+
+        <button type="button" class="btn-estado" data-estado="sede" aria-pressed="false">
+          <div class="btn-estado-info">
+            <strong>☀️ 2. COM SEDE / SECA INVISÍVEL</strong>
+            <small>Z = 4.8 kΩ · ORP = +420 mV · Irrigar 06h</small>
+          </div>
+          <span class="indicador-ponto" aria-hidden="true"></span>
+        </button>
+
+        <button type="button" class="btn-estado" data-estado="hipoxia" aria-pressed="false">
+          <div class="btn-estado-info">
+            <strong>🌊 3. AFOGADA / PÓS-ENCHENTE</strong>
+            <small>Z = 5.9 kΩ · ORP = -140 mV · Hipóxia & PROAGRO</small>
+          </div>
+          <span class="indicador-ponto" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- Cartão Semáforo de Diagnóstico -->
+      <article class="card-diagnostico" aria-live="polite">
+        <div class="diag-cabecalho">
+          <h2 id="diag-titulo" style="font-size: 1.1rem; font-weight: 800;">🌿 HIDRATADA</h2>
+          <span id="diag-badge" class="badge badge-verde">Saudável</span>
+        </div>
+
+        <div id="diag-bomba-box" class="bomba-banner bomba-desligada">
+          <span class="bomba-rotulo">Ação Recomendada na Bomba</span>
+          <span id="diag-bomba-status" class="bomba-valor">BOMBA DESLIGADA</span>
+          <span id="diag-economia" class="economia-texto">Economia de 4.200 litros e R$ 38,00 de luz/diesel hoje</span>
+        </div>
+
+        <p id="diag-texto" class="diag-explicacao">
+          A seiva está circulando com vigor nas células. As aquaporinas estão abertas e a planta tem água de sobra no caule.
+        </p>
+
+        <div class="diag-acao-box">
+          <strong>Orientação para o Agricultor:</strong>
+          <span id="diag-acao">Manter a bomba desligada. Monitoramento sentinela ativo.</span>
+        </div>
+
+        <!-- Grade de Parâmetros -->
+        <div class="grade-parametros">
+          <div class="item-param">
+            <span class="item-param-label">Z (50 kHz) Turgor</span>
+            <span id="val-z50k" class="item-param-val">1.4 kΩ</span>
+          </div>
+          <div class="item-param">
+            <span class="item-param-label">Z (1 kHz) Xilema</span>
+            <span id="val-z1k" class="item-param-val">1.1 kΩ</span>
+          </div>
+          <div class="item-param">
+            <span class="item-param-label">ORP da Rizosfera</span>
+            <span id="val-orp" class="item-param-val">+310 mV</span>
+          </div>
+          <div class="item-param">
+            <span class="item-param-label">Condutividade CE</span>
+            <span id="val-ce" class="item-param-val">1.2 dS/m</span>
+          </div>
+        </div>
+
+        <!-- Botão Acionar Seguro PROAGRO (Só aparece em Hipóxia) -->
+        <button type="button" id="btn-laudo-proagro" class="btn-proagro" hidden>
+          <span aria-hidden="true">📄</span>
+          <span>Baixar Laudo de Sinistro PROAGRO</span>
+        </button>
+      </article>
+
+      <!-- Simulador de Chat do Bot do Telegram -->
+      <section class="card-chat-simulador" aria-labelledby="t-chat">
+        <h2 id="t-chat" style="font-size: 1rem; font-weight: 800;">💬 Dúvidas Rápidas do Produtor Rural</h2>
+        <div class="chat-janela" id="chat-mensagens" role="log" aria-live="polite">
+          <div class="msg-chat msg-bot">
+            <strong>🌱 PhytoSense RS:</strong> Olá, amigo(a) produtor(a)! Toque em uma dúvida abaixo para entender como nosso biossensor protege sua lavoura:
+          </div>
+        </div>
+        <p class="chat-perguntas-titulo">Perguntas Frequentes na Roça:</p>
+        <div class="chat-perguntas-grid" id="chat-perguntas-rapidas"></div>
+      </section>
+    </section>
+
+    <!-- ======================================================================
+         ABA 2: GRÁFICOS & SECA / SIMULADOR DE HECTARES
+         ====================================================================== -->
+    <section id="aba-graficos" class="tab-panel" aria-labelledby="t-graficos" hidden>
+      <div>
+        <h1 id="t-graficos" class="titulo-aba">📊 Gráficos & Seca</h1>
+        <p class="desc-aba">Comparações fitoeletrônicas e economia de irrigação na propriedade.</p>
+      </div>
+
+      <!-- Simulador de Hectares -->
+      <article class="card-simulador-hectares">
+        <h2 style="font-size: 1.05rem; font-weight: 800;">🌾 Simulador de Propriedade Rural</h2>
+        <div class="slider-linha">
+          <div class="slider-header">
+            <label for="slider-hectares">Tamanho da sua área:</label>
+            <span><strong id="val-hectares">3</strong> hectares</span>
+          </div>
+          <input type="range" id="slider-hectares" class="slider-hectares" min="1" max="15" step="1" value="3" aria-label="Tamanho da lavoura em hectares">
+        </div>
+
+        <div class="grid-economia-hectares">
+          <div class="box-econ">
+            <small>Sensores Necessários</small>
+            <strong id="calc-sensores">3 Sentinelas</strong>
+          </div>
+          <div class="box-econ">
+            <small>Água Poupada / Mês</small>
+            <strong id="calc-litros">100.800 L/mês</strong>
+          </div>
+          <div class="box-econ">
+            <small>Economia Financeira</small>
+            <strong id="calc-reais">R$ 912,00</strong>
+          </div>
+          <div class="box-econ">
+            <small>Combustível Poupado</small>
+            <strong id="calc-diesel">~147 L diesel</strong>
+          </div>
+        </div>
+      </article>
+
+      <!-- Gráfico 1: Linha de Divergência Crítica -->
+      <article class="card-grafico-box">
+        <h2>1. Divergência Crítica de Enchente: Caule vs. Solo</h2>
+        <p class="grafico-legenda-alerta">
+          ⚠️ <strong>O Grande Perigo:</strong> No Dia 6 (enchente), o sensor de solo tradicional marca <strong>100%</strong> de água, enquanto o biossensor de caule PhytoSense detecta asfixia radicular (<strong>25%</strong>) por fechamento das aquaporinas.
+        </p>
+        <div class="grafico-container">
+          <canvas id="canvas-grafico-divergencia" role="img" aria-label="Gráfico de linha comparando saúde hídrica no caule versus sensor de solo ao longo de 7 dias"></canvas>
+        </div>
+      </article>
+
+      <!-- Gráfico 2: Consumo Energético Logarítmico -->
+      <article class="card-grafico-box">
+        <h2>2. Autonomia Energética (Consumo Diário em Log)</h2>
+        <p style="font-size: 0.84rem; color: #a1a1aa;">
+          Comparativo entre o ESP32 comum (1.800 mAh/dia), o PhytoSense em Deep Sleep (14 mAh/dia) e a geração autônoma P-MFC (45 mAh/dia).
+        </p>
+        <div class="grafico-container-pequeno">
+          <canvas id="canvas-grafico-energia" role="img" aria-label="Gráfico de barras comparando consumo energético diário"></canvas>
+        </div>
+      </article>
+    </section>
+
+    <!-- ======================================================================
+         ABA 3: ENGENHARIA & FICHA TÉCNICA
+         ====================================================================== -->
+    <section id="aba-engenharia" class="tab-panel" aria-labelledby="t-engenharia" hidden>
+      <div>
+        <h1 id="t-engenharia" class="titulo-aba">🔬 Ficha Técnica & Engenharia</h1>
+        <p class="desc-aba">Biotecnologia, Computação Embarcada e Resiliência Climática.</p>
+      </div>
+
+      <!-- 4 Pilares da Engenharia -->
+      <div id="container-pilares-engenharia" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+      <!-- Estimativa de Custo BOM -->
+      <article class="card-bom">
+        <h2 style="font-size: 1.05rem; font-weight: 800; color: #ff6b00;">💰 Bill of Materials (BOM) — Custo por Nó Sentinela</h2>
+        <p style="font-size: 0.82rem; color: #a1a1aa; margin-top: 4px;">
+          Componentes acessíveis para viabilizar adoção em massa na agricultura familiar do RS.
+        </p>
+        <table class="tabela-bom">
+          <thead>
+            <tr>
+              <th scope="col">Componente</th>
+              <th scope="col">Função</th>
+              <th scope="col" style="text-align: right;">Custo (R$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ESP32-C3 RISC-V</td>
+              <td>Processamento, LittleFS e Deep Sleep</td>
+              <td style="text-align: right;">R$ 18,00</td>
+            </tr>
+            <tr>
+              <td>Eletrodos de Grafite + Bio-hidrogel KCl</td>
+              <td>Clipe não invasivo de caule (1k/50kHz)</td>
+              <td style="text-align: right;">R$ 3,50</td>
+            </tr>
+            <tr>
+              <td>Haste Titânio + Feltro de Carbono</td>
+              <td>Sensor Redox ORP e Ânodo P-MFC Geobacter</td>
+              <td style="text-align: right;">R$ 6,50</td>
+            </tr>
+            <tr>
+              <td>Resina de Poliuretano de Mamona</td>
+              <td>Potting impermeabilizante IP68 rural</td>
+              <td style="text-align: right;">R$ 4,00</td>
+            </tr>
+            <tr>
+              <td>Micro-painel Solar 5V 50mA</td>
+              <td>Colheita de luz complementar à P-MFC</td>
+              <td style="text-align: right;">R$ 6,00</td>
+            </tr>
+            <tr>
+              <td>Clipe 3D PLA + Passivos</td>
+              <td>Gabinete mecânico e fixação de caule</td>
+              <td style="text-align: right;">R$ 4,00</td>
+            </tr>
+            <tr class="total">
+              <td colspan="2">TOTAL POR PLANTA SENTINELA</td>
+              <td style="text-align: right;">R$ 42,00</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <footer style="font-size: 0.8rem; color: #71717a; text-align: center; padding: 16px 0;">
+        Hackathon das Engenharias UERGS 2026<br>
+        Desafio 02: Água para o Futuro e Drenagem Urbana · Rio Grande do Sul
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- Barra de Navegação Inferior Fixa -->
+  <nav class="barra-navegacao-fixa" aria-label="Navegação Principal">
+    <button type="button" class="nav-tab-btn active" id="tab-btn-planta" data-target="aba-minha-planta" aria-selected="true">
+      <span class="nav-tab-icone" aria-hidden="true">🌱</span>
+      <span>1. Minha Planta</span>
+    </button>
+    <button type="button" class="nav-tab-btn" id="tab-btn-graficos" data-target="aba-graficos" aria-selected="false">
+      <span class="nav-tab-icone" aria-hidden="true">📊</span>
+      <span>2. Gráficos & Seca</span>
+    </button>
+    <button type="button" class="nav-tab-btn" id="tab-btn-engenharia" data-target="aba-engenharia" aria-selected="false">
+      <span class="nav-tab-icone" aria-hidden="true">🔬</span>
+      <span>3. Engenharia</span>
+    </button>
+  </nav>
+
+  <!-- Modal Oficial do Laudo PROAGRO -->
+  <div id="modal-proagro" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="t-modal-laudo" hidden>
+    <div class="modal-conteudo">
+      <div class="modal-header">
+        <h2 id="t-modal-laudo">📄 Laudo Técnico de Sinistro PROAGRO</h2>
+        <button type="button" id="btn-fechar-modal" class="btn-fechar" aria-label="Fechar laudo">×</button>
+      </div>
+
+      <div class="laudo-corpo">
+        <p><strong>Emissor:</strong> PhytoSense RS — Sistema Sentinela de Biomonitoramento In-Planta</p>
+        <p><strong>Data/Hora de Emissão:</strong> <span id="laudo-data-emissao">--/--/----</span></p>
+        <p><strong>Classificação do Sinistro:</strong> Asfixia Radicular por Hipóxia Severa Decorrente de Enchente Pluvial</p>
+
+        <div class="laudo-caixa-destaque">
+          • Potencial Redox Rizosfera (ORP): -140 mV (Anóxia radicular crônica)<br>
+          • Bioimpedância de Caule (50 kHz): 5.9 kΩ (Fechamento total de aquaporinas PIP)<br>
+          • Saturação Hídrica do Solo: 100% por 34 horas contínuas<br>
+          • Perda Fisiológica: Seca fisiológica irreversível por falta de ATP celular
+        </div>
+
+        <p style="font-size: 0.82rem; color: #cbd5e1;">
+          Certifico para fins de comprovação junto ao agente financeiro do PROAGRO e seguradoras agrícolas que a cultura sentinela sofreu colapso metabólico por asfixia radicular, configurando perda indenizável por desastre hidroclimático.
+        </p>
+      </div>
+
+      <div class="modal-acoes">
+        <button type="button" id="btn-imprimir-laudo" class="btn-imprimir">Imprimir / Salvar PDF</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

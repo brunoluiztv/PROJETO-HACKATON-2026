@@ -732,6 +732,11 @@ body {
   padding: 16px;
 }
 
+.modal-overlay[hidden],
+[hidden] {
+  display: none !important;
+}
+
 .modal-conteudo {
   background: #18181b;
   border: 2px solid #ef4444;
