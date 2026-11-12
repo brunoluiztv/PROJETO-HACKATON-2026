@@ -20,12 +20,14 @@ def media_rgb_central(img_bytes: bytes) -> tuple[float, float, float]:
 
 
 def classificar_rgb(r: float, g: float, b: float) -> str | None:
-    if r > g + 25 and r > 120:
+    # Vermelho de verdade: R alto e dominante sobre G e B (evita falso positivo em magenta/roxo)
+    if r > g + 25 and r > b + 25 and r > 120:
         return "vermelho"
     # Amarelo de verdade: R e G altos e B bem menor (foto branca/estourada é ambígua).
     if r > 145 and g > 130 and b < min(r, g) - 40:
         return "amarelo"
-    if g >= r and g >= b and (max(r, g, b) - min(r, g, b)) > 20 and 60 < g < 230:
+    # Verde de verdade: G dominante sobre R e B com boa saturação
+    if g >= r + 15 and g >= b + 15 and (max(r, g, b) - min(r, g, b)) > 20 and 60 < g < 230:
         return "verde"
     return None
 

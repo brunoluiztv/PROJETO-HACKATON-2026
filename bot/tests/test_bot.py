@@ -35,6 +35,22 @@ def test_escuro_e_cinza_sao_ambiguos():
     assert classificar_rgb(255, 255, 255) is None
 
 
+def test_seguranca_fail_safe_nao_chuta_verde():
+    """Garante que fotos imperfeitas, escuras ou sem dominante clara NUNCA viram 'verde'."""
+    # Azul puro (ex: céu ou chão azul, sem selo)
+    assert classificar_cor(_png((20, 50, 210))) is None
+    # Marrom escuro neutro
+    assert classificar_cor(_png((75, 60, 45))) is None
+    # Cinza claro / superexposto
+    assert classificar_cor(_png((240, 245, 240))) is None
+    # Magenta / roxo
+    assert classificar_cor(_png((180, 40, 180))) is None
+    # Verde muito escuro (subexposto, sem luz)
+    assert classificar_cor(_png((15, 45, 18))) is None
+    # Verde fluorescente estourado
+    assert classificar_cor(_png((235, 255, 235))) is None
+
+
 def test_roteamento_botoes_e_palavras():
     assert rotear(conteudo.BTN_FOTO) == "foto"
     assert rotear(conteudo.BTN_SECA) == "seca"

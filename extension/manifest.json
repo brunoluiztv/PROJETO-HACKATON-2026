@@ -5,6 +5,7 @@
   "version": "1.0.0",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
+    "https://brunoluiztv.github.io/*",
     "https://agrosponge-rs-uergs.netlify.app/*",
     "http://localhost/*",
     "http://127.0.0.1/*"
@@ -12,6 +13,7 @@
   "content_scripts": [
     {
       "matches": [
+        "https://brunoluiztv.github.io/*",
         "https://agrosponge-rs-uergs.netlify.app/*",
         "http://localhost/*",
         "http://127.0.0.1/*"

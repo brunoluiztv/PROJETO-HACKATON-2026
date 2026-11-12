@@ -28,7 +28,7 @@ from roteamento import rotear
 load_dotenv()
 
 TOKEN = os.getenv("TELEGRAM_TOKEN", "")
-WEBAPP_URL = os.getenv("WEBAPP_URL", "https://agrosponge-rs-uergs.netlify.app").rstrip("/")
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://brunoluiztv.github.io/PROJETO-HACKATON-2026").rstrip("/")
 
 
 def _token_valido(token: str) -> bool:
