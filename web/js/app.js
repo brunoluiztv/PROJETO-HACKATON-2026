@@ -101,7 +101,9 @@ function montarReceita() {
 /* ---------- PWA ---------- */
 function registrarSW() {
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.register("sw.js").then((reg) => {
+      reg.update();
+    }).catch(() => {});
   }
 }
 

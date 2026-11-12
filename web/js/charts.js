@@ -6,7 +6,7 @@ export function calcular(sacos) {
     sacos,
     litros,
     bombonas: litros / BOMBONA_LITROS,
-    dias: Math.floor(litros / CONSUMO_DIA_LITROS + 0.1), // 80 sacos (1.040 L) = 18 dias, como no bot
+    dias: Math.round(litros / CONSUMO_DIA_LITROS), // 80 sacos (1.040 L / 58) = 18 dias; 15 sacos = 3 dias
   };
 }
 

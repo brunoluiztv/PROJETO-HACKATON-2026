@@ -165,9 +165,9 @@ th, td { padding: .5rem; text-align: left; border-bottom: 1px solid var(--borda)
   display: grid; padding: .75rem 1rem; background: var(--cartao);
   border: 1px solid var(--borda); border-left: 10px solid; border-radius: 12px;
 }
-.ingredientes li.i1 { border-left-color: #2e7d32; }
-.ingredientes li.i2 { border-left-color: #f9a825; }
-.ingredientes li.i3 { border-left-color: #6a1b9a; }
+.ingredientes li.i1 { border-left-color: #2e7d32 !important; }
+.ingredientes li.i2 { border-left-color: #f9a825 !important; }
+.ingredientes li.i3 { border-left-color: #6a1b9a !important; }
 .barra-receita { display: flex; min-height: 3rem; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; font-weight: 700; font-size: .85rem; }
 .barra-receita .seg { display: grid; place-items: center; color: #fff; min-width: 2.75rem; padding: 0 .25rem; }
 .barra-receita .seg.i1 { background: #2e7d32; }
@@ -178,6 +178,7 @@ th, td { padding: .5rem; text-align: left; border-bottom: 1px solid var(--borda)
 /* Rodapé comemorativo Hackathon UERGS 2026 */
 .rodape-evento {
   margin-top: 2rem;
+  margin-bottom: 2.5rem;
   padding: 1.25rem 1rem;
   background: var(--cartao);
   border: 1px solid var(--borda);

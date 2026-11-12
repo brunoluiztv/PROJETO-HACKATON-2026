@@ -1,5 +1,5 @@
 /* Service worker: cache-first dos arquivos estáticos (uso no campo, rede ruim). */
-const VERSAO = "agrosponge-v1";
+const VERSAO = "agrosponge-v2";
 const ARQUIVOS = [
   "./",
   "index.html",
@@ -28,10 +28,18 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET" || new URL(e.request.url).origin !== location.origin) return;
   e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then(
-      (hit) =>
-        hit ||
-        fetch(e.request).catch(() => caches.match("index.html"))
-    )
+    fetch(e.request)
+      .then((resp) => {
+        if (resp && resp.status === 200) {
+          const copia = resp.clone();
+          caches.open(VERSAO).then((c) => c.put(e.request, copia));
+        }
+        return resp;
+      })
+      .catch(() =>
+        caches.match(e.request, { ignoreSearch: true }).then(
+          (hit) => hit || caches.match("index.html")
+        )
+      )
   );
 });
