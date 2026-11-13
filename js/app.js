@@ -4,8 +4,8 @@
  * 4 Abas Especializadas: 1. Planta | 2. Triagem & Receita | 3. Gráficos & Hectares | 4. Engenharia & Gateway
  */
 
-import { initPlantCanvas } from './canvas_planta.js?v=17';
-import { initCharts, renderChartSecagem } from './charts.js?v=17';
+import { initPlantCanvas } from './canvas_planta.js?v=18';
+import { initCharts, renderChartSecagem } from './charts.js?v=18';
 import { 
   TELEMETRIA_ESTADOS, 
   FAQ_PRODUTOR, 
@@ -16,8 +16,8 @@ import {
   calcularAguaDisponivel, 
   classificarEstadoSolo,
   calcularPredicaoSecagem
-} from './content.js?v=17';
-import { iniciarTelegram } from './telegram.js?v=17';
+} from './content.js?v=18';
+import { iniciarTelegram } from './telegram.js?v=18';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
@@ -26,7 +26,7 @@ let perfilCulturaAtual = localStorage.getItem('teko_perfil_cultura') || localSto
 let tensaoAtualKpa = 21.5;
 let isSpeaking = false;
 let dadosClimaCache = null;
-let localizacaoAtiva = { nome: 'Porto Alegre (Metropolitana)', lat: -30.0346, lon: -51.2177 };
+let localizacaoAtiva = { nome: 'Bento Gonçalves (Serra Gaúcha)', lat: -29.1722, lon: -51.5189, regiao: 'Serra Gaúcha' };
 
 document.addEventListener('DOMContentLoaded', () => {
   initThemeManager();
@@ -405,7 +405,19 @@ export function atualizarPredicaoUi(tensaoOverride = null) {
 function initClimaTalhao() {
   const selectMun = document.getElementById('select-municipio-rs');
   const btnGps = document.getElementById('btn-obter-gps');
+  const btnAtualizar = document.getElementById('btn-atualizar-clima');
+  const coordTextoEl = document.getElementById('clima-coordenadas-texto');
 
+  // 1. Recupera preferência do produtor gravada em localStorage ou default
+  const munSalvo = localStorage.getItem('teko_municipio_rs');
+  if (munSalvo && MUNICIPIOS_RS[munSalvo]) {
+    localizacaoAtiva = MUNICIPIOS_RS[munSalvo];
+    if (selectMun) selectMun.value = munSalvo;
+  } else if (selectMun && selectMun.value && MUNICIPIOS_RS[selectMun.value]) {
+    localizacaoAtiva = MUNICIPIOS_RS[selectMun.value];
+  }
+
+  // 2. Evento de troca de município no dropdown
   if (selectMun) {
     selectMun.addEventListener('change', () => {
       const chave = selectMun.value;
@@ -415,19 +427,52 @@ function initClimaTalhao() {
       }
       if (MUNICIPIOS_RS[chave]) {
         localizacaoAtiva = MUNICIPIOS_RS[chave];
-        atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+        try {
+          localStorage.setItem('teko_municipio_rs', chave);
+        } catch {}
+        const rotuloFormatado = `${localizacaoAtiva.nome} (${localizacaoAtiva.regiao || 'RS'})`;
+        atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloFormatado);
       }
     });
   }
 
+  // 3. Botão de Atualização Manual do Clima (Satélite Open-Meteo)
+  if (btnAtualizar) {
+    btnAtualizar.addEventListener('click', () => {
+      btnAtualizar.style.transform = 'rotate(180deg)';
+      btnAtualizar.style.transition = 'transform 0.4s ease';
+      setTimeout(() => { btnAtualizar.style.transform = ''; }, 450);
+      const rotuloAtual = localizacaoAtiva.regiao 
+        ? `${localizacaoAtiva.nome} (${localizacaoAtiva.regiao})`
+        : localizacaoAtiva.nome;
+      atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloAtual);
+    });
+  }
+
+  // 4. Botão de GPS com detecção de sandbox do Telegram WebApp e fallback gracioso
   if (btnGps) {
     btnGps.addEventListener('click', () => {
-      if (!('geolocation' in navigator)) {
-        alert('Geolocalização não é suportada pelo seu navegador/dispositivo.');
+      const isTelegram = Boolean(window.Telegram && window.Telegram.WebApp);
+
+      // Verificação de ambiente Telegram restrito sem suporte nativo a geolocalização no webview
+      if (isTelegram && (!window.Telegram.WebApp.LocationManager || !window.Telegram.WebApp.LocationManager.init)) {
+        if (coordTextoEl) {
+          coordTextoEl.textContent = 'ℹ️ No Telegram Mini App, selecione seu polo agrícola diretamente no seletor do RS ao lado (sem necessidade de permissões).';
+        }
+        if (selectMun) {
+          selectMun.focus();
+        }
         return;
       }
 
-      const coordTextoEl = document.getElementById('clima-coordenadas-texto');
+      if (!('geolocation' in navigator)) {
+        if (coordTextoEl) {
+          coordTextoEl.textContent = '⚠️ Geolocalização indisponível no dispositivo. Selecione sua cidade do RS na lista.';
+        }
+        if (selectMun) selectMun.focus();
+        return;
+      }
+
       btnGps.innerHTML = '<span>🛰️</span> <span>Localizando...</span>';
       btnGps.disabled = true;
       if (coordTextoEl) {
@@ -444,7 +489,7 @@ function initClimaTalhao() {
           const lon = Number(pos.coords.longitude.toFixed(4));
           const rotuloGps = `📍 Talhão Sentinela (GPS: ${lat}, ${lon})`;
 
-          localizacaoAtiva = { nome: rotuloGps, lat, lon };
+          localizacaoAtiva = { nome: rotuloGps, lat, lon, regiao: 'GPS Local' };
 
           if (selectMun) {
             let optGps = selectMun.querySelector('option[value="gps_talhao"]');
@@ -463,24 +508,30 @@ function initClimaTalhao() {
           btnGps.disabled = false;
           btnGps.innerHTML = '<span>📍</span> <span>GPS</span>';
           btnGps.classList.remove('ativo');
-          console.warn('Erro ao obter GPS:', err);
+          console.warn('Sinal GPS indisponível ou negado:', err);
 
           if (coordTextoEl) {
-            coordTextoEl.textContent = `⚠️ Sinal GPS indisponível (${err.message || 'permissão não concedida'}). Mantendo ${localizacaoAtiva.nome}.`;
+            const detalhe = isTelegram 
+              ? 'permissão restrita pelo Telegram'
+              : (err.code === 1 ? 'permissão negada' : 'sinal satelital fraco');
+            coordTextoEl.textContent = `ℹ️ GPS não conectado (${detalhe}). Selecione o município mais próximo do talhão na lista do RS.`;
           }
-          atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+          if (selectMun) selectMun.focus();
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 6000,
           maximumAge: 30000
         }
       );
     });
   }
 
-  // Carrega previsão inicial
-  atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+  // 5. Carrega previsão inicial da localização selecionada
+  const rotuloInicial = localizacaoAtiva.regiao 
+    ? `${localizacaoAtiva.nome} (${localizacaoAtiva.regiao})`
+    : localizacaoAtiva.nome;
+  atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloInicial);
 }
 
 /**

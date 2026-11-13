@@ -50,12 +50,49 @@ export const CONFIG_SOLOS = {
 };
 
 export const MUNICIPIOS_RS = {
-  bento_goncalves: { nome: 'Bento Gonçalves (Serra Gaúcha)', lat: -29.1722, lon: -51.5189, alt: 620 },
-  caxias_do_sul: { nome: 'Caxias do Sul (Serra)', lat: -29.1678, lon: -51.1794, alt: 817 },
-  santa_maria: { nome: 'Santa Maria (Depressão Central)', lat: -29.6842, lon: -53.8069, alt: 113 },
-  pelotas: { nome: 'Pelotas (Zona Sul)', lat: -31.7654, lon: -52.3376, alt: 7 },
-  passo_fundo: { nome: 'Passo Fundo (Planalto Médio)', lat: -28.2628, lon: -52.4067, alt: 687 },
-  porto_alegre: { nome: 'Porto Alegre (Metropolitana)', lat: -30.0346, lon: -51.2177, alt: 10 }
+  // 1. Serra & Encosta Superior (Hortifrutigranjeiros, Maçã & Uva)
+  bento_goncalves: { nome: 'Bento Gonçalves', regiao: 'Serra Gaúcha', lat: -29.1722, lon: -51.5189, alt: 620, vocacao: 'Vitivinicultura & Olericultura' },
+  caxias_do_sul: { nome: 'Caxias do Sul', regiao: 'Serra Gaúcha', lat: -29.1678, lon: -51.1794, alt: 817, vocacao: 'Pólo Hortigranjeiro' },
+  vacaria: { nome: 'Vacaria', regiao: 'Campos de Cima da Serra', lat: -28.5122, lon: -50.9339, alt: 971, vocacao: 'Maçã & Fruticultura Temperada' },
+  flores_da_cunha: { nome: 'Flores da Cunha', regiao: 'Serra Gaúcha', lat: -29.0289, lon: -51.1883, alt: 756, vocacao: 'Hortaliças & Uva' },
+  farroupilha: { nome: 'Farroupilha', regiao: 'Serra Gaúcha', lat: -29.2236, lon: -51.3469, alt: 783, vocacao: 'Kiwi, Pêssego & Olericultura' },
+
+  // 2. Planalto Médio, Alto Uruguai & Missões (Grãos, Soja, Milho, Trigo)
+  passo_fundo: { nome: 'Passo Fundo', regiao: 'Planalto Médio', lat: -28.2628, lon: -52.4067, alt: 687, vocacao: 'Grãos (Soja, Trigo, Milho)' },
+  cruz_alta: { nome: 'Cruz Alta', regiao: 'Planalto Médio', lat: -28.6389, lon: -53.6067, alt: 452, vocacao: 'Grandes Culturas & Sementes' },
+  ijui: { nome: 'Ijuí', regiao: 'Noroeste', lat: -28.3878, lon: -53.9147, alt: 328, vocacao: 'Bacia Leiteira & Grãos' },
+  erechim: { nome: 'Erechim', regiao: 'Alto Uruguai', lat: -27.6342, lon: -52.2739, alt: 783, vocacao: 'Agricultura Familiar & Grãos' },
+  santo_angelo: { nome: 'Santo Ângelo', regiao: 'Missões', lat: -28.2992, lon: -54.2631, alt: 286, vocacao: 'Soja, Milho & Pastagens' },
+  santa_rosa: { nome: 'Santa Rosa', regiao: 'Noroeste', lat: -27.8711, lon: -54.4811, alt: 277, vocacao: 'Berço da Soja & Suinocultura' },
+  carazinho: { nome: 'Carazinho', regiao: 'Planalto Médio', lat: -28.2839, lon: -52.7864, alt: 603, vocacao: 'Pólo Olerícola & Grãos' },
+
+  // 3. Depressão Central, Vale do Rio Pardo & Taquari (Arroz, Fumo, Olericultura, Várzea)
+  santa_maria: { nome: 'Santa Maria', regiao: 'Depressão Central', lat: -29.6842, lon: -53.8069, alt: 113, vocacao: 'Arroz Irrigado & Olericultura' },
+  santa_cruz_do_sul: { nome: 'Santa Cruz do Sul', regiao: 'Vale do Rio Pardo', lat: -29.7144, lon: -52.4278, alt: 73, vocacao: 'Agricultura Familiar & Hortaliças' },
+  lajeado: { nome: 'Lajeado', regiao: 'Vale do Taquari', lat: -29.4669, lon: -51.9614, alt: 34, vocacao: 'Hortifrutigranjeiros & Avicultura' },
+  cachoeira_do_sul: { nome: 'Cachoeira do Sul', regiao: 'Depressão Central', lat: -30.0389, lon: -52.8939, alt: 68, vocacao: 'Várzea & Arroz Irrigado' },
+  venancio_aires: { nome: 'Venâncio Aires', regiao: 'Vale do Rio Pardo', lat: -29.6139, lon: -52.1931, alt: 42, vocacao: 'Minifúndios Diversificados' },
+
+  // 4. Zona Sul & Costa Doce (Hortaliças, Pêssego, Arroz & Minifúndios)
+  pelotas: { nome: 'Pelotas', regiao: 'Zona Sul', lat: -31.7654, lon: -52.3376, alt: 7, vocacao: 'Pólo Hortícola & Pêssego' },
+  cangucu: { nome: 'Canguçu', regiao: 'Zona Sul', lat: -31.3956, lon: -52.6756, alt: 436, vocacao: 'Cap. Nac. da Agricultura Familiar' },
+  rio_grande: { nome: 'Rio Grande', regiao: 'Litoral Sul', lat: -32.0350, lon: -52.0986, alt: 5, vocacao: 'Cebola & Arroz de Várzea' },
+  sao_lourenco_do_sul: { nome: 'São Lourenço do Sul', regiao: 'Costa Doce', lat: -31.3653, lon: -51.9778, alt: 19, vocacao: 'Hortaliças, Leite & Fumo' },
+  bage: { nome: 'Bagé', regiao: 'Campanha Meridional', lat: -31.3314, lon: -54.1069, alt: 242, vocacao: 'Pecuária, Soja & Olivoturismo' },
+
+  // 5. Fronteira Oeste & Campanha (Arroz Irrigado & Pecuária Sustentável)
+  uruguaiana: { nome: 'Uruguaiana', regiao: 'Fronteira Oeste', lat: -29.7547, lon: -57.0883, alt: 66, vocacao: 'Maior Bacia de Arroz Irrigado' },
+  alegrete: { nome: 'Alegrete', regiao: 'Fronteira Oeste', lat: -29.7828, lon: -55.7919, alt: 102, vocacao: 'Várzeas & Agricultura Irrigada' },
+  sao_borja: { nome: 'São Borja', regiao: 'Fronteira Oeste', lat: -28.6606, lon: -56.0044, alt: 123, vocacao: 'Arroz, Soja & Trigo' },
+  santana_do_livramento: { nome: 'Santana do Livramento', regiao: 'Campanha', lat: -30.8878, lon: -55.5328, alt: 208, vocacao: 'Vitivinicultura & Grãos' },
+  dom_pedrito: { nome: 'Dom Pedrito', regiao: 'Campanha', lat: -30.9828, lon: -54.6731, alt: 141, vocacao: 'Vinho da Campanha & Arroz' },
+
+  // 6. Região Metropolitana & Litoral Norte (Cinturão Verde & Citros)
+  porto_alegre: { nome: 'Porto Alegre', regiao: 'Metropolitana', lat: -30.0346, lon: -51.2177, alt: 10, vocacao: 'Cinturão Verde Olerícola' },
+  viamao: { nome: 'Viamão', regiao: 'Metropolitana', lat: -30.0811, lon: -51.0233, alt: 111, vocacao: 'Maior Produtor Arroz Orgânico' },
+  torres: { nome: 'Torres', regiao: 'Litoral Norte', lat: -29.3353, lon: -49.7269, alt: 16, vocacao: 'Bananicultura & Hortaliças' },
+  osorio: { nome: 'Osório', regiao: 'Litoral Norte', lat: -29.8911, lon: -50.2708, alt: 16, vocacao: 'Hortaliças & Bacia Hidrográfica' },
+  montenegro: { nome: 'Montenegro', regiao: 'Vale do Caí', lat: -29.6889, lon: -51.4608, alt: 31, vocacao: 'Capital da Citricultura' }
 };
 
 export const CUSTOS_ASSOCIADOS_INSTALACAO = [

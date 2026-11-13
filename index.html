@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/styles.css?v=17">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=17"></script>
+  <script type="module" src="js/app.js?v=18"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -201,17 +201,58 @@
               <span id="clima-coordenadas-texto" class="clima-coords-sub">Porto Alegre (RS) · -30.0346, -51.2177</span>
             </div>
           </div>
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <select id="select-municipio-rs" class="select-municipio-rs" aria-label="Selecione o município do RS para previsão do tempo">
-              <option value="porto_alegre">Porto Alegre (Metropolitana)</option>
-              <option value="caxias_do_sul">Caxias do Sul (Serra)</option>
-              <option value="bento_goncalves">Bento Gonçalves (Serra Gaúcha)</option>
-              <option value="santa_maria">Santa Maria (Depressão Central)</option>
-              <option value="pelotas">Pelotas (Zona Sul)</option>
-              <option value="passo_fundo">Passo Fundo (Planalto Médio)</option>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <select id="select-municipio-rs" class="select-municipio-rs" aria-label="Selecione o município agrícola do RS para previsão do tempo">
+              <optgroup label="🍇 Serra & Encosta Superior (Hortaliças & Frutas)">
+                <option value="bento_goncalves">Bento Gonçalves (Serra Gaúcha)</option>
+                <option value="caxias_do_sul">Caxias do Sul (Pólo Hortigranjeiro)</option>
+                <option value="vacaria">Vacaria (Campos de Cima da Serra · Maçã)</option>
+                <option value="flores_da_cunha">Flores da Cunha (Hortaliças & Uva)</option>
+                <option value="farroupilha">Farroupilha (Kiwi & Olericultura)</option>
+              </optgroup>
+              <optgroup label="🌾 Planalto Médio & Missões (Grãos, Soja, Trigo, Milho)">
+                <option value="passo_fundo">Passo Fundo (Planalto Médio · Trigo & Grãos)</option>
+                <option value="cruz_alta">Cruz Alta (Pólo de Soja & Milho)</option>
+                <option value="ijui">Ijuí (Bacia Leiteira & Grãos)</option>
+                <option value="erechim">Erechim (Alto Uruguai · Agricultura Familiar)</option>
+                <option value="santo_angelo">Santo Ângelo (Região das Missões)</option>
+                <option value="santa_rosa">Santa Rosa (Berço da Soja)</option>
+                <option value="carazinho">Carazinho (Grãos & Sementes)</option>
+              </optgroup>
+              <optgroup label="💧 Depressão Central & Vales (Arroz Irrigado & Olericultura)">
+                <option value="santa_maria">Santa Maria (Depressão Central · Arroz)</option>
+                <option value="santa_cruz_do_sul">Santa Cruz do Sul (Vale do Rio Pardo)</option>
+                <option value="lajeado">Lajeado (Vale do Taquari · Hortifrutigranjeiros)</option>
+                <option value="cachoeira_do_sul">Cachoeira do Sul (Várzeas & Arroz)</option>
+                <option value="venancio_aires">Venâncio Aires (Minifúndios)</option>
+              </optgroup>
+              <optgroup label="🚜 Zona Sul & Costa Doce (Pólo da Agricultura Familiar)">
+                <option value="pelotas">Pelotas (Zona Sul · Horticultura & Pêssego)</option>
+                <option value="cangucu">Canguçu (Cap. Nac. da Agricultura Familiar)</option>
+                <option value="rio_grande">Rio Grande (Cebola & Várzea)</option>
+                <option value="sao_lourenco_do_sul">São Lourenço do Sul (Hortaliças & Leite)</option>
+                <option value="bage">Bagé (Campanha Meridional · Soja & Pecuária)</option>
+              </optgroup>
+              <optgroup label="🌾 Fronteira Oeste & Campanha (Arroz Irrigado & Grãos)">
+                <option value="uruguaiana">Uruguaiana (Maior Bacia de Arroz Irrigado)</option>
+                <option value="alegrete">Alegrete (Várzeas & Arroz Irrigado)</option>
+                <option value="sao_borja">São Borja (Fronteira Oeste · Grãos)</option>
+                <option value="santana_do_livramento">Santana do Livramento (Campanha)</option>
+                <option value="dom_pedrito">Dom Pedrito (Campanha & Arroz)</option>
+              </optgroup>
+              <optgroup label="🏙️ Região Metropolitana & Litoral (Cinturão Verde & Citros)">
+                <option value="porto_alegre">Porto Alegre (Cinturão Verde Metropolitana)</option>
+                <option value="viamao">Viamão (Maior Produtor Arroz Orgânico)</option>
+                <option value="torres">Torres (Litoral Norte · Bananicultura)</option>
+                <option value="osorio">Osório (Litoral Norte)</option>
+                <option value="montenegro">Montenegro (Vale do Caí · Citricultura)</option>
+              </optgroup>
             </select>
-            <button type="button" id="btn-obter-gps" class="clima-btn-gps" title="Obter localização GPS em tempo real do talhão (Custo zero de hardware no ESP32)" aria-label="Obter localização GPS em tempo real do talhão" aria-live="polite">
+            <button type="button" id="btn-obter-gps" class="clima-btn-gps" title="Obter localização GPS do talhão" aria-label="Obter localização GPS do talhão" aria-live="polite">
               <span>📍</span> <span>GPS</span>
+            </button>
+            <button type="button" id="btn-atualizar-clima" class="clima-btn-gps" title="Recarregar previsão meteorológica agora via satélite Open-Meteo" aria-label="Recarregar previsão do tempo agora">
+              <span>🔄</span>
             </button>
           </div>
         </div>

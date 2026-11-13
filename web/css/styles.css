@@ -1,0 +1,2030 @@
+/**
+ * Tekó Biotech — Dark Mode de Alto Contraste para Uso no Campo
+ * Hackathon das Engenharias UERGS 2026
+ * WCAG 2.2 AA / AAA (Contraste superior a 7:1)
+ */
+
+:root {
+  /* Modo Escuro de Alto Contraste (Default Rural UERGS) */
+  --bg-principal: #09090b;
+  --bg-card: #141416;
+  --bg-card-hover: #1c1c20;
+  --borda-suave: #3f3f46;       /* Borda demarcada e nítida conforme padrão da imagem */
+  --borda-destaque: #52525b;
+  --borda-fina: 1px solid var(--borda-suave);
+
+  --cor-laranja: #ff6b00;
+  --cor-laranja-glow: rgba(255, 107, 0, 0.25);
+  --texto-branco: #ffffff;
+  --texto-secundario: #a1a1aa;
+  --texto-terciario: #71717a;
+
+  --cor-verde: #10b981;
+  --cor-verde-bg: rgba(16, 185, 129, 0.15);
+  --cor-amarelo: #f59e0b;
+  --cor-amarelo-bg: rgba(245, 158, 11, 0.15);
+  --cor-vermelho: #ef4444;
+  --cor-vermelho-bg: rgba(239, 68, 68, 0.15);
+  --cor-azul: #38bdf8;
+
+  --topo-bg: rgba(17, 17, 17, 0.96);
+  --nav-bg: rgba(17, 17, 17, 0.96);
+  --canvas-bg: #09090b;
+  --sombra-card: 0 4px 18px rgba(0, 0, 0, 0.45);
+
+  --nav-altura: 64px;
+  --touch-minimo: 48px;
+  --raio-borda: 14px;
+}
+
+/* Modo Claro de Alto Contraste (Luz Solar Rural) */
+[data-theme="light"] {
+  --bg-principal: #f4f4f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --borda-suave: #d4d4d8;       /* Borda cinza demarcada no modo claro */
+  --borda-destaque: #a1a1aa;
+  --borda-fina: 1px solid var(--borda-suave);
+
+  --cor-laranja: #ea580c;
+  --cor-laranja-glow: rgba(234, 88, 12, 0.2);
+  --texto-branco: #09090b;      /* Texto escuro no claro */
+  --texto-secundario: #52525b;
+  --texto-terciario: #71717a;
+
+  --cor-verde: #059669;
+  --cor-verde-bg: rgba(5, 150, 105, 0.12);
+  --cor-amarelo: #d97706;
+  --cor-amarelo-bg: rgba(217, 119, 6, 0.12);
+  --cor-vermelho: #dc2626;
+  --cor-vermelho-bg: rgba(220, 38, 38, 0.12);
+  --cor-azul: #0284c7;
+
+  --topo-bg: rgba(255, 255, 255, 0.96);
+  --nav-bg: rgba(255, 255, 255, 0.96);
+  --canvas-bg: #ffffff;
+  --sombra-card: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-principal);
+  color: var(--texto-branco);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: calc(var(--nav-altura) + 24px + env(safe-area-inset-bottom, 0px));
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--cor-laranja);
+  color: #000000;
+  padding: 12px 20px;
+  font-weight: bold;
+  z-index: 9999;
+  border-radius: 4px;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* ==========================================================================
+   Header Superior
+   ========================================================================== */
+.topo-app {
+  background-color: var(--topo-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--borda-suave);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.topo-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.topo-icone {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.topo-marca-textos {
+  display: flex;
+  flex-direction: column;
+}
+
+.topo-titulo {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--texto-branco);
+  letter-spacing: -0.02em;
+}
+
+.topo-sub {
+  font-size: 0.72rem;
+  color: var(--cor-laranja);
+  font-weight: 700;
+}
+
+.topo-acoes {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Switch de Tema Segmentado (Escuro / Claro) estilo Dark Reader
+   ========================================================================== */
+.switch-tema-segmented {
+  display: inline-flex;
+  background: rgba(125, 125, 125, 0.12);
+  border: 1px solid var(--borda-suave);
+  border-radius: 20px;
+  padding: 2px;
+  gap: 2px;
+  align-items: center;
+}
+
+.btn-tema-opt {
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  padding: 5px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  min-height: 32px;
+}
+
+.btn-tema-opt:hover {
+  color: var(--texto-branco);
+}
+
+.btn-tema-opt.ativo {
+  background: var(--cor-laranja);
+  color: #ffffff !important;
+  box-shadow: 0 0 10px var(--cor-laranja-glow);
+}
+
+.btn-slides-topo {
+  min-height: var(--touch-minimo);
+  padding: 8px 12px;
+  background: #1f1f23;
+  color: #38bdf8;
+  border: 1px solid #38bdf8;
+  border-radius: 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-slides-topo:hover,
+.btn-slides-topo:focus-visible {
+  background: #38bdf8;
+  color: #0b0b0b;
+  outline: 3px solid #ffffff;
+}
+
+/* Botão de Voz Acessível no Topo */
+.btn-voz-topo {
+  min-height: var(--touch-minimo);
+  min-width: var(--touch-minimo);
+  padding: 8px 14px;
+  background: #1f1f23;
+  color: #ffffff;
+  border: 2px solid var(--cor-laranja);
+  border-radius: 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-voz-topo:hover,
+.btn-voz-topo:focus-visible {
+  background: var(--cor-laranja);
+  color: #000000;
+  outline: 3px solid #ffffff;
+}
+
+.btn-voz-topo.falando {
+  background: #ef4444;
+  border-color: #ffffff;
+  color: #ffffff;
+  animation: pulsoVoz 1.5s infinite;
+}
+
+@keyframes pulsoVoz {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+  70% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   Conteúdo Principal & Abas
+   ========================================================================== */
+.conteudo-principal {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tab-panel:focus {
+  outline: none;
+}
+
+.titulo-aba {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--texto-branco);
+  line-height: 1.25;
+}
+
+.desc-aba {
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+}
+
+/* ==========================================================================
+   Aba 1: Minha Planta Sentinela
+   ========================================================================== */
+.card-canvas-planta {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  box-shadow: var(--sombra-card);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+#canvas-planta {
+  width: 100%;
+  max-width: 520px;
+  height: 340px;
+  display: block;
+  border-radius: 10px;
+  background: var(--canvas-bg);
+  border: 1px solid var(--borda-suave);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.canvas-legenda {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+  text-align: center;
+}
+
+/* ==========================================================================
+   Formulário Seletor de Solo (Entrada do Produtor)
+   ========================================================================== */
+.card-solo-seletor {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.solo-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solo-titulo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.solo-badge-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: rgba(255, 107, 0, 0.15);
+  color: var(--cor-laranja);
+  border: 1px solid var(--cor-laranja);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.solo-titulo {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--texto-branco);
+  margin: 0;
+}
+
+.solo-dica {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  margin: 0;
+}
+
+.solo-botoes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 400px) {
+  .solo-botoes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-solo {
+  min-height: 54px;
+  padding: 8px 10px;
+  background: #18181b;
+  border: 2px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  color: var(--texto-branco);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-solo:hover,
+.btn-solo:focus-visible {
+  border-color: var(--cor-laranja);
+  outline: none;
+}
+
+.btn-solo.solo-ativo {
+  border-color: var(--cor-laranja);
+  background: #242220;
+  box-shadow: 0 0 10px var(--cor-laranja-glow);
+}
+
+.btn-solo .solo-icone {
+  font-size: 1.3rem;
+}
+
+.btn-solo strong {
+  font-size: 0.82rem;
+  display: block;
+}
+
+.btn-solo small {
+  font-size: 0.68rem;
+  color: var(--texto-secundario);
+  display: block;
+  line-height: 1.1;
+}
+
+/* Medidor de Água Disponível (AD) */
+.card-ad-medidor {
+  background: #111113;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ad-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+}
+
+.ad-cabecalho strong {
+  color: var(--texto-branco);
+  font-size: 0.88rem;
+}
+
+.ad-trilho {
+  width: 100%;
+  height: 10px;
+  background: #27272a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ad-barra {
+  height: 100%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.ad-explicacao {
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+/* Seletor de Cultura do Talhão (Embrapa) */
+.card-cultura-seletor {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cultura-botoes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.btn-cultura {
+  min-height: var(--touch-minimo);
+  background: #1c1c1f;
+  border: 1px solid var(--borda-destaque);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--texto-branco);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.btn-cultura:hover,
+.btn-cultura:focus-visible {
+  border-color: var(--cor-verde);
+  outline: none;
+}
+
+.btn-cultura.cultura-ativa {
+  border-color: var(--cor-verde);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+.cultura-icone {
+  font-size: 1.1rem;
+}
+
+.btn-cultura strong {
+  font-size: 0.82rem;
+  display: block;
+}
+
+.btn-cultura small {
+  font-size: 0.68rem;
+  color: var(--texto-secundario);
+  display: block;
+}
+
+/* Card de Predição de Secagem (ΔkPa/dia e dias restantes) */
+.card-predicao-box {
+  background: #111113;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.predicao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.predicao-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.predicao-label {
+  font-size: 0.72rem;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+}
+
+.predicao-val {
+  font-size: 0.95rem;
+  color: var(--texto-branco);
+  font-family: monospace;
+}
+
+.predicao-mensagem {
+  font-size: 0.76rem;
+  color: #e4e4e7;
+  line-height: 1.35;
+  background: #18181b;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--cor-verde);
+}
+
+.predicao-acoes {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-gatilho-teste {
+  flex: 3;
+  min-height: 42px;
+  background: #ff6b00;
+  color: #000000;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-gatilho-teste:hover {
+  background: #ff8533;
+}
+
+.btn-reset-teste {
+  flex: 1;
+  min-height: 42px;
+  background: #27272a;
+  color: #ffffff;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-reset-teste:hover {
+  background: #3f3f46;
+}
+
+/* Painel de Modos: Simulação de Bancada vs Telemetria Autônoma */
+.modo-operacao-box {
+  margin: 14px 0 8px 0;
+  padding: 8px 12px;
+  background: rgba(39, 39, 42, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+}
+
+.modo-operacao-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge-modo-pitch {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-modo-autonomo {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.modo-operacao-desc {
+  font-size: 0.74rem;
+  color: #a1a1aa;
+  line-height: 1.35;
+}
+
+/* Botões Seletores dos 3 Estados (Ao vivo no palco) */
+.grupo-estados {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-estado {
+  min-height: 52px;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 2px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  color: var(--texto-branco);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.btn-estado:hover,
+.btn-estado:focus-visible {
+  border-color: var(--cor-laranja);
+  outline: none;
+}
+
+.btn-estado.ativo {
+  border-color: var(--cor-laranja);
+  background: #1e1e24;
+  box-shadow: 0 0 14px var(--cor-laranja-glow);
+}
+
+.btn-estado-info strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.btn-estado-info small {
+  font-size: 0.78rem;
+  color: var(--texto-secundario);
+  font-family: monospace;
+}
+
+.btn-estado[data-estado="hidratada"].ativo .btn-estado-info strong {
+  color: var(--cor-verde);
+}
+.btn-estado[data-estado="sede"].ativo .btn-estado-info strong {
+  color: var(--cor-amarelo);
+}
+.btn-estado[data-estado="hipoxia"].ativo .btn-estado-info strong {
+  color: var(--cor-vermelho);
+}
+
+.indicador-ponto {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.btn-estado[data-estado="hidratada"] .indicador-ponto { background: var(--cor-verde); }
+.btn-estado[data-estado="sede"] .indicador-ponto { background: var(--cor-amarelo); }
+.btn-estado[data-estado="hipoxia"] .indicador-ponto { background: var(--cor-vermelho); }
+
+/* Cartão Semáforo de Diagnóstico */
+.card-diagnostico {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.diag-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.badge-verde { background: var(--cor-verde-bg); color: var(--cor-verde); border: 1px solid var(--cor-verde); }
+.badge-amarelo { background: var(--cor-amarelo-bg); color: var(--cor-amarelo); border: 1px solid var(--cor-amarelo); }
+.badge-vermelho { background: var(--cor-vermelho-bg); color: var(--cor-vermelho); border: 1px solid var(--cor-vermelho); }
+
+.bomba-banner {
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bomba-banner.bomba-desligada {
+  background: var(--cor-verde-bg);
+  border-left: 5px solid var(--cor-verde);
+}
+.bomba-banner.bomba-programada {
+  background: var(--cor-amarelo-bg);
+  border-left: 5px solid var(--cor-amarelo);
+}
+.bomba-banner.bomba-proibida {
+  background: var(--cor-vermelho-bg);
+  border-left: 5px solid var(--cor-vermelho);
+}
+
+.bomba-rotulo {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--texto-secundario);
+  font-weight: 700;
+}
+
+.bomba-valor {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.bomba-banner.bomba-desligada .bomba-valor { color: var(--cor-verde); }
+.bomba-banner.bomba-programada .bomba-valor { color: var(--cor-amarelo); }
+.bomba-banner.bomba-proibida .bomba-valor { color: var(--cor-vermelho); }
+
+.economia-texto {
+  font-size: 0.85rem;
+  color: var(--texto-branco);
+  font-weight: 600;
+}
+
+.diag-explicacao {
+  font-size: 0.92rem;
+  color: #e4e4e7;
+  line-height: 1.5;
+}
+
+.diag-acao-box {
+  background: #000000;
+  border-left: 3px solid var(--cor-laranja);
+  padding: 10px 12px;
+  border-radius: 4px;
+}
+
+.diag-acao-box strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--cor-laranja);
+  text-transform: uppercase;
+}
+
+.diag-acao-box span {
+  font-size: 0.88rem;
+  color: #ffffff;
+}
+
+/* Grade de Parâmetros Eletroquímicos */
+.grade-parametros {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.item-param {
+  background: #0f0f11;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #27272a;
+}
+
+.item-param-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--texto-terciario);
+  font-family: monospace;
+}
+
+.item-param-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--texto-branco);
+  font-family: monospace;
+}
+
+/* Botão Laudo PROAGRO */
+.btn-proagro {
+  min-height: var(--touch-minimo);
+  background: #7f1d1d;
+  color: #ffffff;
+  border: 2px solid #ef4444;
+  border-radius: var(--raio-borda);
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-proagro:hover,
+.btn-proagro:focus-visible {
+  background: #dc2626;
+  outline: 3px solid #ffffff;
+}
+
+/* Simulador do Chat do Bot do Telegram */
+.card-chat-simulador {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-janela {
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 12px;
+  height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+
+.msg-chat {
+  padding: 8px 12px;
+  border-radius: 10px;
+  max-width: 85%;
+  line-height: 1.4;
+}
+
+.msg-bot {
+  background: #18181b;
+  border: 1px solid #27272a;
+  align-self: flex-start;
+  color: #f4f4f5;
+}
+
+.msg-produtor {
+  background: #7c2d12;
+  border: 1px solid #ea580c;
+  color: #ffffff;
+  align-self: flex-end;
+}
+
+.chat-perguntas-titulo {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.chat-perguntas-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.btn-pergunta-chat {
+  min-height: 44px;
+  padding: 8px 12px;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-pergunta-chat:hover,
+.btn-pergunta-chat:focus-visible {
+  background: #27272a;
+  border-color: var(--cor-laranja);
+}
+
+/* ==========================================================================
+   Aba 2: Gráficos & Seca / Simulador de Hectares
+   ========================================================================== */
+.card-simulador-hectares {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.slider-linha {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.slider-hectares {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: #27272a;
+  accent-color: var(--cor-laranja);
+  cursor: pointer;
+  min-height: var(--touch-minimo);
+}
+
+.grid-economia-hectares {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.box-econ {
+  background: #09090b;
+  border: 1px solid var(--borda-suave);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.box-econ small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.box-econ strong {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--cor-laranja);
+  font-weight: 800;
+}
+
+.card-grafico-box {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-grafico-box h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.grafico-container {
+  position: relative;
+  width: 100%;
+  height: 220px;
+}
+
+.grafico-container-pequeno {
+  position: relative;
+  width: 100%;
+  height: 160px;
+}
+
+.grafico-legenda-alerta {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  background: #18181b;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #ef4444;
+}
+
+/* ==========================================================================
+   Aba 3: Engenharia & Ficha Técnica
+   ========================================================================== */
+.card-pilar {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-pilar h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--cor-laranja);
+}
+
+.pilar-sub {
+  font-size: 0.82rem;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.pilar-desc {
+  font-size: 0.88rem;
+  color: #d4d4d8;
+  line-height: 1.5;
+}
+
+.card-bom {
+  background: #09090b;
+  border: 1px solid #3f3f46;
+  border-radius: var(--raio-borda);
+  padding: 16px;
+}
+
+.tabela-bom {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.tabela-bom th,
+.tabela-bom td {
+  padding: 8px 6px;
+  text-align: left;
+  border-bottom: 1px solid #27272a;
+}
+
+.tabela-bom th {
+  color: var(--texto-secundario);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.tabela-bom tr.total td {
+  font-weight: 800;
+  color: var(--cor-verde);
+  border-top: 2px solid #3f3f46;
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Barra de Navegação Inferior Fixa (48px+ touch targets)
+   ========================================================================== */
+.barra-navegacao-fixa {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-altura);
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--borda-suave);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.nav-tab-btn {
+  flex: 1;
+  height: 100%;
+  min-height: var(--touch-minimo);
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.nav-tab-btn:hover,
+.nav-tab-btn:focus-visible {
+  color: #ffffff;
+  outline: 2px solid var(--cor-laranja);
+}
+
+.nav-tab-btn.active {
+  color: var(--cor-laranja);
+  border-top: 3px solid var(--cor-laranja);
+  background: rgba(255, 107, 0, 0.08);
+}
+
+.nav-tab-icone {
+  font-size: 1.25rem;
+}
+
+/* ==========================================================================
+   Modal do Laudo PROAGRO
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.modal-overlay[hidden],
+[hidden] {
+  display: none !important;
+}
+
+.modal-conteudo {
+  background: #18181b;
+  border: 2px solid #ef4444;
+  border-radius: var(--raio-borda);
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #ffffff;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #3f3f46;
+  padding-bottom: 10px;
+}
+
+.modal-header h2 {
+  font-size: 1.15rem;
+  color: #ef4444;
+  font-weight: 800;
+}
+
+.btn-fechar {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.laudo-corpo {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #e4e4e7;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.laudo-caixa-destaque {
+  background: #09090b;
+  border-left: 4px solid #ef4444;
+  padding: 10px 12px;
+  font-family: monospace;
+  font-size: 0.82rem;
+}
+
+.modal-acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-imprimir {
+  flex: 1;
+  min-height: var(--touch-minimo);
+  background: var(--cor-laranja);
+  color: #000000;
+  font-weight: 800;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* ==========================================================================
+   Acessibilidade e Impressão
+   ========================================================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .topo-app,
+  .barra-navegacao-fixa,
+  .btn-estado,
+  .card-chat-simulador,
+  .modal-acoes {
+    display: none !important;
+  }
+  .modal-overlay {
+    position: static;
+    background: transparent;
+    padding: 0;
+  }
+  .modal-conteudo {
+    border: 1px solid #000000;
+    color: #000000;
+    box-shadow: none;
+  }
+}
+
+/* ==========================================================================
+   ARQUITETURA DA NINHURA & TABELA DE FÍSICA DO SOLO (UERGS 2026)
+   ========================================================================== */
+.card-ninhura-box,
+.card-tabela-hidrica-box {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ninhura-diagrama-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.ninhura-camada-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texto-secundario);
+  text-align: center;
+}
+
+.ninhura-nos-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.ninhura-no-card {
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ninhura-no-icon {
+  font-size: 1.2rem;
+}
+
+.ninhura-no-card strong {
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.ninhura-no-card small {
+  font-size: 0.72rem;
+  color: var(--texto-secundario);
+}
+
+.badge-cultura {
+  font-size: 0.68rem;
+  background: rgba(255, 107, 0, 0.15);
+  color: var(--cor-laranja);
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin-top: 4px;
+}
+
+.ninhura-seta-conexao {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #38bdf8;
+  padding: 4px 0;
+}
+
+.ninhura-gateway-card {
+  background: #1e1b4b;
+  border: 1px solid #3b82f6;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ninhura-backend-card {
+  background: #142028;
+  border: 1px solid #0284c7;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ninhura-backend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ninhura-subbox {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 8px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ninhura-subbox small {
+  font-size: 0.7rem;
+  color: var(--texto-secundario);
+}
+
+.ninhura-subbox strong {
+  font-size: 0.78rem;
+  color: #e0f2fe;
+}
+
+.ninhura-app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ninhura-app-card {
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ninhura-app-card span {
+  font-size: 1.2rem;
+}
+
+.ninhura-app-card strong {
+  font-size: 0.84rem;
+  color: #fff;
+}
+
+.ninhura-app-card small {
+  font-size: 0.7rem;
+  color: var(--texto-secundario);
+}
+
+.box-decisao-engenharia {
+  background: rgba(255, 107, 0, 0.08);
+  border-left: 3px solid var(--cor-laranja);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #d4d4d8;
+}
+
+.box-decisao-engenharia > strong:first-child {
+  color: var(--cor-laranja);
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.box-decisao-engenharia p strong {
+  display: inline;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tabela-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabela-estado-hidrico {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.tabela-estado-hidrico th,
+.tabela-estado-hidrico td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--borda-suave);
+  vertical-align: middle;
+}
+
+.tabela-estado-hidrico th {
+  background: #18181b;
+  color: var(--texto-secundario);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.tag-kpa {
+  background: #27272a;
+  color: #e4e4e7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Widget de Georreferenciamento & Clima do Talhão (Open-Meteo)
+   ========================================================================== */
+.card-clima-box {
+  background: rgba(14, 165, 233, 0.06);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: var(--raio-borda);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.clima-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.clima-local-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clima-cidade-titulo {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+.clima-coords-sub {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+.clima-btn-gps {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.clima-btn-gps:hover {
+  background: rgba(56, 189, 248, 0.25);
+}
+
+.clima-btn-gps.ativo {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: #10b981;
+  color: #34d399;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+}
+
+.clima-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.clima-item {
+  background: #18181b;
+  border: 1px solid var(--borda-suave);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clima-item-label {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.clima-item-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.clima-banner-recomendacao {
+  background: rgba(16, 185, 129, 0.12);
+  border-left: 3px solid #10b981;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #d1fae5;
+  line-height: 1.4;
+}
+
+.clima-banner-alerta {
+  background: rgba(239, 68, 68, 0.15);
+  border-left: 3px solid #ef4444;
+  color: #fca5a5;
+}
+
+/* ==========================================================================
+   Receita Agronômica Prescritiva
+   ========================================================================== */
+.receita-prescritiva-box {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-destaque);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.receita-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.receita-status-verde {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #10b981;
+}
+
+.receita-status-amarelo {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #f59e0b;
+  color: #f59e0b;
+}
+
+.receita-status-vermelho {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+.receita-status-azul {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+}
+
+/* ==========================================================================
+   Controles do Simulador de Hectares & Portes
+   ========================================================================== */
+.input-ha-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-hectares-box {
+  background: #18181b;
+  border: 1px solid var(--borda-destaque);
+  border-radius: 8px;
+  color: #ff6b00;
+  font-size: 1.1rem;
+  font-weight: 800;
+  width: 72px;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.botoes-porte-grid {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-porte-propriedade {
+  flex: 1;
+  min-width: 90px;
+  background: #18181b;
+  border: 1px solid var(--borda-suave);
+  color: #a1a1aa;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-porte-propriedade.ativo {
+  background: rgba(255, 107, 0, 0.15);
+  border-color: var(--cor-laranja);
+  color: #ffffff;
+}
+
+.box-economia-enchente {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px dashed rgba(56, 189, 248, 0.4);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: #bae6fd;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Painel de Monitoramento & Alertas do Gateway Local
+   ========================================================================== */
+.card-gateway-painel {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.tabela-gateway-nos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: 10px;
+}
+
+.tabela-gateway-nos th,
+.tabela-gateway-nos td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--borda-suave);
+  text-align: left;
+}
+
+.tabela-gateway-nos th {
+  background: #141416;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.gateway-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.gateway-status-online {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.gateway-status-alerta {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.gateway-status-erro {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.gateway-log-box {
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: #a1a1aa;
+  max-height: 120px;
+  overflow-y: auto;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.gateway-log-box .log-destaque {
+  color: #38bdf8;
+}
+
+.gateway-log-box .log-alerta {
+  color: #f59e0b;
+}
+
+.gateway-log-box .log-erro {
+  color: #ef4444;
+}
+
+/* ==========================================================================
+   Modo Claro de Alto Contraste (Light Mode - Rural Daylight)
+   ========================================================================== */
+[data-theme="light"] body {
+  background-color: var(--bg-principal);
+  color: var(--texto-branco);
+}
+
+[data-theme="light"] .card-canvas-planta,
+[data-theme="light"] .card-solo-seletor,
+[data-theme="light"] .cultura-seletor-box,
+[data-theme="light"] .predicao-box,
+[data-theme="light"] .card-chat-simulador,
+[data-theme="light"] .simulador-hectares-box,
+[data-theme="light"] .card-grafico-box,
+[data-theme="light"] .card-pilar,
+[data-theme="light"] .clima-box,
+[data-theme="light"] .receita-box,
+[data-theme="light"] .ninhura-box,
+[data-theme="light"] .card-bom,
+[data-theme="light"] .modal-conteudo {
+  background: var(--bg-card);
+  border-color: var(--borda-suave);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .modo-operacao-box {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .modo-operacao-desc {
+  color: #475569;
+}
+
+[data-theme="light"] .btn-estado {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-estado:hover {
+  border-color: var(--cor-laranja);
+}
+
+[data-theme="light"] .btn-estado.ativo {
+  background: #fff7ed;
+  border-color: var(--cor-laranja);
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.15);
+}
+
+[data-theme="light"] .btn-estado-info strong {
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-estado-info small {
+  color: #64748b;
+}
+
+[data-theme="light"] .btn-solo {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-solo.solo-ativo {
+  background: #fff7ed;
+  border-color: var(--cor-laranja);
+  color: #9a3412;
+  box-shadow: 0 0 10px rgba(234, 88, 12, 0.15);
+}
+
+[data-theme="light"] .btn-cultura {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-cultura.cultura-ativa {
+  background: #ecfdf5;
+  border-color: var(--cor-verde);
+  color: #065f46;
+}
+
+[data-theme="light"] .chat-janela {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .chat-msg.bot {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .chat-msg.produtor {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+[data-theme="light"] .chat-input-campo {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .simulador-display-num,
+[data-theme="light"] .sim-card-metrica,
+[data-theme="light"] .clima-card-metrica,
+[data-theme="light"] .telemetria-dado-item,
+[data-theme="light"] .ninhura-no-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .sim-card-metrica .sim-label,
+[data-theme="light"] .clima-card-metrica .clima-lbl,
+[data-theme="light"] .telemetria-dado-item .dado-lbl {
+  color: #64748b;
+}
+
+[data-theme="light"] .sim-card-metrica .sim-val,
+[data-theme="light"] .clima-card-metrica .clima-val,
+[data-theme="light"] .telemetria-dado-item .dado-val {
+  color: #0f172a;
+}
+
+[data-theme="light"] .select-municipio-rs,
+[data-theme="light"] .input-hectares-num {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .tabela-bom,
+[data-theme="light"] .tabela-gateway-nos,
+[data-theme="light"] .tabela-solo {
+  color: #0f172a;
+}
+
+[data-theme="light"] .tabela-bom th,
+[data-theme="light"] .tabela-gateway-nos th,
+[data-theme="light"] .tabela-solo th {
+  color: #475569;
+  border-bottom-color: #cbd5e1;
+}
+
+[data-theme="light"] .tabela-bom td,
+[data-theme="light"] .tabela-gateway-nos td,
+[data-theme="light"] .tabela-solo td {
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .card-bom {
+  background: #ffffff;
+  border-color: #d4d4d8;
+}
+
+[data-theme="light"] .gateway-log-box {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+[data-theme="light"] .nav-tab-btn {
+  color: #64748b;
+}
+
+[data-theme="light"] .nav-tab-btn.active {
+  color: var(--cor-laranja);
+}
+
+[data-theme="light"] .btn-slides-topo {
+  background: #f0f9ff;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+[data-theme="light"] .btn-voz-topo {
+  background: #ffffff;
+  border-color: var(--cor-laranja);
+  color: #0f172a;
+}
+

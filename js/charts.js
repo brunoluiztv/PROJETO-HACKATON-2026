@@ -6,7 +6,7 @@
  * 3. Simulador de Hectares e Economia na Irrigação
  */
 
-import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA, CONFIG_SOLOS } from './content.js?v=17';
+import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA, CONFIG_SOLOS } from './content.js?v=18';
 
 let chartDivergenciaInstance = null;
 let chartEnergiaInstance = null;
