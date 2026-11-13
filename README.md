@@ -22,6 +22,16 @@
 
 </div>
 
+## Desenvolvimento e documentação consolidada
+
+Este repositório fica em `hackathon/PROJETO-HACKATON-2026/` e inclui o protótipo React anterior em `dashboard/`. Seus demais caminhos internos permanecem os mesmos.
+
+O [relatório geral e análise do código](docs/RELATORIO-PROJETO.md) registra o estado verificável da implementação e as decisões de evolução: ESP32 com armazenamento local, painel web local, dashboard remoto e Telegram. **Sensores e grandezas continuam em definição.** A aplicação web e o bot abaixo já têm código; a integração com ESP32 e API de medições é uma próxima etapa.
+
+O [plano do frontend adaptável](docs/PLANO-FRONTEND-ADAPTAVEL.md) compara as interfaces existentes e propõe uma versão configurável por tipo de análise, com etapas de migração e critérios de validação.
+
+A primeira implementação está em **[frontend/](frontend/README.md)**: monitoramento responsivo com perfis numéricos, categóricos e booleanos, dados simulados, histórico, CSV e conteúdos da equipe. Para executar: `cd frontend`, `npm install` e `npm run dev`. A instalação neste ambiente foi bloqueada por DNS; build e validação visual ainda estão pendentes. A versão em `web/` continua preservada.
+
 ## 📌 Contexto & Desafio
 
 O Rio Grande do Sul enfrenta a alternância violenta entre **enxurradas extremas** e **estiagens severas**. O pequeno produtor familiar perde sua produção tanto pelo excesso quanto pela falta d'água, sem ter ferramentas acessíveis para armazenar água das chuvas de maneira segura ou para saber se a água recolhida está contaminada.
