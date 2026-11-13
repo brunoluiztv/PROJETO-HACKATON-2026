@@ -34,6 +34,7 @@ load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN", "").strip()
 WEBAPP_URL = os.getenv("WEBAPP_URL", "https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=18").rstrip("/")
 
+TAG_SENSOR_ONLINE = "📡 <b>[SENSOR FÍSICO ESP32 ONLINE — GPIO 34]</b>\n"
 _preferencia_solo = {}
 
 def _token_valido(t: str) -> bool:
@@ -132,7 +133,7 @@ def responder_telemetria(chat_id, estado="hidratada", dados_reais=None):
 
     tag_sensor = ""
     if dados_reais.get("sensor_fisico_online"):
-        tag_sensor = "📡 <b>[SENSOR FÍSICO ESP32 ONLINE — GPIO 34]</b>\n"
+        tag_sensor = TAG_SENSOR_ONLINE
     elif dados_reais.get("online") and dados_reais.get("origem") == "simulado":
         tag_sensor = "🧪 <b>[MODO SIMULAÇÃO ATIVA]</b>\n"
 
@@ -235,21 +236,15 @@ def cmd_bomba(m):
     responder_telemetria(m.chat.id, estado=estado, dados_reais=tele)
 
 
-@bot.message_handler(commands=["chuva", "enchente", "hipoxia"])
-def cmd_chuva(m):
-    solo_pref = _preferencia_solo.get(m.chat.id, "franco")
-    tele = obter_telemetria_tempo_real(tipo_solo=solo_pref)
-    estado = tele.get("estado", "hidratada")
+def _responder_chuva(chat_id: int, tele: dict, estado: str):
     orp_val = tele.get("orp_mv", 310)
     tensao = tele.get("tensao_kpa", 21.5)
 
     if estado == "hipoxia" or orp_val <= 0 or tensao < 10.0:
-        responder_telemetria(m.chat.id, estado="hipoxia", dados_reais=tele)
+        responder_telemetria(chat_id, estado="hipoxia", dados_reais=tele)
     else:
         orp_str = f"+{round(orp_val)}" if orp_val > 0 else f"{round(orp_val)}"
-        tag_sensor = ""
-        if tele.get("sensor_fisico_online"):
-            tag_sensor = "📡 <b>[SENSOR FÍSICO ESP32 ONLINE — GPIO 34]</b>\n"
+        tag_sensor = TAG_SENSOR_ONLINE if tele.get("sensor_fisico_online") else ""
         webapp_btn = InlineKeyboardMarkup()
         webapp_btn.add(
             InlineKeyboardButton(
@@ -261,7 +256,15 @@ def cmd_chuva(m):
             orp_str=orp_str,
             tensao=tensao
         )
-        bot.send_message(m.chat.id, msg, reply_markup=webapp_btn)
+        bot.send_message(chat_id, msg, reply_markup=webapp_btn)
+
+
+@bot.message_handler(commands=["chuva", "enchente", "hipoxia"])
+def cmd_chuva(m):
+    solo_pref = _preferencia_solo.get(m.chat.id, "franco")
+    tele = obter_telemetria_tempo_real(tipo_solo=solo_pref)
+    estado = tele.get("estado", "hidratada")
+    _responder_chuva(m.chat.id, tele, estado)
 
 
 @bot.message_handler(commands=["simular", "teste", "pitch"])
@@ -305,27 +308,7 @@ def handle_questions(m):
     elif destino == "chuva":
         tele = obter_telemetria_tempo_real(tipo_solo=solo_preferido)
         estado = tele.get("estado", "hidratada")
-        orp_val = tele.get("orp_mv", 310)
-        tensao = tele.get("tensao_kpa", 21.5)
-        if estado == "hipoxia" or orp_val <= 0 or tensao < 10.0:
-            responder_telemetria(m.chat.id, estado="hipoxia", dados_reais=tele)
-        else:
-            orp_str = f"+{round(orp_val)}" if orp_val > 0 else f"{round(orp_val)}"
-            tag_sensor = ""
-            if tele.get("sensor_fisico_online"):
-                tag_sensor = "📡 <b>[SENSOR FÍSICO ESP32 ONLINE — GPIO 34]</b>\n"
-            webapp_btn = InlineKeyboardMarkup()
-            webapp_btn.add(
-                InlineKeyboardButton(
-                    "📊 Ver Gráficos de Drenagem",
-                    web_app=WebAppInfo(url=f"{WEBAPP_URL}?estado={estado}")
-                )
-            )
-            msg = tag_sensor + c.RESPOSTA_CHUVA_NORMAL.format(
-                orp_str=orp_str,
-                tensao=tensao
-            )
-            bot.send_message(m.chat.id, msg, reply_markup=webapp_btn)
+        _responder_chuva(m.chat.id, tele, estado)
     elif destino == "bateria":
         bot.send_message(m.chat.id, c.DUVIDAS_PRODUTOR)
     elif destino == "painel":

@@ -49,7 +49,7 @@ def provisionar_teko(token: str, webapp_url: str = DEFAULT_WEBAPP_URL) -> bool:
         print("❌ Erro: Token inválido ou não fornecido.")
         return False
 
-    print(f"\n🌾 Conectando à API do Telegram com o Bot Tekó...")
+    print("\n🌾 Conectando à API do Telegram com o Bot Tekó...")
     try:
         bot = telebot.TeleBot(token)
         me = bot.get_me()
@@ -134,16 +134,17 @@ if __name__ == "__main__":
     token = args.token or os.getenv("TELEGRAM_TOKEN")
 
     if not token or token.startswith("coloque_o_token"):
-        print("============================================================")
+        divisor = "=" * 60
+        print(divisor)
         print("          🌾 CONFIGURAÇÃO DO BOT TEKÓ NO TELEGRAM           ")
-        print("============================================================")
+        print(divisor)
         print("Para concluir a ativação no Telegram:")
         print("1. Abra o Telegram e envie /newbot para o @BotFather")
         print("2. Nome do bot: Tekó — Tekó Biotech")
         print("3. Username: ex: TekoLavouraBot (deve terminar em bot)")
         print("4. Copie o token HTTP API gerado e passe como argumento:")
         print("   python bot/configurar_teko.py --token <TOKEN>")
-        print("============================================================")
+        print(divisor)
         sys.exit(0)
 
     sucesso = provisionar_teko(token, args.webapp)
