@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Slides do Pitch — Tekó Biotech (Hackathon UERGS 2026)</title>
+  <meta name="description" content="Apresentação de 6 slides da Tekó Biotech para o Hackathon das Engenharias UERGS 2026 - Desafio 02: Água e Drenagem Rural.">
+  <meta name="theme-color" content="#0b0b0b">
+  <link rel="icon" href="icons/teko_emblem.png" type="image/png">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --card-bg: #151515;
+      --card-border: #262626;
+      --accent: #ff6b00;
+      --accent-glow: rgba(255, 107, 0, 0.25);
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --cyan: #38bdf8;
+      --text: #ffffff;
+      --text-muted: #a1a1aa;
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Container dos Slides */
+    .deck-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 3vw 5vw 5.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      transform: scale(0.97);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    /* Tipografia dos Slides */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 107, 0, 0.12);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+      align-self: flex-start;
+    }
+
+    .slide-title {
+      font-size: clamp(1.8rem, 3.8vw, 3.1rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .slide-title span {
+      color: var(--accent);
+    }
+
+    .slide-subtitle {
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 1.6rem;
+      max-width: 950px;
+    }
+
+    /* Grids e Cartões */
+    .cards-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+    }
+
+    .cards-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.4rem;
+      width: 100%;
+    }
+
+    .cards-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.6rem;
+      width: 100%;
+    }
+
+    .card-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .card-box.highlight {
+      border-color: var(--accent);
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .card-box.highlight-blue {
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+    }
+
+    .card-box-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .card-icon {
+      font-size: 1.8rem;
+    }
+
+    .card-box h3 {
+      font-size: 1.18rem;
+      font-weight: 700;
+    }
+
+    .card-box p, .card-box li {
+      font-size: 0.95rem;
+      color: #d4d4d8;
+      line-height: 1.45;
+    }
+
+    .card-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .card-box li::before {
+      content: "•";
+      color: var(--accent);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    .stat-number {
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .card-ref-tag {
+      display: block;
+      font-size: 0.72rem;
+      color: #71717a;
+      border-top: 1px dashed rgba(255, 255, 255, 0.12);
+      padding-top: 0.4rem;
+      margin-top: auto;
+      font-style: italic;
+      line-height: 1.35;
+    }
+
+    .card-ref-tag strong {
+      color: #d4d4d8;
+      font-style: normal;
+    }
+
+    /* Rodapé de Fontes e Citações Científicas / Marketplaces */
+    .slide-sources {
+      margin-top: 1.1rem;
+      padding: 0.55rem 0.9rem;
+      background: rgba(21, 21, 21, 0.88);
+      border: 1px solid var(--card-border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      font-size: clamp(0.7rem, 0.82vw, 0.78rem);
+      color: #a1a1aa;
+      line-height: 1.38;
+      backdrop-filter: blur(8px);
+    }
+
+    .slide-sources strong {
+      color: #f4f4f5;
+      font-weight: 600;
+    }
+
+    .source-badge {
+      font-weight: 800;
+      color: var(--accent);
+      white-space: nowrap;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* Diagrama da Ninhura */
+    .ninhura-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      margin-top: 0.9rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .ninhura-step {
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .ninhura-step .icon {
+      font-size: 1.7rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .ninhura-step .label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .ninhura-step .sub {
+      font-size: 0.74rem;
+      color: #94a3b8;
+    }
+
+    .ninhura-arrow {
+      font-size: 1.3rem;
+      color: #64748b;
+    }
+
+    /* Slide 6: QR Code & Call to Action */
+    .slide-cta-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3.5rem;
+      width: 100%;
+    }
+
+    .cta-text-side {
+      flex: 1.2;
+    }
+
+    .cta-qr-side {
+      flex: 0.8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #171717;
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      padding: 1.6rem;
+      box-shadow: 0 0 35px var(--accent-glow);
+    }
+
+    .qr-img {
+      width: 220px;
+      height: 220px;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 8px;
+      object-fit: contain;
+    }
+
+    .qr-caption {
+      margin-top: 0.8rem;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Barra Inferior de Navegação */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4.4rem;
+      background: rgba(11, 11, 11, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4vw;
+      z-index: 100;
+    }
+
+    .nav-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-counter {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nav-title {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav-title { display: inline; }
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .btn-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 0.6rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .btn-nav:hover {
+      background: #262626;
+      border-color: var(--accent);
+    }
+
+    .btn-nav.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-nav.primary:hover {
+      background: #e05e00;
+    }
+
+    /* Barra de Progresso Superior */
+    .progress-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 101;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b00, #ff8533);
+      width: 16.66%;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de Progresso Superior -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <div class="deck-container">
+
+    <!-- ======================================================================
+         SLIDE 1: CAPA OFICIAL
+         ====================================================================== -->
+    <section class="slide active" id="slide-1" data-title="Capa Oficial">
+      <div style="display: flex; align-items: center; gap: 1.2rem; margin-bottom: 0.8rem; flex-wrap: wrap;">
+        <img src="icons/teko_logo_full.png" alt="Tekó Biotech" style="height: 60px; width: auto; object-fit: contain;">
+        <div class="slide-badge" style="margin-bottom: 0;">Hackathon das Engenharias UERGS 2026 · Desafio 02</div>
+      </div>
+      <h1 class="slide-title">Tekó <span>Biotech</span></h1>
+      <p class="slide-subtitle">
+        Biossensor Eletrofisiológico In-Planta para Resiliência Climática e Gestão Hídrica na Agricultura Familiar Gaúcha.
+      </p>
+
+      <div class="cards-grid-3">
+        <div class="card-box">
+          <div class="card-box-header">
+            <span class="card-icon">⚡</span>
+            <h3>Eletrofisiologia In-Planta</h3>
+          </div>
+          <p>Mede a seiva e o turgor celular real (50 kHz e 1 kHz) antes que o estresse hídrico quebre a safra.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-header">
+            <span class="card-icon">🌾</span>
+            <h3>Inteligência Embrapa & Clima</h3>
+          </div>
+          <p>Curvas de retenção hídrica em 4 culturas, previsão Open-Meteo do talhão e laudo pericial para o PROAGRO.</p>
+        </div>
+
+        <div class="card-box highlight">
+          <div class="card-box-header">
+            <span class="card-icon">💰</span>
+            <h3>BOM R$ 42 · Turnkey R$ 70</h3>
+          </div>
+          <p>Autonomia energética com bioenergia P-MFC e rádio ESP-NOW de 4ms. Payback em menos de 10 dias.</p>
+        </div>
+      </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">🏛️ Fundamentação Técnico-Científica</span>
+        <div>
+          <strong>Chancela & Referências:</strong> Parâmetros agronômicos ancorados em pesquisas da <strong>EMBRAPA</strong> (Hortaliças, Clima Temperado e Instrumentação), fisiologia celular vegetal (<em>Nature, J. Exp. Bot.</em>) e dados socioeconômicos da agricultura familiar da <strong>EMATER/RS-Ascar</strong>.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SLIDE 2: O PROBLEMA NO RS (ESTIAGEM, ENCHENTE E VENDAVAIS)
+         ====================================================================== -->
+    <section class="slide" id="slide-2" data-title="A Dor no RS">
+      <div class="slide-badge">O Problema Real</div>
+      <h2 class="slide-title">A Gangorra Climática do <span>Rio Grande do Sul</span></h2>
+      <p class="slide-subtitle">
+        O pequeno agricultor irriga no escuro e perde safras na estiagem severa, nas enchentes pluviais e nos vendavais (> 70 km/h).
+      </p>
+
+      <div class="cards-grid-4">
+        <div class="card-box">
+          <span class="stat-number">85%</span>
+          <span class="stat-label">Irrigação no Escuro</span>
+          <p>Agricultores ligam motobombas por calendário ou intuição, esgotando açudes e gastando diesel sem necessidade.</p>
+          <span class="card-ref-tag">Fonte: <strong>EMATER/RS-Ascar & IBGE</strong></span>
+        </div>
+
+        <div class="card-box highlight">
+          <span class="stat-number">40%</span>
+          <span class="stat-label">Quebra de Produtividade</span>
+          <p>O estresse hídrico invisível fecha estômatos dias antes de a folha murchar, provocando perda de peso irreversível.</p>
+          <span class="card-ref-tag">Fonte: <strong>Embrapa Hortaliças & Soja</strong></span>
+        </div>
+
+        <div class="card-box">
+          <span class="stat-number">0 kPa</span>
+          <span class="stat-label">O Paradoxo da Enchente</span>
+          <p>Solo saturado consome todo oxigênio. Sem O₂, fecham-se as aquaporinas PIP e <strong>a planta morre de sede afogada</strong>.</p>
+          <span class="card-ref-tag">Fonte: <strong>Nature (Tournaire-Roux)</strong> & Pezeshki</span>
+        </div>
+
+        <div class="card-box highlight-blue">
+          <span class="stat-number">&gt; 70 km/h</span>
+          <span class="stat-label">Vendavais & Ciclones</span>
+          <p>Eventos extremos arrancam estufas e aumentam a evapotranspiração do vento. Manejo antecipado salva a lavoura.</p>
+          <span class="card-ref-tag">Fonte: <strong>Defesa Civil RS & INMET</strong></span>
+        </div>
+      </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">📚 Base Bibliográfica & Embrapa</span>
+        <div>
+          <strong>Evidências Científicas & Estatísticas Comprovadas:</strong>
+          <strong>EMATER/RS-Ascar & IBGE:</strong> Levantamento de perdas na agricultura familiar gaúcha por manejo empírico e estiagem prolongada · 
+          <strong>Embrapa Hortaliças (Marouelli et al., Circ. Téc. 38) & Embrapa Soja:</strong> Redução de 30% a 40% de biomassa comercial por estresse hídrico subclínico · 
+          <strong>Nature (Tournaire-Roux et al., 2003):</strong> Comprovação molecular de que a anóxia em solo encharcado (0 kPa) acidifica o citosol e fecha os canais de aquaporina PIP da raiz · 
+          <strong>Defesa Civil do RS & INMET:</strong> Histórico de ciclones extratropicais e vendavais severos (> 70 km/h) no RS exigindo monitoramento meteorológico integrado.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SLIDE 3: A SOLUÇÃO TEKÓ BIOTECH (FITOFISIOLOGIA + P-MFC + CLIMA)
+         ====================================================================== -->
+    <section class="slide" id="slide-3" data-title="A Solução In-Planta">
+      <div class="slide-badge">Inovação Biotecnológica & Fitoeletrônica</div>
+      <h2 class="slide-title">Escutando a Fisiologia da Planta <span>por Dentro</span></h2>
+      <p class="slide-subtitle">
+        Superamos o higrômetro de terra: clipe fitoeletrônico de caule, célula microbiana de raiz e previsão de clima satelital.
+      </p>
+
+      <div class="cards-grid-3">
+        <div class="card-box">
+          <div class="card-box-header">
+            <span class="card-icon">🌿</span>
+            <h3>Clipe de Caule Não-Invasivo</h3>
+          </div>
+          <ul>
+            <li><strong>Bio-hidrogel KCl + Glicerol:</strong> Isopéstico, não estrangula o floema.</li>
+            <li><strong>50 kHz:</strong> Mede o <strong>turgor intracelular simplástico</strong>.</li>
+            <li><strong>1 kHz:</strong> Mede a condutância e fluxo de seiva no <strong>xilema</strong>.</li>
+          </ul>
+          <span class="card-ref-tag">Literatura: <strong>Zhang & Willison (J. Exp. Bot.)</strong></span>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-header">
+            <span class="card-icon">🌱</span>
+            <h3>Haste P-MFC & Bioenergia</h3>
+          </div>
+          <ul>
+            <li><strong>Potencial Redox (ORP):</strong> Detecta hipóxia &lt; -100 mV para PROAGRO.</li>
+            <li><strong>Célula Microbiana P-MFC:</strong> Bactérias <em>Geobacter</em> geram 0.5V contínuos.</li>
+            <li><strong>Potencial Matricial (Ψm):</strong> Tensão da água calibrada para solos do RS.</li>
+          </ul>
+          <span class="card-ref-tag">Literatura: <strong>Strik et al. (Trends in Biotech)</strong></span>
+        </div>
+
+        <div class="card-box highlight-blue">
+          <div class="card-box-header">
+            <span class="card-icon">🌤️</span>
+            <h3>Clima Preditivo (Custo Zero)</h3>
+          </div>
+          <ul>
+            <li><strong>Open-Meteo Oficial:</strong> Previsão horária de chuva, rajadas e orvalho.</li>
+            <li><strong>Zero Custo de Hardware:</strong> Sem chip GPS físico no ESP32 (poupa bateria).</li>
+            <li><strong>Manejo Antecipado:</strong> Suspende irrigação se chuva &gt; 15 mm for iminente.</li>
+          </ul>
+          <span class="card-ref-tag">Arquitetura: <strong>FastAPI Backend + Satélite</strong></span>
+        </div>
+      </div>
+
+      <div class="ninhura-box">
+        <div class="ninhura-step">
+          <div class="icon">🌱</div>
+          <div class="label">4 Nós Sentinelas</div>
+          <div class="sub">Alface, Milho, Feijão, Tomate</div>
+        </div>
+        <div class="ninhura-arrow">➔ 4 ms</div>
+        <div class="ninhura-step">
+          <div class="icon">📡</div>
+          <div class="label">ESP-NOW Gateway</div>
+          <div class="sub">Sede da Fazenda (Wi-Fi/4G)</div>
+        </div>
+        <div class="ninhura-arrow">➔ HTTP</div>
+        <div class="ninhura-step">
+          <div class="icon">⚙️</div>
+          <div class="label">FastAPI & SQLite</div>
+          <div class="sub">Motor Embrapa + Open-Meteo</div>
+        </div>
+        <div class="ninhura-arrow">➔ Push</div>
+        <div class="ninhura-step">
+          <div class="icon">🤖</div>
+          <div class="label">Telegram & WebApp</div>
+          <div class="sub">Prescrição e Voz TTS</div>
+        </div>
+      </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">🔬 Literatura Fitoeletrônica & Bioenergia</span>
+        <div>
+          <strong>Zhang & Willison (J. Exp. Bot.):</strong> Bioimpedância celular de caule em dupla frequência (50 kHz simplasto / 1 kHz xilema) · 
+          <strong>Strik et al. (Trends in Biotech):</strong> Célula a Combustível Microbiana em Plantas (P-MFC) com consórcios <em>Geobacter</em> oxidando exsudatos de raiz · 
+          <strong>Open-Meteo API:</strong> Modelos meteorológicos ECMWF/GFS integrados via software no gateway.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SLIDE 4: DEMONSTRAÇÃO AO VIVO (O CLÍMAX NAS 4 CULTURAS EMBRAPA)
+         ====================================================================== -->
+    <section class="slide" id="slide-4" data-title="O Clímax do Pitch">
+      <div class="slide-badge">Demonstração de Hardware ao Vivo</div>
+      <h2 class="slide-title">O Clímax: Da Terra Úmida para o <span>Ar Seco</span></h2>
+      <p class="slide-subtitle">
+        Observem o comportamento da cadeia de dados em tempo real quando simulamos a evapotranspiração acelerada.
+      </p>
+
+      <div class="cards-grid-2">
+        <div class="card-box">
+          <div class="card-box-header">
+            <span class="card-icon">🟢</span>
+            <h3>Condição 1: Terra Úmida (Normal)</h3>
+          </div>
+          <p>Sensor no vaso: <strong>Ψm = 18 kPa</strong> (Capacidade de Campo Embrapa).</p>
+          <p>O WebApp marca semáforo verde, exibe <strong>Bomba Desligada</strong> e acumula economia de água no açude.</p>
+          <span class="card-ref-tag">Parâmetro: <strong>Embrapa Hortaliças</strong> (Faixa de Capacidade de Campo: 10 a 22 kPa)</span>
+        </div>
+
+        <div class="card-box highlight">
+          <div class="card-box-header">
+            <span class="card-icon">🚨</span>
+            <h3>Condição 2: Sensor no Ar Seco (Clímax)</h3>
+          </div>
+          <p>Ao retirar o sensor da terra: o ADC detecta o salto imediato para <strong>48 kPa</strong>.</p>
+          <p>O WebApp muda para <strong>Vermelho (&lt; 24h CRÍTICO)</strong>, o assistente narra o alerta em voz alta e o <strong>Bot do Telegram vibra ao vivo</strong> chamando para irrigar!</p>
+          <span class="card-ref-tag">Parâmetro: <strong>Embrapa</strong> (Estresse Severo nas 4 Culturas: &gt; 28 a 50 kPa)</span>
+        </div>
+      </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">🌱 Calibração Oficial Embrapa em 4 Culturas</span>
+        <div>
+          <strong>Limites Críticos de Manejo Embrapa:</strong>
+          <strong>Alface Crespa:</strong> 28 kPa (Nó 01) · 
+          <strong>Tomate / Morango:</strong> 38 kPa (Nó 04) · 
+          <strong>Feijão:</strong> 45 kPa (Nó 03) · 
+          <strong>Milho Vegetativo:</strong> 50 kPa (Nó 02). 
+          O teste de bancada comprova a reação instantânea do firmware ESP32 e despacho do pacote ESP-NOW em 4ms.
+        </div>
+      </div>
+
+      <div style="margin-top: 1.2rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+        <a href="index.html" target="_blank" class="btn-nav primary" style="font-size: 1.1rem; padding: 0.8rem 1.6rem;">
+          <span>📱</span> Abrir WebApp / Mini App ao Vivo
+        </a>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SLIDE 5: ENGENHARIA, ENERGIA & VIABILIDADE (BOM R$ 42 / TURNKEY R$ 70)
+         ====================================================================== -->
+    <section class="slide" id="slide-5" data-title="Viabilidade & Engenharia">
+      <div class="slide-badge">Engenharia Econômica & Autonomia</div>
+      <h2 class="slide-title">Alta Tecnologia a Preço de <span>Agricultura Familiar</span></h2>
+      <p class="slide-subtitle">
+        BOM puro de R$ 42,00 e custo turnkey instalado em campo de R$ 70,00 por planta sentinela.
+      </p>
+
+      <div class="cards-grid-3">
+        <div class="card-box highlight">
+          <span class="stat-number">R$ 42 / R$ 70</span>
+          <span class="stat-label">BOM Puro / Turnkey Instalado</span>
+          <p>ESP32-C3 RISC-V, grafite inerte, feltro P-MFC e resina de mamona. Turnkey com montagem, frete interior RS e estaca: <strong>R$ 70,00 pronto no talhão</strong>.</p>
+          <span class="card-ref-tag">Marketplaces: <strong>AliExpress · Shopee · ML · Redelease</strong></span>
+        </div>
+
+        <div class="card-box">
+          <span class="stat-number">+31 mAh</span>
+          <span class="stat-label">Balanço Energético Diário</span>
+          <p>Consome apenas <strong>14 mAh/dia</strong> (Deep Sleep de 10 µA) e gera <strong>45 mAh/dia</strong> com a Célula Microbiana P-MFC + micro painel = <strong>sem troca de bateria</strong>.</p>
+          <span class="card-ref-tag">Fonte: <strong>Espressif Systems Datasheet</strong> & Strik et al.</span>
+        </div>
+
+        <div class="card-box">
+          <span class="stat-number">&lt; 10 dias</span>
+          <span class="stat-label">Payback Imediato</span>
+          <p>Em 3 hectares, economiza <strong>100.800 litros de água</strong> e <strong>R$ 912,00/mês</strong> em diesel e luz, pagando 3 estacas instaladas (R$ 210,00) em menos de 10 dias.</p>
+          <span class="card-ref-tag">Tarifas: <strong>CEEE Equatorial / RGE Sul</strong> & ANP-RS</span>
+        </div>
+      </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">🛒 Cotações em Marketplaces & Custos Associados</span>
+        <div>
+          <strong>Discriminação dos Componentes (BOM R$ 42,00):</strong>
+          <strong>AliExpress:</strong> ESP32-C3 RISC-V (R$ 18,00), Micro-painel solar 5V epóxi (R$ 6,00), Feltro de carbono condutivo P-MFC (R$ 6,50) · 
+          <strong>Shopee & Mercado Livre:</strong> Eletrodos de grafite (R$ 3,50), Filamento PLA + passivos (R$ 4,00) · 
+          <strong>Redelease / Farmácia:</strong> Resina de poliuretano de mamona IP68 (R$ 4,00) · 
+          <strong>Custos Associados Turnkey (+R$ 28,00):</strong> Montagem/solda artesanal SMD (R$ 15,00), Frete regional RS (R$ 5,00), Estaca e calibração de campo (R$ 8,00) = <strong>R$ 70,00 Turnkey</strong>.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SLIDE 6: CONCLUSÃO & QR CODE
+         ====================================================================== -->
+    <section class="slide" id="slide-6" data-title="Conclusão & QR Code">
+      <div class="slide-badge">Encerramento & Acesso</div>
+      
+      <div class="slide-cta-wrapper">
+        <div class="cta-text-side">
+          <h2 class="slide-title">A Planta Sentinela como <span>Conselheira do Produtor</span></h2>
+          <p class="slide-subtitle">
+            Conectamos a ciência da Embrapa, o hardware acessível de R$ 42 e a acessibilidade por voz para proteger o pequeno agricultor gaúcho.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;">
+            <p>✅ <strong>Zero Digitação:</strong> Bot no Telegram com botões gigantes e comandos intuitivos.</p>
+            <p>✅ <strong>Inclusão Rural:</strong> Síntese de voz nativa (TTS) em português para não alfabetizados.</p>
+            <p>✅ <strong>Segurança PROAGRO:</strong> Laudo instantâneo de asfixia radicular em enchentes com carimbo pericial.</p>
+            <p>✅ <strong>Proteção contra Vendavais:</strong> Alerta precoce de rajadas (> 60 km/h) via satélite a custo zero.</p>
+          </div>
+
+          <div class="slide-sources" style="margin-top: 1.1rem;">
+            <span class="source-badge">📑 Repositório & Documentação</span>
+            <div>
+              <strong>Fontes Completas no Repositório:</strong> Consulte a pasta <code>/docs</code> (<code>codex.md</code>, <code>PLANO-DO-PROJETO.md</code> e <code>ACESSIBILIDADE-UX.md</code>) para as referências completas da Embrapa, fórmulas de secagem ΔkPa/dia e esquemáticos elétricos.
+            </div>
+          </div>
+
+          <div style="margin-top: 1.2rem;">
+            <p style="color: var(--accent); font-weight: 700; font-size: 1.05rem;">
+              Hackathon das Engenharias UERGS 2026 · Desafio 02: Água e Drenagem
+            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem;">
+              Obrigado! Estamos abertos para as perguntas da banca examinadora.
+            </p>
+          </div>
+        </div>
+
+        <div class="cta-qr-side">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=18" alt="QR Code do Mini App" class="qr-img">
+          <p class="qr-caption">Aponte a câmera e teste o Mini App</p>
+          <a href="index.html" class="btn-nav primary" style="margin-top: 0.8rem; width: 100%; justify-content: center;">
+            Navegar no Painel
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Barra Inferior de Navegação -->
+  <footer class="nav-bar">
+    <div class="nav-info" style="display: flex; align-items: center; gap: 0.8rem;">
+      <img src="icons/teko_emblem.png" alt="Emblema Tekó" style="width: 28px; height: 28px; object-fit: contain;">
+      <span class="nav-counter" id="slide-counter">1 / 6</span>
+      <span class="nav-title" id="slide-title-display">Capa Oficial</span>
+    </div>
+
+    <div class="nav-controls">
+      <button type="button" class="btn-nav" id="btn-fullscreen" title="Alternar Tela Cheia (F11)">
+        <span>⛶</span> Tela Cheia
+      </button>
+      <button type="button" class="btn-nav" id="btn-prev" aria-label="Slide Anterior (Seta Esquerda)">
+        <span>←</span> Anterior
+      </button>
+      <button type="button" class="btn-nav primary" id="btn-next" aria-label="Próximo Slide (Seta Direita / Barra de Espaço)">
+        Próximo <span>→</span>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const counterEl = document.getElementById('slide-counter');
+      const titleDisplayEl = document.getElementById('slide-title-display');
+      const progressBar = document.getElementById('progress-bar');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const btnFullscreen = document.getElementById('btn-fullscreen');
+
+      let currentSlide = 0;
+      const totalSlides = slides.length;
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentSlide].classList.remove('active');
+        currentSlide = newIndex;
+        slides[currentSlide].classList.add('active');
+
+        // Atualiza Contador e Título
+        counterEl.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        const slideTitle = slides[currentSlide].getAttribute('data-title') || `Slide ${currentSlide + 1}`;
+        titleDisplayEl.textContent = slideTitle;
+
+        // Atualiza Barra de Progresso
+        const progressPct = ((currentSlide + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Estado dos Botões
+        btnPrev.disabled = currentSlide === 0;
+        btnNext.disabled = currentSlide === totalSlides - 1;
+        btnPrev.style.opacity = currentSlide === 0 ? '0.4' : '1';
+        btnNext.style.opacity = currentSlide === totalSlides - 1 ? '0.4' : '1';
+      }
+
+      // Eventos de Clique
+      btnPrev.addEventListener('click', () => updateSlide(currentSlide - 1));
+      btnNext.addEventListener('click', () => updateSlide(currentSlide + 1));
+
+      // Navegação por Teclado
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          updateSlide(currentSlide + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          updateSlide(currentSlide - 1);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          updateSlide(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          updateSlide(totalSlides - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+          toggleFullscreen();
+        }
+      });
+
+      // Tela Cheia
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      }
+
+      btnFullscreen.addEventListener('click', toggleFullscreen);
+
+      // Suporte a Touch Swipe
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, { passive: true });
+
+      function handleSwipe() {
+        const threshold = 50;
+        if (touchEndX < touchStartX - threshold) {
+          updateSlide(currentSlide + 1);
+        }
+        if (touchEndX > touchStartX + threshold) {
+          updateSlide(currentSlide - 1);
+        }
+      }
+
+      // Inicializa
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

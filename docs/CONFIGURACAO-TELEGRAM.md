@@ -1,6 +1,6 @@
-# Guia Prático: Configuração do Bot no Telegram
+# Guia Prático: Configuração do Bot Tekó (Tekó Biotech) no Telegram
 
-Este manual explica como deixar o **Assistente AgroSponge RS** totalmente personalizado no Telegram com a identidade oficial do **Hackathon das Engenharias UERGS 2026**.
+Este manual explica como deixar o **Bot Tekó (Tekó Biotech)** totalmente personalizado no Telegram com a identidade oficial do **Hackathon das Engenharias UERGS 2026**.
 
 ---
 
@@ -12,8 +12,8 @@ Este manual explica como deixar o **Assistente AgroSponge RS** totalmente person
    ```text
    /newbot
    ```
-3. Escolha um nome amigável para o bot (ex: `AgroSponge RS Assistente`).
-4. Escolha um nome de usuário que termine em `bot` (ex: `agrosponge_rs_uergs_bot` ou `agrosponge_bot`).
+3. Escolha um nome amigável para o bot (ex: `Tekó — Biossensor Sentinela`).
+4. Escolha um nome de usuário que termine em `bot` (ex: `phytosense_rs_bot`).
 5. O @BotFather enviará o seu **TOKEN HTTP API** (algo como `7123456789:AAH...`).
 6. Copie esse token.
 
@@ -23,7 +23,7 @@ Este manual explica como deixar o **Assistente AgroSponge RS** totalmente person
 Abra o arquivo `bot/.env` (ou crie a partir do `bot/.env.example`) e cole:
 ```bash
 TELEGRAM_TOKEN=seu_token_copiado_aqui
-WEBAPP_URL=https://brunoluiztv.github.io/PROJETO-HACKATON-2026
+WEBAPP_URL=https://brunoluiztv.github.io/PROJETO-HACKATON-2026/
 ```
 
 ---
@@ -35,10 +35,10 @@ cd bot
 python setup_telegram_bot.py
 ```
 O script chama a Bot API do Telegram e configura instantaneamente:
-- ✅ Comandos: `/start`, `/painel`, `/selo`, `/seca`, `/usar`, `/receita`, `/ajuda`.
-- ✅ Tela inicial de boas-vindas com a apresentação do AgroSponge RS e Hackathon UERGS 2026.
+- ✅ Comandos: `/start`, `/painel`, `/planta`, `/irrigar`, `/chuva`, `/energia`, `/laudo`, `/ajuda`.
+- ✅ Tela inicial de boas-vindas com a apresentação da Tekó Biotech e Hackathon UERGS 2026.
 - ✅ Descrição curta (Bio) do perfil.
-- ✅ **Botão Menu WebApp**: configura o botão fixo no canto inferior esquerdo do chat para abrir o painel em tela cheia com um clique.
+- ✅ **Botão Menu WebApp**: configura o botão fixo no canto inferior esquerdo do chat para abrir o Mini App em tela cheia com um clique.
 
 ---
 
@@ -48,21 +48,21 @@ O script chama a Bot API do Telegram e configura instantaneamente:
    /setuserpic
    ```
 2. Selecione o bot que você acabou de criar.
-3. Envie o arquivo de imagem preparado com a arte neon do Hackathon:
+3. Envie o arquivo de imagem preparado com a arte oficial do Hackathon:
    📁 `bot/assets/bot_avatar_hackathon.png`
 
 ---
 
-### 5. (Opcional) Criar um Telegram Mini App (/newapp)
+### 5. Criar um Telegram Mini App (/newapp)
 Para que o bot tenha um link direto estilo `t.me/seu_bot/app`:
 1. No `@BotFather`, digite:
    ```text
    /newapp
    ```
 2. Escolha o seu bot.
-3. Digite o título: `AgroSponge RS`
-4. Digite a descrição: `Calculadora de estiagem e biossensor de enxurrada`
-5. Envie a foto de capa (pode enviar `bot/assets/bot_avatar_hackathon.png` ou `assets/social-preview.png`).
+3. Digite o título: `Tekó Biotech`
+4. Digite a descrição: `Biossensor in-planta, gestão de enchentes e laudos PROAGRO`
+5. Envie a foto de capa (envie `assets/social-preview.png`).
 6. Quando pedir a **Web App URL**, envie exatamente:
    ```text
    https://brunoluiztv.github.io/PROJETO-HACKATON-2026/
@@ -81,5 +81,5 @@ O projeto já inclui `bot/Dockerfile` e `bot/railway.json` prontos para deploy c
    ```
 2. No painel da Railway, configure a variável de ambiente:
    - `TELEGRAM_TOKEN`: seu token do BotFather
-   - `WEBAPP_URL`: `https://brunoluiztv.github.io/PROJETO-HACKATON-2026`
+   - `WEBAPP_URL`: `https://brunoluiztv.github.io/PROJETO-HACKATON-2026/`
 3. O bot reiniciará automaticamente e ficará ativo 24 horas por dia.
