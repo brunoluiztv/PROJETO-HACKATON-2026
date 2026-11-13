@@ -195,6 +195,65 @@
       font-weight: 600;
     }
 
+    /* Rodapé de Fontes e Citações Científicas / Marketplaces */
+    .slide-sources {
+      margin-top: 1.2rem;
+      padding: 0.65rem 1rem;
+      background: rgba(21, 21, 21, 0.85);
+      border: 1px solid var(--card-border);
+      border-left: 3px solid var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: clamp(0.72rem, 0.88vw, 0.82rem);
+      color: #a1a1aa;
+      line-height: 1.4;
+      backdrop-filter: blur(8px);
+    }
+
+    .slide-sources strong {
+      color: #f4f4f5;
+      font-weight: 600;
+    }
+
+    .slide-sources em {
+      color: #e4e4e7;
+    }
+
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(255, 107, 0, 0.15);
+      border: 1px solid rgba(255, 107, 0, 0.3);
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .card-ref-tag {
+      display: block;
+      font-size: 0.72rem;
+      color: #71717a;
+      border-top: 1px dashed rgba(255, 255, 255, 0.12);
+      padding-top: 0.45rem;
+      margin-top: auto;
+      font-style: italic;
+      line-height: 1.35;
+    }
+
+    .card-ref-tag strong {
+      color: #d4d4d8;
+      font-style: normal;
+    }
+
     /* Diagrama Ninja da Ninhura */
     .ninhura-box {
       background: #0f172a;
@@ -418,6 +477,13 @@
           <p>Autonomia energética com bioenergia P-MFC e rádio ESP-NOW de 4ms. Payback em menos de 1 safra.</p>
         </div>
       </div>
+
+      <div class="slide-sources" style="margin-top: 1.2rem;">
+        <span class="source-badge">🏛️ Fundamentação Técnico-Científica</span>
+        <div>
+          <strong>Chancela & Referências:</strong> Parâmetros agronômicos ancorados em pesquisas da <strong>EMBRAPA</strong> (Hortaliças, Clima Temperado e Instrumentação), fisiologia celular vegetal (<em>Nature, J. Exp. Bot.</em>) e dados socioeconômicos da agricultura familiar da <strong>EMATER/RS-Ascar</strong>.
+        </div>
+      </div>
     </section>
 
     <!-- ======================================================================
@@ -435,18 +501,32 @@
           <span class="stat-number">85%</span>
           <span class="stat-label">Irrigação no Escuro</span>
           <p>Agricultores ligam motobombas por calendário ou intuição, esgotando açudes e gastando diesel sem necessidade.</p>
+          <span class="card-ref-tag">Fonte: <strong>EMATER/RS-Ascar & IBGE</strong> (Censo Agropecuário)</span>
         </div>
 
         <div class="card-box highlight">
           <span class="stat-number">40%</span>
           <span class="stat-label">Quebra de Produtividade</span>
           <p>O estresse hídrico invisível fecha estômatos dias antes de a folha murchar, provocando perda de peso comercial irreversível.</p>
+          <span class="card-ref-tag">Fonte: <strong>Embrapa Hortaliças & Soja</strong> (Circ. Téc. 38 / Doc. 116)</span>
         </div>
 
         <div class="card-box">
           <span class="stat-number">0 kPa</span>
           <span class="stat-label">O Paradoxo da Enchente</span>
           <p>Solo 100% saturado consome todo oxigênio da raiz. Sem O₂, fecham-se as aquaporinas PIP e <strong>a planta morre de sede afogada na água</strong>.</p>
+          <span class="card-ref-tag">Fonte: <strong>Nature (Tournaire-Roux et al., 2003)</strong> & Pezeshki</span>
+        </div>
+      </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">📚 Base Bibliográfica & Embrapa</span>
+        <div>
+          <strong>Evidências Científicas & Estatísticas Comprovadas:</strong>
+          <strong>EMATER/RS-Ascar & IBGE:</strong> Levantamento de perdas na agricultura familiar gaúcha por manejo empírico e estiagem prolongada · 
+          <strong>Embrapa Hortaliças (Marouelli et al., Circ. Téc. 38) & Embrapa Soja:</strong> Redução de 30% a 40% de biomassa comercial por estresse hídrico subclínico · 
+          <strong>Nature (Tournaire-Roux et al., 2003):</strong> Comprovação molecular de que a anóxia em solo encharcado (0 kPa) acidifica o citosol e fecha os canais de aquaporina PIP da raiz, provocando seca fisiológica terminal · 
+          <strong>Pezeshki (Plant Science):</strong> Potencial Redox da rizosfera (ORP &lt; -100 mV como limiar de anóxia radicular crônica).
         </div>
       </div>
     </section>
@@ -472,6 +552,7 @@
             <li><strong>50 kHz:</strong> Atravessa a membrana celular e mede o <strong>turgor intracelular simplástico</strong>.</li>
             <li><strong>1 kHz:</strong> Mede a condutância iônica e o fluxo de seiva bruta no <strong>xilema</strong>.</li>
           </ul>
+          <span class="card-ref-tag">Literatura: <strong>Zhang & Willison (J. Exp. Bot.)</strong> · Hayden & Cole-Cole</span>
         </div>
 
         <div class="card-box">
@@ -484,6 +565,7 @@
             <li><strong>Célula Microbiana P-MFC:</strong> Bactérias <em>Geobacter</em> oxidam exsudatos da raiz gerando 0.5V contínuos.</li>
             <li><strong>Potencial Matricial (Ψm):</strong> Tensão física da água (0 a 80 kPa) calibrada para hortaliças e grãos.</li>
           </ul>
+          <span class="card-ref-tag">Literatura: <strong>Strik et al. (Trends in Biotech)</strong> · Embrapa Instrumentação</span>
         </div>
       </div>
 
@@ -512,6 +594,16 @@
           <div class="sub">Zero Digitação & Voz TTS</div>
         </div>
       </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">🔬 Literatura Fitoeletrônica & Bioenergia</span>
+        <div>
+          <strong>Fundamentação Eletrofisiológica & Bioenergia:</strong>
+          <strong>Zhang & Willison (J. Exp. Bot.):</strong> Análise de bioimpedância celular em dupla frequência (50 kHz atravessa a capacitância da membrana celular simplástica medindo turgor intracelular; 1 kHz afere o apoplasto e condutância de seiva no xilema) · 
+          <strong>Strik et al. (Trends in Biotech / Env. Sci. Tech.):</strong> Célula a Combustível Microbiana em Plantas (P-MFC) com consórcios <em>Geobacter</em> oxidando exsudatos de raiz gerando 0,45V a 0,65V contínuos · 
+          <strong>Embrapa Instrumentação:</strong> Tensiometria matricial física (&Psi;m).
+        </div>
+      </div>
     </section>
 
     <!-- ======================================================================
@@ -532,6 +624,7 @@
           </div>
           <p>Sensor no vaso: <strong>Ψm = 18 kPa</strong> (Capacidade de Campo Embrapa).</p>
           <p>O WebApp marca semáforo verde, exibe <strong>Bomba Desligada</strong> e acumula economia de água no açude.</p>
+          <span class="card-ref-tag">Parâmetro: <strong>Embrapa Hortaliças</strong> (Faixa de Capacidade de Campo: 10 a 20 kPa)</span>
         </div>
 
         <div class="card-box highlight">
@@ -541,10 +634,20 @@
           </div>
           <p>Ao retirar o sensor da terra: o ADC detecta o salto imediato para <strong>48 kPa</strong>.</p>
           <p>O WebApp muda para <strong>Vermelho (&lt; 24h CRÍTICO)</strong>, o assistente narra o alerta em voz alta e o <strong>Bot do Telegram vibra ao vivo</strong> chamando para irrigar!</p>
+          <span class="card-ref-tag">Parâmetro: <strong>Embrapa Hortaliças & Milho</strong> (Estresse Severo: &gt; 28 a 50 kPa)</span>
         </div>
       </div>
 
-      <div style="margin-top: 1.8rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+      <div class="slide-sources">
+        <span class="source-badge">🌱 Calibração Oficial Embrapa</span>
+        <div>
+          <strong>Parâmetros de Manejo Tensiométrico Comprovados:</strong>
+          Curvas de retenção hídrica baseadas nas tabelas oficiais da <strong>Embrapa Hortaliças (Marouelli & Silva)</strong> e <strong>Embrapa Milho e Sorgo</strong>: 
+          Capacidade de Campo (10 a 20 kPa), Ponto de Irrigação de Alface (28 kPa), Tomate (38 kPa), Feijão (45 kPa) e Milho (50 kPa). O teste de bancada simula a transição abrupta de solo ótimo (18 kPa) para ar seco (> 40 kPa).
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
         <a href="index.html" target="_blank" class="btn-nav primary" style="font-size: 1.15rem; padding: 0.9rem 1.8rem;">
           <span>📱</span> Abrir WebApp / Mini App ao Vivo
         </a>
@@ -564,20 +667,34 @@
       <div class="cards-grid-3">
         <div class="card-box highlight">
           <span class="stat-number">R$ 42</span>
-          <span class="stat-label">Custo por Nó (BOM)</span>
+          <span class="stat-label">Custo por Nó (BOM Puro)</span>
           <p>ESP32-C3 RISC-V, eletrodos de grafite inerte, feltro de carbono e resina de mamona IP68. 10x mais barato que sensores comerciais importados.</p>
+          <span class="card-ref-tag">Marketplaces: <strong>AliExpress · Shopee · Mercado Livre</strong> (Sem mão de obra)</span>
         </div>
 
         <div class="card-box">
           <span class="stat-number">+31 mAh</span>
           <span class="stat-label">Balanço Energético Diário</span>
           <p>Consome apenas <strong>14 mAh/dia</strong> (Deep Sleep de 10 µA) e gera <strong>45 mAh/dia</strong> com a Célula Microbiana P-MFC + micro painel = <strong>sem troca de bateria</strong>.</p>
+          <span class="card-ref-tag">Fonte: <strong>Espressif Systems Datasheet</strong> & Strik et al. (P-MFC)</span>
         </div>
 
         <div class="card-box">
           <span class="stat-number">&lt; 90 dias</span>
           <span class="stat-label">Payback em 1 Safra</span>
           <p>Em 3 hectares de olericultura, economiza <strong>100.800 litros de água</strong> e <strong>R$ 912,00/mês</strong> em diesel e luz, pagando o kit em 15 dias.</p>
+          <span class="card-ref-tag">Tarifas: <strong>CEEE Equatorial / RGE Sul</strong> (B2 Rural) & ANP-RS (Diesel S10)</span>
+        </div>
+      </div>
+
+      <div class="slide-sources">
+        <span class="source-badge">🛒 Cotações em Marketplaces & BOM</span>
+        <div>
+          <strong>Discriminação dos Marketplaces (Custo unitário em lotes de 10 a 50 un., componentes puros sem mão de obra):</strong>
+          <strong>AliExpress:</strong> Módulo ESP32-C3 RISC-V Mini (R$ 18,00), Micro-painel solar 5V 50mA epóxi (R$ 6,00), Feltro de carbono condutivo P-MFC (R$ 6,50) · 
+          <strong>Shopee Brasil & Mercado Livre:</strong> Eletrodos de grafite isostático (R$ 3,50), Filamento PLA nacional (3D Fila) + resistores de precisão 0.1% (R$ 4,00) · 
+          <strong>Redelease / Farmácia Magistral:</strong> Resina de poliuretano de mamona IP68 (R$ 4,00/dose) e sais do bio-hidrogel (Ágar + KCl PA) · 
+          <strong>Tarifas Energéticas:</strong> Tarifa rural B2 CEEE/RGE (R$ 0,58 a 0,72/kWh) e preço médio de diesel S10 ANP-RS para motobombas de 5 CV.
         </div>
       </div>
     </section>
@@ -601,7 +718,14 @@
             <p>✅ <strong>Segurança PROAGRO:</strong> Laudo instantâneo de asfixia radicular em enchentes.</p>
           </div>
 
-          <div style="margin-top: 2rem;">
+          <div class="slide-sources" style="margin-top: 1.2rem;">
+            <span class="source-badge">📑 Repositório & Documentação</span>
+            <div>
+              <strong>Fontes Completas no Repositório:</strong> Consulte a pasta <code>/docs</code> (<code>codex.md</code>, <code>PLANO-DO-PROJETO.md</code> e <code>ACESSIBILIDADE-UX.md</code>) para as referências completas da Embrapa, fórmulas de secagem &Delta;kPa/dia e esquemáticos elétricos.
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem;">
             <p style="color: var(--accent); font-weight: 700; font-size: 1.1rem;">
               Hackathon das Engenharias UERGS 2026 · Desafio 02: Água e Drenagem
             </p>
@@ -612,7 +736,7 @@
         </div>
 
         <div class="cta-qr-side">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=10" alt="QR Code do Mini App" class="qr-img">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=12" alt="QR Code do Mini App" class="qr-img">
           <p class="qr-caption">Aponte a câmera e teste o Mini App</p>
           <a href="index.html" class="btn-nav primary" style="margin-top: 0.8rem; width: 100%; justify-content: center;">
             Navegar no Painel
