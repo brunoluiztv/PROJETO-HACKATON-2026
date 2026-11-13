@@ -3,21 +3,24 @@
  * Hackathon das Engenharias UERGS 2026
  */
 
-import { initPlantCanvas } from './canvas_planta.js?v=3';
-import { initCharts } from './charts.js?v=3';
+import { initPlantCanvas } from './canvas_planta.js?v=7';
+import { initCharts, renderChartSecagem } from './charts.js?v=7';
 import { 
   TELEMETRIA_ESTADOS, 
   FAQ_PRODUTOR, 
   PILARES_ENGENHARIA, 
   CONFIG_SOLOS, 
+  PERFIS_CULTURA,
   calcularAguaDisponivel, 
-  classificarEstadoSolo 
-} from './content.js?v=6';
-import { iniciarTelegram } from './telegram.js?v=3';
+  classificarEstadoSolo,
+  calcularPredicaoSecagem
+} from './content.js?v=7';
+import { iniciarTelegram } from './telegram.js?v=7';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
 let tipoSoloAtual = localStorage.getItem('phytosense_tipo_solo') || 'franco';
+let perfilCulturaAtual = localStorage.getItem('phytosense_perfil_cultura') || 'olericultura_alface_argissolo';
 let tensaoAtualKpa = 21.5;
 let isSpeaking = false;
 
@@ -27,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initCanvas();
   initSeletorSolo();
+  initSeletorCultura();
   initSimulacaoEstados();
   initVozAcessibilidade();
   initChatSimulado();
@@ -186,6 +190,115 @@ async function notificarBackendTipoSolo(solo) {
 }
 
 /**
+ * 3.1. Seletor de Cultura e Motor Preditivo Embrapa
+ */
+function initSeletorCultura() {
+  const botoesCultura = document.querySelectorAll('.btn-cultura');
+  atualizarBotoesCulturaUi(perfilCulturaAtual);
+  atualizarPredicaoUi(tensaoAtualKpa);
+
+  botoesCultura.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const cultura = btn.getAttribute('data-cultura');
+      if (!cultura || !PERFIS_CULTURA[cultura]) return;
+
+      perfilCulturaAtual = cultura;
+      localStorage.setItem('phytosense_perfil_cultura', cultura);
+      atualizarBotoesCulturaUi(cultura);
+      atualizarPredicaoUi(tensaoAtualKpa);
+      renderChartSecagem(cultura);
+
+      const liveRegion = document.getElementById('sr-anuncios');
+      if (liveRegion) {
+        liveRegion.textContent = `Cultura alterada para ${PERFIS_CULTURA[cultura].cultura}. Limite de manejo Embrapa calibrado para ${PERFIS_CULTURA[cultura].manejoKpa} kPa.`;
+      }
+    });
+  });
+
+  // Gatilho do Caetano no Palco: sensor retirado da terra úmida para o ar seco
+  const btnGatilho = document.getElementById('btn-gatilho-caetano');
+  if (btnGatilho) {
+    btnGatilho.addEventListener('click', () => {
+      tensaoAtualKpa = 48.0;
+      atualizarAguaDisponivel(tensaoAtualKpa);
+      atualizarPredicaoUi(tensaoAtualKpa);
+      renderChartSecagem(perfilCulturaAtual, [14.0, 16.5, 19.0, 21.5, 25.5, 48.0]);
+
+      // Envia telemetria ADC para o backend FastAPI local
+      fetch('http://127.0.0.1:8000/api/telemetria/adc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          leitura_adc: 3800,
+          no_id: 'esp32_no_01',
+          id_perfil: perfilCulturaAtual
+        })
+      }).catch(() => {});
+
+      const liveRegion = document.getElementById('sr-anuncios');
+      if (liveRegion) {
+        liveRegion.textContent = 'Gatilho de bancada ativado! Tensão matricial subiu para 48 kPa. Limite crítico Embrapa ultrapassado.';
+      }
+
+      // Fala acessível por voz
+      narrarDiagnostico('Atenção! Sensor no ar seco. Lavoura atingiu 48 kPa. Limite da Embrapa ultrapassado. Faltam zero dias. Irrigação emergencial necessária!');
+    });
+  }
+
+  // Reset da demonstração para o estado inicial de 7 dias
+  const btnReset = document.getElementById('btn-reset-demo');
+  if (btnReset) {
+    btnReset.addEventListener('click', async () => {
+      tensaoAtualKpa = perfilCulturaAtual.includes('alface') ? 25.5 : 32.0;
+      atualizarAguaDisponivel(tensaoAtualKpa);
+      atualizarPredicaoUi(tensaoAtualKpa);
+      renderChartSecagem(perfilCulturaAtual);
+      try {
+        await fetch('http://127.0.0.1:8000/api/demo/reset', { method: 'POST' });
+      } catch {}
+    });
+  }
+}
+
+function atualizarBotoesCulturaUi(culturaAtiva) {
+  document.querySelectorAll('.btn-cultura').forEach((btn) => {
+    const isAtivo = btn.getAttribute('data-cultura') === culturaAtiva;
+    btn.classList.toggle('cultura-ativa', isAtivo);
+    btn.setAttribute('aria-checked', isAtivo ? 'true' : 'false');
+  });
+}
+
+export function atualizarPredicaoUi(tensaoOverride = null) {
+  const t = tensaoOverride !== null ? parseFloat(tensaoOverride) : (parseFloat(tensaoAtualKpa) || 25.5);
+  const pred = calcularPredicaoSecagem(t, perfilCulturaAtual, 2.0);
+
+  const taxaEl = document.getElementById('pred-taxa-val');
+  const diasEl = document.getElementById('pred-dias-val');
+  const msgEl = document.getElementById('pred-msg-texto');
+
+  if (taxaEl) taxaEl.textContent = `${pred.taxaSecagemKpaDia.toFixed(1)} kPa/dia`;
+  if (diasEl) {
+    if (pred.diasRestantes <= 0) {
+      diasEl.textContent = '0 dias (CRÍTICO)';
+      diasEl.style.color = '#ef4444';
+    } else if (pred.diasRestantes <= 1.0) {
+      diasEl.textContent = `${pred.diasRestantes} dia (< 24h)`;
+      diasEl.style.color = '#ef4444';
+    } else if (pred.diasRestantes <= 3.0) {
+      diasEl.textContent = `${pred.diasRestantes} dias (Atenção)`;
+      diasEl.style.color = '#f59e0b';
+    } else {
+      diasEl.textContent = `${pred.diasRestantes} dias (Seguro)`;
+      diasEl.style.color = '#10b981';
+    }
+  }
+  if (msgEl) {
+    msgEl.textContent = pred.mensagem;
+    msgEl.style.borderLeftColor = pred.cor;
+  }
+}
+
+/**
  * 4. Simulação ao Vivo dos 3 Estados Eletrofisiológicos
  */
 function initSimulacaoEstados() {
@@ -218,6 +331,7 @@ export function aplicarEstado(estadoKey) {
     tensaoAtualKpa = cfg.ccKpa;
   }
   atualizarAguaDisponivel(tensaoAtualKpa);
+  atualizarPredicaoUi(tensaoAtualKpa);
 
   // Atualiza botões seletores
   document.querySelectorAll('.btn-estado').forEach((btn) => {

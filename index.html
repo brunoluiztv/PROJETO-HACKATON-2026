@@ -9,10 +9,10 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=8">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=6"></script>
+  <script type="module" src="js/app.js?v=8"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -85,6 +85,64 @@
             <div id="ad-barra" class="ad-barra" style="width: 85%; background-color: #10b981;"></div>
           </div>
           <p id="ad-explicacao-solo" class="ad-explicacao">Solo Franco: Em 22 kPa a planta absorve água facilmente sem esforço osmótico.</p>
+        </div>
+      </section>
+
+      <!-- Seletor de Perfil de Cultura (Embrapa) & Card de Predição -->
+      <section class="card-cultura-seletor" aria-labelledby="t-seletor-cultura">
+        <div class="solo-header">
+          <div class="solo-titulo-wrapper">
+            <span class="solo-badge-tag" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Referência Embrapa</span>
+            <h2 id="t-seletor-cultura" class="solo-titulo">🌱 2. Cultura do Talhão Sentinela</h2>
+          </div>
+          <p class="solo-dica">Define o limite científico de manejo de irrigação para evitar quebra de safra.</p>
+        </div>
+
+        <div class="cultura-botoes-grid" role="radiogroup" aria-label="Selecione a cultura do talhão">
+          <button type="button" class="btn-cultura cultura-ativa" data-cultura="olericultura_alface_argissolo" role="radio" aria-checked="true">
+            <span class="cultura-icone" aria-hidden="true">🥬</span>
+            <strong>Alface Crespa</strong>
+            <small>Olericultura (Manejo: 28 kPa)</small>
+          </button>
+          <button type="button" class="btn-cultura" data-cultura="graos_milho_argissolo" role="radio" aria-checked="false">
+            <span class="cultura-icone" aria-hidden="true">🌽</span>
+            <strong>Milho</strong>
+            <small>Grãos (Manejo: 50 kPa)</small>
+          </button>
+          <button type="button" class="btn-cultura" data-cultura="olericultura_tomate_argissolo" role="radio" aria-checked="false">
+            <span class="cultura-icone" aria-hidden="true">🍅</span>
+            <strong>Tomate</strong>
+            <small>Frutos (Manejo: 38 kPa)</small>
+          </button>
+          <button type="button" class="btn-cultura" data-cultura="graos_feijao_textura_media" role="radio" aria-checked="false">
+            <span class="cultura-icone" aria-hidden="true">🫘</span>
+            <strong>Feijão</strong>
+            <small>Manejo: 45 kPa</small>
+          </button>
+        </div>
+
+        <!-- Card de Predição de Secagem (ΔkPa/dia e dias restantes) -->
+        <div id="card-predicao-box" class="card-predicao-box">
+          <div class="predicao-cabecalho">
+            <div class="predicao-item">
+              <span class="predicao-label">Taxa de Secagem:</span>
+              <strong id="pred-taxa-val" class="predicao-val">2.0 kPa/dia</strong>
+            </div>
+            <div class="predicao-item">
+              <span class="predicao-label">Previsão até o Estresse:</span>
+              <strong id="pred-dias-val" class="predicao-val" style="color: #10b981;">9.0 dias</strong>
+            </div>
+          </div>
+          <p id="pred-msg-texto" class="predicao-mensagem">Solo com boa umidade. Restam 9 dias de segurança até o manejo Embrapa.</p>
+          <div class="predicao-acoes">
+            <button type="button" id="btn-gatilho-caetano" class="btn-gatilho-teste">
+              <span>🧪</span>
+              <strong>Testar Gatilho do Caetano (Puxar Sensor da Terra)</strong>
+            </button>
+            <button type="button" id="btn-reset-demo" class="btn-reset-teste" title="Restaurar dados iniciais do pitch">
+              <span>🔄</span> Resetar Pitch
+            </button>
+          </div>
         </div>
       </section>
 
@@ -254,6 +312,17 @@
           <canvas id="canvas-grafico-energia" role="img" aria-label="Gráfico de barras comparando consumo energético diário"></canvas>
         </div>
       </article>
+
+      <!-- Gráfico 3: Taxa de Secagem & Previsão Temporal Embrapa (7 Dias) -->
+      <article class="card-grafico-box">
+        <h2>3. Tendência de Secagem & Limite Embrapa (7 Dias)</h2>
+        <p class="grafico-legenda-alerta" style="border-left-color: #38bdf8;">
+          📈 <strong>Curva de Secagem do Solo:</strong> Monitoramento contínuo de Tensão Matricial (kPa) e projeção temporal até o <strong>Limite Crítico de Manejo (<span id="grafico-limite-embrapa-val">28 kPa</span>)</strong>.
+        </p>
+        <div class="grafico-container">
+          <canvas id="canvas-grafico-secagem" role="img" aria-label="Gráfico de tendência de secagem em kPa ao longo dos 7 dias"></canvas>
+        </div>
+      </article>
     </section>
 
     <!-- ======================================================================
@@ -267,6 +336,156 @@
 
       <!-- 4 Pilares da Engenharia -->
       <div id="container-pilares-engenharia" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+      <!-- Arquitetura Geral da Ninhura (Topologia Mesh ESP-NOW + Gateway) -->
+      <article class="card-ninhura-box">
+        <h2 style="font-size: 1.05rem; font-weight: 800; color: #ff6b00;">📡 1. Arquitetura Geral da Ninhura (ESP-NOW + Gateway)</h2>
+        <p style="font-size: 0.84rem; color: #a1a1aa; margin-top: 4px;">
+          Topologia distribuída para cobertura em grandes propriedades rurais sem custo de dados móveis por planta.
+        </p>
+
+        <!-- Diagrama Visual da Ninhura -->
+        <div class="ninhura-diagrama-grid">
+          <div class="ninhura-camada-header">Camada de Aquisição (Campo)</div>
+          <div class="ninhura-nos-row">
+            <div class="ninhura-no-card">
+              <span class="ninhura-no-icon">🌱</span>
+              <strong>Nó 1</strong>
+              <small>ESP32 + Sensor</small>
+              <span class="badge-cultura">Alface</span>
+            </div>
+            <div class="ninhura-no-card">
+              <span class="ninhura-no-icon">🌱</span>
+              <strong>Nó 2</strong>
+              <small>ESP32 + Sensor</small>
+              <span class="badge-cultura">Milho</span>
+            </div>
+            <div class="ninhura-no-card">
+              <span class="ninhura-no-icon">🌱</span>
+              <strong>Nó 3</strong>
+              <small>ESP32 + Sensor</small>
+              <span class="badge-cultura">Feijão</span>
+            </div>
+          </div>
+
+          <div class="ninhura-seta-conexao">
+            <span>↓ Rádio ESP-NOW (2.4 GHz ultra-baixo consumo / 4ms) ↓</span>
+          </div>
+
+          <!-- Gateway -->
+          <div class="ninhura-gateway-card">
+            <div style="font-size: 1.2rem;">📡</div>
+            <div>
+              <strong>ESP32 Gateway (Sede da Fazenda)</strong>
+              <div style="font-size: 0.8rem; color: #a1a1aa;">Recepção, identificação do talhão e encaminhamento</div>
+            </div>
+          </div>
+
+          <div class="ninhura-seta-conexao">
+            <span>↓ Wi-Fi / 4G + HTTP POST (JSON estruturado) ↓</span>
+          </div>
+
+          <!-- Backend FastAPI -->
+          <div class="ninhura-backend-card">
+            <div style="font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+              <span>💾</span> Backend FastAPI & Motor Embrapa
+            </div>
+            <div class="ninhura-backend-grid">
+              <div class="ninhura-subbox">
+                <small>Banco de Dados</small>
+                <strong>SQLite (7 Dias)</strong>
+              </div>
+              <div class="ninhura-subbox">
+                <small>Motor de Alertas</small>
+                <strong>Regras Embrapa + Predição</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="ninhura-seta-conexao">
+            <span>↓ Despacho de Notificações e Visualização ↓</span>
+          </div>
+
+          <!-- Aplicação Final -->
+          <div class="ninhura-app-grid">
+            <div class="ninhura-app-card">
+              <span>📱</span>
+              <strong>Dashboard Web</strong>
+              <small>Gráficos, histórico e dispositivos</small>
+            </div>
+            <div class="ninhura-app-card">
+              <span>✈️</span>
+              <strong>Telegram Bot</strong>
+              <small>Alertas de risco e comandos por voz</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decisão de Engenharia em Destaque -->
+        <div class="box-decisao-engenharia">
+          <strong>💡 Decisão Arquitetural Crítica:</strong>
+          <p>
+            O ESP32 de campo <strong>NÃO se comunica diretamente com o Telegram</strong>. 
+            O handshake criptográfico TLS do Telegram consumiria a bateria em poucos dias. 
+            Com o <strong>ESP-NOW</strong>, os nós transmitem em apenas <strong>4 milissegundos</strong> 
+            e retornam para Deep Sleep (10 µA). Toda a lógica agronômica e envio de mensagens 
+            fica centralizada com segurança no <strong>Backend FastAPI</strong>.
+          </p>
+        </div>
+      </article>
+
+      <!-- Tabela Científica: Estado Hídrico do Solo (Embrapa) -->
+      <article class="card-tabela-hidrica-box">
+        <h2 style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">💧 2. Estado Hídrico do Solo & Água Disponível (AD %)</h2>
+        <p style="font-size: 0.84rem; color: #a1a1aa; margin-top: 4px;">
+          Física da água no solo e limites matriciais ancorados na literatura científica da Embrapa.
+        </p>
+
+        <div class="tabela-scroll-container">
+          <table class="tabela-estado-hidrico">
+            <thead>
+              <tr>
+                <th scope="col">Estado Hídrico</th>
+                <th scope="col">Potencial Matricial (Ψm)</th>
+                <th scope="col">Água Disp. (AD)</th>
+                <th scope="col">Condição para a Planta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: rgba(56, 189, 248, 0.08);">
+                <td><strong>Saturação</strong></td>
+                <td><code class="tag-kpa">0 kPa</code></td>
+                <td><strong>100%</strong></td>
+                <td><span style="color: #38bdf8;">⚠️ Excesso de água e falta de oxigênio nas raízes (hipóxia).</span></td>
+              </tr>
+              <tr style="background: rgba(16, 185, 129, 0.08);">
+                <td><strong>Capacidade de Campo (CC)</strong></td>
+                <td><code class="tag-kpa">-10 a -33 kPa</code></td>
+                <td><strong>100% (Limite sup.)</strong></td>
+                <td><span style="color: #10b981;">🌿 Condição ideal de umidade e aeração.</span></td>
+              </tr>
+              <tr style="background: rgba(245, 158, 11, 0.08);">
+                <td><strong>Início do Estresse (Fator p)</strong></td>
+                <td><code class="tag-kpa">-30 a -70 kPa</code></td>
+                <td><strong>40% a 60%</strong></td>
+                <td><span style="color: #f59e0b;">⚡ Ponto crítico para reiniciar a irrigação sem perda produtiva.</span></td>
+              </tr>
+              <tr style="background: rgba(239, 68, 68, 0.08);">
+                <td><strong>Estresse Moderado a Severo</strong></td>
+                <td><code class="tag-kpa">-100 a -500 kPa</code></td>
+                <td><strong>15% a 35%</strong></td>
+                <td><span style="color: #ef4444;">🚨 Fechamento estomático, redução da fotossíntese e murcha.</span></td>
+              </tr>
+              <tr style="background: rgba(127, 29, 29, 0.2);">
+                <td><strong>Ponto de Murcha (PMP)</strong></td>
+                <td><code class="tag-kpa">-1.500 kPa (-1,5 MPa)</code></td>
+                <td><strong>0%</strong></td>
+                <td><span style="color: #fca5a5;">💀 Água fortemente retida; a planta não recupera a turgidez.</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
 
       <!-- Estimativa de Custo BOM -->
       <article class="card-bom">

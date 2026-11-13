@@ -6,14 +6,16 @@
  * 3. Simulador de Hectares e Economia na Irrigação
  */
 
-import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA } from './content.js?v=3';
+import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA } from './content.js?v=7';
 
 let chartDivergenciaInstance = null;
 let chartEnergiaInstance = null;
+let chartSecagemInstance = null;
 
 export function initCharts() {
   renderChartDivergencia();
   renderChartEnergia();
+  renderChartSecagem();
   initHectaresSimulator();
 }
 
@@ -300,4 +302,123 @@ export function initHectaresSimulator() {
 
   slider.addEventListener('input', atualizarCalculos);
   atualizarCalculos();
+}
+
+/**
+ * 4. Gráfico 3: Taxa de Secagem & Limite Embrapa (7 Dias)
+ */
+export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', dadosCustom = null) {
+  const canvas = document.getElementById('canvas-grafico-secagem');
+  if (!canvas) return;
+
+  const perfil = PERFIS_CULTURA[idPerfil] || PERFIS_CULTURA.olericultura_alface_argissolo;
+  const spanLimite = document.getElementById('grafico-limite-embrapa-val');
+  if (spanLimite) spanLimite.textContent = `${perfil.manejoKpa} kPa (${perfil.cultura})`;
+
+  const labels = ['D-5', 'D-4', 'D-3', 'D-2', 'D-1', 'Hoje'];
+  let serieTensao = dadosCustom || (idPerfil.includes('alface')
+    ? [14.0, 16.5, 19.0, 21.5, 23.5, 25.5]
+    : [22.0, 24.0, 26.5, 28.0, 30.0, 32.0]);
+
+  const serieLimite = labels.map(() => perfil.manejoKpa);
+  const serieAlerta = labels.map(() => perfil.alertaKpa);
+
+  if (window.Chart) {
+    if (chartSecagemInstance) {
+      chartSecagemInstance.destroy();
+    }
+
+    const ctx = canvas.getContext('2d');
+    chartSecagemInstance = new window.Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: `🌱 Tensão no Solo (${perfil.cultura} - kPa)`,
+            data: serieTensao,
+            borderColor: '#ff6b00',
+            backgroundColor: 'rgba(255, 107, 0, 0.2)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#ff6b00',
+            pointRadius: 5
+          },
+          {
+            label: `🚨 Limite Crítico Embrapa (${perfil.manejoKpa} kPa)`,
+            data: serieLimite,
+            borderColor: '#ef4444',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            fill: false,
+            pointRadius: 0
+          },
+          {
+            label: `⚠️ Alerta Atenção (${perfil.alertaKpa} kPa)`,
+            data: serieAlerta,
+            borderColor: '#f59e0b',
+            borderWidth: 1.5,
+            borderDash: [3, 3],
+            fill: false,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: { color: '#ffffff', font: { size: 10 } }
+          },
+          tooltip: {
+            backgroundColor: '#18181b',
+            titleColor: '#ffffff',
+            bodyColor: '#cbd5e1',
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.raw} kPa`
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 5,
+            max: Math.max(60, perfil.manejoKpa + 15),
+            ticks: {
+              color: '#94a3b8',
+              callback: (v) => `${v} kPa`
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.08)' }
+          },
+          x: {
+            ticks: { color: '#94a3b8' },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+          }
+        }
+      }
+    });
+  } else {
+    drawNativeSecagemChart(canvas, serieTensao, perfil);
+  }
+}
+
+function drawNativeSecagemChart(canvas, serieTensao, perfil) {
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.parentElement.clientWidth || 320;
+  const h = 200;
+
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = `${w}px`;
+  canvas.style.height = `${h}px`;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '11px sans-serif';
+  ctx.fillText(`Tendência de Secagem: ${perfil.cultura} (Limite: ${perfil.manejoKpa} kPa)`, 14, 20);
 }
