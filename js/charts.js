@@ -6,7 +6,7 @@
  * 3. Simulador de Hectares e Economia na Irrigação
  */
 
-import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA, CONFIG_SOLOS } from './content.js?v=7';
+import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA, CONFIG_SOLOS } from './content.js?v=14';
 
 let chartDivergenciaInstance = null;
 let chartEnergiaInstance = null;
@@ -305,11 +305,13 @@ export function initHectaresSimulator() {
     }
 
     const soloKey = obterTipoSoloAtivo();
-    const soloCfg = (CONFIG_SOLOS && CONFIG_SOLOS[soloKey]) || { litrosDiaHaPoupados: 4200, reaisDiaHaPoupados: 38.0 };
+    const soloCfg = (CONFIG_SOLOS && CONFIG_SOLOS[soloKey]) || (CONFIG_SOLOS && CONFIG_SOLOS.franco) || {};
+    const litrosPorDia = Number(soloCfg.litrosDiaHaPoupados) || 4200;
+    const reaisPorDia = Number(soloCfg.reaisDiaHaPoupados) || 38.0;
 
     const diasPoupadosMes = 8;
-    const litrosMes = Math.round(ha * soloCfg.litrosDiaHaPoupados * diasPoupadosMes);
-    const reaisMes = ha * soloCfg.reaisDiaHaPoupados * diasPoupadosMes;
+    const litrosMes = Math.round(ha * litrosPorDia * diasPoupadosMes);
+    const reaisMes = ha * reaisPorDia * diasPoupadosMes;
     const dieselLitros = Math.round(reaisMes / 6.20);
     const sensores = Math.max(1, Math.round(ha * 0.8));
 
