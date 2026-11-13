@@ -289,10 +289,10 @@ export const TELEMETRIA_ESTADOS = {
     ce: '1.8 dS/m',
     statusBomba: 'LIGAR AMANHÃ ÀS 06H',
     bombaClass: 'bomba-programada',
-    economiaDestaque: 'Gotejamento cirúrgico de 40 min (3,5 L/metro)',
+    economiaDestaque: 'Economia de 2.400 litros e R$ 22,00 de diesel hoje com rega cirúrgica de 40 min',
     diagnostico: 'A bioimpedância no caule subiu para 4.8 kΩ indicando desidratação celular precoce, antes mesmo das folhas murcharem sob o sol forte. Solo começa a secar.',
     acaoRecomendada: 'Ligue o gotejamento amanhã bem cedo (às 6h) por 40 minutos. Evite irrigar no calor do meio-dia para não perder água por evaporação.',
-    ttsVoz: 'Atenção, produtor: a planta está com sede invisível. O caule acusa perda de turgor. Ligue o gotejamento amanhã às seis da manhã por quarenta minutos, antes do sol esquentar.',
+    ttsVoz: 'Atenção, produtor: a planta está com sede invisível. O caule acusa perda de turgor. Ligue o gotejamento amanhã às seis da manhã por quarenta minutos. Essa rega cirúrgica economiza dois mil e quatrocentos litros de água e vinte e dois reais de diesel.',
     laudoProagroDisponivel: false
   },
   hipoxia: {
@@ -309,10 +309,10 @@ export const TELEMETRIA_ESTADOS = {
     ce: '0.6 dS/m (Lixiviado)',
     statusBomba: 'NÃO LIGAR A BOMBA!',
     bombaClass: 'bomba-proibida',
-    economiaDestaque: 'Risco de perda total da lavoura por hipóxia',
+    economiaDestaque: 'Economia de 4.200 litros e R$ 38,00 de diesel hoje ao suspender a bomba no alagamento',
     diagnostico: 'Divergência Crítica: O solo está 100% saturado de água após o temporal, mas a raiz está sufocada (-140 mV). A falta de oxigênio fecha as aquaporinas e a planta morre de "seca fisiológica".',
     acaoRecomendada: 'Abra valetas de drenagem imediatamente na cabeceira da lavoura. Não adicione água nem fertilizante nitrogenado. Emita o laudo técnico do PROAGRO abaixo.',
-    ttsVoz: 'Alerta grave de enchente! A terra está cheia de água, mas a raiz está sem ar e sufocando. Não ligue a bomba! Abra valetas de drenagem e emita agora o laudo do PROAGRO para acionar o seguro.',
+    ttsVoz: 'Alerta grave de enchente! A terra está cheia de água, mas a raiz está sem ar e sufocando. Não ligue a motobomba! Ao manter a bomba desligada você economiza quatro mil e duzentos litros de água e trinta e oito reais de combustível, além de evitar apodrecer a raiz. Abra valetas de drenagem e emita agora o laudo do PROAGRO.',
     laudoProagroDisponivel: true
   }
 };

@@ -4,8 +4,8 @@
  * 4 Abas Especializadas: 1. Planta | 2. Triagem & Receita | 3. Gráficos & Hectares | 4. Engenharia & Gateway
  */
 
-import { initPlantCanvas } from './canvas_planta.js?v=14';
-import { initCharts, renderChartSecagem } from './charts.js?v=14';
+import { initPlantCanvas } from './canvas_planta.js?v=15';
+import { initCharts, renderChartSecagem } from './charts.js?v=15';
 import { 
   TELEMETRIA_ESTADOS, 
   FAQ_PRODUTOR, 
@@ -16,8 +16,8 @@ import {
   calcularAguaDisponivel, 
   classificarEstadoSolo,
   calcularPredicaoSecagem
-} from './content.js?v=14';
-import { iniciarTelegram } from './telegram.js?v=14';
+} from './content.js?v=15';
+import { iniciarTelegram } from './telegram.js?v=15';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
@@ -475,7 +475,7 @@ function atualizarReceitaPrescritiva() {
       statusBomba.style.color = '#ef4444';
     }
     if (tempoBomba) {
-      tempoBomba.textContent = 'Ação: Desobstruir valas e drenar talhão com urgência';
+      tempoBomba.textContent = 'Economia de 4.200 L de água e R$ 38,00 de diesel hoje ao não irrigar solo afogado';
     }
     if (explicacao) {
       explicacao.textContent = `Solo 100% saturado (0 a 4 kPa). Raízes de ${perfil.cultura} sem oxigênio (ORP negativo). Risco iminente de perda irreversível por asfixia celular.`;
@@ -518,7 +518,7 @@ function atualizarReceitaPrescritiva() {
       statusBomba.style.color = '#f59e0b';
     }
     if (tempoBomba) {
-      tempoBomba.textContent = `Horário ideal: 06:00 da manhã (menor evapotranspiração do vento)`;
+      tempoBomba.textContent = `Turno cirúrgico matinal (${tempoMinutos} min): poupa 2.400 L de água e R$ 22,00 de diesel vs irrigação contínua`;
     }
     if (explicacao) {
       explicacao.textContent = `Tensão matricial (${tensaoAtualKpa} kPa) atingiu o limite crítico Embrapa para ${perfil.cultura} (${perfil.manejoKpa} kPa). Iniciar gotejamento para devolver o solo à Capacidade de Campo (${perfil.ccKpa} kPa).`;
