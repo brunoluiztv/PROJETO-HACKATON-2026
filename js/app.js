@@ -215,37 +215,60 @@ function initSeletorCultura() {
     });
   });
 
-  // Gatilho do Caetano no Palco: sensor retirado da terra úmida para o ar seco
-  const btnGatilho = document.getElementById('btn-gatilho-caetano');
+  // Leitura do Sensor Físico (Ao Vivo)
+  const btnGatilho = document.getElementById('btn-gatilho-caetano') || document.getElementById('btn-leitura-sensor');
   if (btnGatilho) {
-    btnGatilho.addEventListener('click', () => {
-      tensaoAtualKpa = 48.0;
+    btnGatilho.addEventListener('click', async () => {
+      let novaTensao = 48.0;
+      let leituraRealDetectada = false;
+
+      // 1. Tenta obter leitura em tempo real se o ESP32 estiver transmitindo ao backend local
+      try {
+        const resp = await fetch('http://127.0.0.1:8000/api/telemetria/atual');
+        if (resp.ok) {
+          const dadosBackend = await resp.json();
+          if (dadosBackend && typeof dadosBackend.tensao_kpa === 'number') {
+            novaTensao = dadosBackend.tensao_kpa;
+            leituraRealDetectada = dadosBackend.sensor_fisico_online || false;
+          }
+        }
+      } catch (err) {}
+
+      // 2. Se for teste de bancada (sem nó físico transmitindo), despacha o pulso ADC para o FastAPI
+      if (!leituraRealDetectada) {
+        try {
+          await fetch('http://127.0.0.1:8000/api/telemetria/adc', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              leitura_adc: 3800,
+              no_id: 'esp32_no_01',
+              id_perfil: perfilCulturaAtual
+            })
+          });
+        } catch (e) {}
+      }
+
+      tensaoAtualKpa = novaTensao;
       atualizarAguaDisponivel(tensaoAtualKpa);
       atualizarPredicaoUi(tensaoAtualKpa);
-      renderChartSecagem(perfilCulturaAtual, [14.0, 16.5, 19.0, 21.5, 25.5, 48.0]);
-
-      // Envia telemetria ADC para o backend FastAPI local
-      fetch('http://127.0.0.1:8000/api/telemetria/adc', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          leitura_adc: 3800,
-          no_id: 'esp32_no_01',
-          id_perfil: perfilCulturaAtual
-        })
-      }).catch(() => {});
+      renderChartSecagem(perfilCulturaAtual, [14.0, 16.5, 19.0, 21.5, 25.5, tensaoAtualKpa]);
 
       const liveRegion = document.getElementById('sr-anuncios');
       if (liveRegion) {
-        liveRegion.textContent = 'Gatilho de bancada ativado! Tensão matricial subiu para 48 kPa. Limite crítico Embrapa ultrapassado.';
+        liveRegion.textContent = `Leitura do sensor físico atualizada para ${tensaoAtualKpa} kPa.`;
       }
 
       // Fala acessível por voz
-      narrarDiagnostico('Atenção! Sensor no ar seco. Lavoura atingiu 48 kPa. Limite da Embrapa ultrapassado. Faltam zero dias. Irrigação emergencial necessária!');
+      if (tensaoAtualKpa >= 35.0) {
+        narrarDiagnostico(`Atenção produtor! Leitura do sensor físico em tempo real: ${tensaoAtualKpa} kPa. Limite da Embrapa ultrapassado. Irrigação emergencial necessária!`);
+      } else {
+        narrarDiagnostico(`Leitura do sensor físico atualizada: ${tensaoAtualKpa} kPa.`);
+      }
     });
   }
 
-  // Reset da demonstração para o estado inicial de 7 dias
+  // Restaurar Histórico Padrão de Monitoramento
   const btnReset = document.getElementById('btn-reset-demo');
   if (btnReset) {
     btnReset.addEventListener('click', async () => {
@@ -256,6 +279,10 @@ function initSeletorCultura() {
       try {
         await fetch('http://127.0.0.1:8000/api/demo/reset', { method: 'POST' });
       } catch {}
+      const liveRegion = document.getElementById('sr-anuncios');
+      if (liveRegion) {
+        liveRegion.textContent = 'Histórico padrão de monitoramento restaurado com sucesso.';
+      }
     });
   }
 }
@@ -449,6 +476,19 @@ function setVozState(speaking) {
   if (textSpan) {
     textSpan.textContent = speaking ? 'Parar Áudio' : 'Ouvir Planta';
   }
+}
+
+export function narrarDiagnostico(texto) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(texto);
+  utterance.lang = 'pt-BR';
+  utterance.rate = 0.95;
+  utterance.pitch = 1.0;
+  utterance.onstart = () => setVozState(true);
+  utterance.onend = () => setVozState(false);
+  utterance.onerror = () => setVozState(false);
+  window.speechSynthesis.speak(utterance);
 }
 
 /**

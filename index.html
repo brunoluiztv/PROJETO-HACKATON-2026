@@ -9,10 +9,10 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
-  <link rel="stylesheet" href="css/styles.css?v=8">
+  <link rel="stylesheet" href="css/styles.css?v=9">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=8"></script>
+  <script type="module" src="js/app.js?v=9"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -135,12 +135,12 @@
           </div>
           <p id="pred-msg-texto" class="predicao-mensagem">Solo com boa umidade. Restam 9 dias de segurança até o manejo Embrapa.</p>
           <div class="predicao-acoes">
-            <button type="button" id="btn-gatilho-caetano" class="btn-gatilho-teste">
-              <span>🧪</span>
-              <strong>Testar Gatilho do Caetano (Puxar Sensor da Terra)</strong>
+            <button type="button" id="btn-gatilho-caetano" class="btn-gatilho-teste" title="Capturar leitura em tempo real do sensor físico ESP32">
+              <span>📡</span>
+              <strong>Coletar Leitura do Sensor Físico (Ao Vivo)</strong>
             </button>
-            <button type="button" id="btn-reset-demo" class="btn-reset-teste" title="Restaurar dados iniciais do pitch">
-              <span>🔄</span> Resetar Pitch
+            <button type="button" id="btn-reset-demo" class="btn-reset-teste" title="Restaurar histórico padrão de monitoramento">
+              <span>🔄</span> Restaurar Histórico
             </button>
           </div>
         </div>

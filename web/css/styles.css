@@ -205,6 +205,311 @@ body {
   text-align: center;
 }
 
+/* ==========================================================================
+   Formulário Seletor de Solo (Entrada do Produtor)
+   ========================================================================== */
+.card-solo-seletor {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.solo-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solo-titulo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.solo-badge-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: rgba(255, 107, 0, 0.15);
+  color: var(--cor-laranja);
+  border: 1px solid var(--cor-laranja);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.solo-titulo {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--texto-branco);
+  margin: 0;
+}
+
+.solo-dica {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  margin: 0;
+}
+
+.solo-botoes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 400px) {
+  .solo-botoes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-solo {
+  min-height: 54px;
+  padding: 8px 10px;
+  background: #18181b;
+  border: 2px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  color: var(--texto-branco);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-solo:hover,
+.btn-solo:focus-visible {
+  border-color: var(--cor-laranja);
+  outline: none;
+}
+
+.btn-solo.solo-ativo {
+  border-color: var(--cor-laranja);
+  background: #242220;
+  box-shadow: 0 0 10px var(--cor-laranja-glow);
+}
+
+.btn-solo .solo-icone {
+  font-size: 1.3rem;
+}
+
+.btn-solo strong {
+  font-size: 0.82rem;
+  display: block;
+}
+
+.btn-solo small {
+  font-size: 0.68rem;
+  color: var(--texto-secundario);
+  display: block;
+  line-height: 1.1;
+}
+
+/* Medidor de Água Disponível (AD) */
+.card-ad-medidor {
+  background: #111113;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ad-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+}
+
+.ad-cabecalho strong {
+  color: var(--texto-branco);
+  font-size: 0.88rem;
+}
+
+.ad-trilho {
+  width: 100%;
+  height: 10px;
+  background: #27272a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ad-barra {
+  height: 100%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.ad-explicacao {
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+/* Seletor de Cultura do Talhão (Embrapa) */
+.card-cultura-seletor {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cultura-botoes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.btn-cultura {
+  min-height: var(--touch-minimo);
+  background: #1c1c1f;
+  border: 1px solid var(--borda-destaque);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--texto-branco);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.btn-cultura:hover,
+.btn-cultura:focus-visible {
+  border-color: var(--cor-verde);
+  outline: none;
+}
+
+.btn-cultura.cultura-ativa {
+  border-color: var(--cor-verde);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+.cultura-icone {
+  font-size: 1.1rem;
+}
+
+.btn-cultura strong {
+  font-size: 0.82rem;
+  display: block;
+}
+
+.btn-cultura small {
+  font-size: 0.68rem;
+  color: var(--texto-secundario);
+  display: block;
+}
+
+/* Card de Predição de Secagem (ΔkPa/dia e dias restantes) */
+.card-predicao-box {
+  background: #111113;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.predicao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.predicao-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.predicao-label {
+  font-size: 0.72rem;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+}
+
+.predicao-val {
+  font-size: 0.95rem;
+  color: var(--texto-branco);
+  font-family: monospace;
+}
+
+.predicao-mensagem {
+  font-size: 0.76rem;
+  color: #e4e4e7;
+  line-height: 1.35;
+  background: #18181b;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--cor-verde);
+}
+
+.predicao-acoes {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-gatilho-teste {
+  flex: 3;
+  min-height: 42px;
+  background: #ff6b00;
+  color: #000000;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-gatilho-teste:hover {
+  background: #ff8533;
+}
+
+.btn-reset-teste {
+  flex: 1;
+  min-height: 42px;
+  background: #27272a;
+  color: #ffffff;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-reset-teste:hover {
+  background: #3f3f46;
+}
+
 /* Botões Seletores dos 3 Estados (Ao vivo no palco) */
 .grupo-estados {
   display: flex;
@@ -850,3 +1155,216 @@ body {
     box-shadow: none;
   }
 }
+
+/* ==========================================================================
+   ARQUITETURA DA NINHURA & TABELA DE FÍSICA DO SOLO (UERGS 2026)
+   ========================================================================== */
+.card-ninhura-box,
+.card-tabela-hidrica-box {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ninhura-diagrama-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.ninhura-camada-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texto-secundario);
+  text-align: center;
+}
+
+.ninhura-nos-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.ninhura-no-card {
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ninhura-no-icon {
+  font-size: 1.2rem;
+}
+
+.ninhura-no-card strong {
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.ninhura-no-card small {
+  font-size: 0.72rem;
+  color: var(--texto-secundario);
+}
+
+.badge-cultura {
+  font-size: 0.68rem;
+  background: rgba(255, 107, 0, 0.15);
+  color: var(--cor-laranja);
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin-top: 4px;
+}
+
+.ninhura-seta-conexao {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #38bdf8;
+  padding: 4px 0;
+}
+
+.ninhura-gateway-card {
+  background: #1e1b4b;
+  border: 1px solid #3b82f6;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ninhura-backend-card {
+  background: #142028;
+  border: 1px solid #0284c7;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ninhura-backend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ninhura-subbox {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 8px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ninhura-subbox small {
+  font-size: 0.7rem;
+  color: var(--texto-secundario);
+}
+
+.ninhura-subbox strong {
+  font-size: 0.78rem;
+  color: #e0f2fe;
+}
+
+.ninhura-app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ninhura-app-card {
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ninhura-app-card span {
+  font-size: 1.2rem;
+}
+
+.ninhura-app-card strong {
+  font-size: 0.84rem;
+  color: #fff;
+}
+
+.ninhura-app-card small {
+  font-size: 0.7rem;
+  color: var(--texto-secundario);
+}
+
+.box-decisao-engenharia {
+  background: rgba(255, 107, 0, 0.08);
+  border-left: 3px solid var(--cor-laranja);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #d4d4d8;
+}
+
+.box-decisao-engenharia strong {
+  color: var(--cor-laranja);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tabela-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabela-estado-hidrico {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.tabela-estado-hidrico th,
+.tabela-estado-hidrico td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--borda-suave);
+  vertical-align: middle;
+}
+
+.tabela-estado-hidrico th {
+  background: #18181b;
+  color: var(--texto-secundario);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.tag-kpa {
+  background: #27272a;
+  color: #e4e4e7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+

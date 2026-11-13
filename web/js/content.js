@@ -4,6 +4,234 @@
  * Desafio 02: Água para o Futuro e Drenagem Urbana (Agricultura Familiar no RS)
  */
 
+export const CONFIG_SOLOS = {
+  arenoso: {
+    id: 'arenoso',
+    nome: 'Solo Arenoso (Leve / Litoral)',
+    nomeCurto: 'Arenoso',
+    icone: '🏖️',
+    ccKpa: 10.0,
+    estresseKpa: 30.0,
+    severoKpa: 60.0,
+    murchaKpa: 1500.0,
+    descricao: 'Drena rapidamente por gravidade (macroporos). Início do estresse hídrico em 30 kPa.',
+    orientacaoBomba: 'Turnos curtos e frequentes. Em 30 kPa já necessita de irrigação imediata.'
+  },
+  franco: {
+    id: 'franco',
+    nome: 'Solo Franco / Médio',
+    nomeCurto: 'Franco (Médio)',
+    icone: '🌾',
+    ccKpa: 22.0,
+    estresseKpa: 45.0,
+    severoKpa: 80.0,
+    murchaKpa: 1500.0,
+    descricao: 'Textura média equilibrada. Capacidade de campo ideal em 22 kPa e estresse em 45 kPa.',
+    orientacaoBomba: 'Gotejamento matinal cirúrgico (40 min às 6h) antes da evaporação do meio-dia.'
+  },
+  argiloso: {
+    id: 'argiloso',
+    nome: 'Solo Argiloso (Terra Roxa / Várzea)',
+    nomeCurto: 'Argiloso',
+    icone: '🧱',
+    ccKpa: 33.0,
+    estresseKpa: 65.0,
+    severoKpa: 120.0,
+    murchaKpa: 1500.0,
+    descricao: 'Microporos retêm água fortemente. Capacidade de campo em 33 kPa; estresse apenas > 65 kPa.',
+    orientacaoBomba: 'Demora a secar. Em 33 kPa não ligue a bomba, pois há água de sobra para as raízes.'
+  }
+};
+
+/**
+ * Perfis de Cultura de Referência Científica (Embrapa Hortaliças & Milho e Sorgo)
+ * Limites reais de Tensão Matricial (kPa) para manejo de irrigação por tensiometria.
+ */
+export const PERFIS_CULTURA = {
+  olericultura_alface_argissolo: {
+    id: 'olericultura_alface_argissolo',
+    cultura: 'Alface Crespa',
+    categoria: 'Olericultura (Hortaliças)',
+    icone: '🥬',
+    solo: 'Argissolo (Textura Média)',
+    noId: 'esp32_no_01',
+    ccKpa: 12.0,
+    alertaKpa: 20.0,
+    manejoKpa: 28.0,
+    murchaKpa: 40.0,
+    taxaSecagemPadrao: 2.0,
+    fonte: 'Embrapa Hortaliças - Tensiometria',
+    descricao: 'Raízes superficiais (20 cm). Manejo crítico da Embrapa em 28 kPa.'
+  },
+  graos_milho_argissolo: {
+    id: 'graos_milho_argissolo',
+    cultura: 'Milho (Vegetativo)',
+    categoria: 'Grãos (Estágio Vegetativo)',
+    icone: '🌽',
+    solo: 'Argissolo (Textura Média)',
+    noId: 'esp32_no_02',
+    ccKpa: 18.0,
+    alertaKpa: 35.0,
+    manejoKpa: 50.0,
+    murchaKpa: 80.0,
+    taxaSecagemPadrao: 2.0,
+    fonte: 'Embrapa Milho e Sorgo / Watermark 200SS',
+    descricao: 'Raízes mais profundas (40 cm). Limite crítico da Embrapa em 50 kPa.'
+  },
+  olericultura_tomate_argissolo: {
+    id: 'olericultura_tomate_argissolo',
+    cultura: 'Tomate / Morango',
+    categoria: 'Olericultura (Frutos)',
+    icone: '🍅',
+    solo: 'Argissolo (Textura Média)',
+    noId: 'esp32_no_01',
+    ccKpa: 15.0,
+    alertaKpa: 30.0,
+    manejoKpa: 38.0,
+    murchaKpa: 60.0,
+    taxaSecagemPadrao: 2.2,
+    fonte: 'Embrapa Hortaliças',
+    descricao: 'Sensível a estresse durante floração e pegamento (38 kPa).'
+  },
+  graos_feijao_textura_media: {
+    id: 'graos_feijao_textura_media',
+    cultura: 'Feijão',
+    categoria: 'Leguminosas',
+    icone: '🫘',
+    solo: 'Textura Média',
+    noId: 'esp32_no_02',
+    ccKpa: 20.0,
+    alertaKpa: 35.0,
+    manejoKpa: 45.0,
+    murchaKpa: 70.0,
+    taxaSecagemPadrao: 1.8,
+    fonte: 'Embrapa Arroz e Feijão / Clima Temperado',
+    descricao: 'Período crítico no florescimento; limite de manejo a 45 kPa.'
+  }
+};
+
+/**
+ * Calcula a previsão de estresse hídrico (dias restantes) com base
+ * na taxa de secagem (ΔkPa/dia) e no limite crítico da Embrapa.
+ */
+export function calcularPredicaoSecagem(tensaoAtualKpa, idPerfil = 'olericultura_alface_argissolo', taxaSecagem = 2.0) {
+  const p = PERFIS_CULTURA[idPerfil] || PERFIS_CULTURA.olericultura_alface_argissolo;
+  const t = Math.max(0.0, parseFloat(tensaoAtualKpa) || p.ccKpa);
+  const taxa = Math.max(0.5, parseFloat(taxaSecagem) || 2.0);
+  const deltaAteManejo = p.manejoKpa - t;
+
+  let diasRestantes = 0.0;
+  let status = 'IDEAL';
+  let cor = '#10b981';
+  let mensagem = '';
+
+  if (deltaAteManejo <= 0) {
+    diasRestantes = 0.0;
+    status = 'CRITICO_IRRIGAR_JA';
+    cor = '#ef4444';
+    mensagem = `🚨 URGENTE: Limite Embrapa (${p.manejoKpa} kPa) ultrapassado! Tensão: ${t.toFixed(1)} kPa. Irrigue imediatamente.`;
+  } else {
+    diasRestantes = Math.round((deltaAteManejo / taxa) * 10) / 10;
+    if (diasRestantes <= 1.0 || t >= p.alertaKpa) {
+      status = 'ALERTA_IMINENTE';
+      cor = diasRestantes <= 1.0 ? '#ef4444' : '#f59e0b';
+      mensagem = `⚠️ ATENÇÃO: ${p.cultura} secando a ${taxa.toFixed(1)} kPa/dia. Restam ${diasRestantes} dia(s) para o limite (${p.manejoKpa} kPa).`;
+    } else if (diasRestantes <= 3.0) {
+      status = 'ATENCAO_PREVENTIVA';
+      cor = '#f59e0b';
+      mensagem = `🌾 MONITORAMENTO: Secagem normal (${taxa.toFixed(1)} kPa/dia). Restam aprox. ${diasRestantes} dias até o manejo.`;
+    } else {
+      status = 'IDEAL';
+      cor = '#10b981';
+      mensagem = `🌿 BOM ESTADO: Solo com água plena. Previsão de ${diasRestantes} dias até o ponto de manejo.`;
+    }
+  }
+
+  return {
+    perfil: p,
+    tensaoAtualKpa: t,
+    taxaSecagemKpaDia: taxa,
+    diasRestantes,
+    status,
+    cor,
+    mensagem
+  };
+}
+
+/**
+ * Calcula a porcentagem de Água Disponível (AD %) para a planta com base
+ * na curva de retenção do solo (Capacidade de Campo -> Estresse -> Ponto de Murcha).
+ */
+export function calcularAguaDisponivel(tensaoKpa, tipoSolo = 'franco') {
+  const cfg = CONFIG_SOLOS[tipoSolo] || CONFIG_SOLOS.franco;
+  const t = Math.max(0.0, parseFloat(tensaoKpa) || 0.0);
+
+  let adPct = 100.0;
+  if (t <= cfg.ccKpa) {
+    adPct = 100.0;
+  } else if (t <= cfg.estresseKpa) {
+    // Da Capacidade de Campo (100%) até o Início de Estresse (50%)
+    const fator = (t - cfg.ccKpa) / (cfg.estresseKpa - cfg.ccKpa);
+    adPct = 100.0 - (fator * 50.0);
+  } else if (t <= cfg.murchaKpa) {
+    // Do Estresse (50%) até o Ponto de Murcha Permanente (0%)
+    const logAtual = Math.log10(Math.max(1.0, t));
+    const logEstresse = Math.log10(cfg.estresseKpa);
+    const logMurcha = Math.log10(cfg.murchaKpa);
+    const fator = (logAtual - logEstresse) / (logMurcha - logEstresse);
+    adPct = Math.max(0.0, 50.0 - (fator * 50.0));
+  } else {
+    adPct = 0.0;
+  }
+
+  adPct = Math.round(adPct);
+
+  let condicao = 'Ótima (Água Plena)';
+  let cor = '#10b981';
+  if (t < (cfg.ccKpa * 0.4)) {
+    condicao = 'Solo Encharcado (Risco de Hipóxia)';
+    cor = '#ef4444';
+  } else if (adPct >= 60) {
+    condicao = 'Capacidade de Campo (Ideal)';
+    cor = '#10b981';
+  } else if (adPct >= 40) {
+    condicao = 'Faixa de Irrigação (Início de Estresse)';
+    cor = '#f59e0b';
+  } else {
+    condicao = 'Seca Severa / Estresse Crítico';
+    cor = '#ef4444';
+  }
+
+  return {
+    porcentagem: adPct,
+    condicao,
+    cor,
+    tipoSolo: cfg.id,
+    soloNome: cfg.nomeCurto,
+    ccKpa: cfg.ccKpa,
+    estresseKpa: cfg.estresseKpa
+  };
+}
+
+/**
+ * Classifica dinamicamente o estado eletrofisiológico de acordo com a textura do solo.
+ */
+export function classificarEstadoSolo(tensaoKpa, orpMv, tipoSolo = 'franco') {
+  const cfg = CONFIG_SOLOS[tipoSolo] || CONFIG_SOLOS.franco;
+  const t = parseFloat(tensaoKpa) || 0.0;
+  const orp = parseFloat(orpMv) || 0.0;
+
+  // Hipóxia: solo saturado por enchente (tensão abaixo de 40% da CC) ou anóxia redox
+  if (t < (cfg.ccKpa * 0.45) || orp < -100.0) {
+    return 'hipoxia';
+  }
+  // Sede: tensão superou o ponto de início de estresse hídrico do solo
+  if (t > cfg.estresseKpa) {
+    return 'sede';
+  }
+  return 'hidratada';
+}
+
 export const TELEMETRIA_ESTADOS = {
   hidratada: {
     id: 'hidratada',
@@ -121,3 +349,72 @@ export const DADOS_GRAFICO_ENERGIA = {
   consumo: [1800, 14, 45], // mAh/dia (escala logarítmica)
   cores: ['#ef4444', '#10b981', '#38bdf8']
 };
+
+/**
+ * Tabela Científica de Potencial Matricial (Ψm), Água Disponível (AD %) e Condição da Planta
+ * Referência Clássica de Manejo e Física do Solo (Embrapa).
+ */
+export const ESTADOS_HIDRICOS_SOLO = [
+  {
+    estado: 'Saturação',
+    potencialMatricial: '0 kPa',
+    aguaDisponivel: '100%',
+    condicao: 'Excesso de água e falta de oxigênio nas raízes (hipóxia/anóxia radicular).',
+    cor: '#38bdf8'
+  },
+  {
+    estado: 'Capacidade de Campo (CC)',
+    potencialMatricial: '-10 kPa (arenoso) a -33 kPa (argiloso)',
+    aguaDisponivel: '100% (Limite superior)',
+    condicao: 'Condição ideal de umidade e aeração.',
+    cor: '#10b981'
+  },
+  {
+    estado: 'Início do Estresse (Fator p)',
+    potencialMatricial: '-30 kPa a -70 kPa',
+    aguaDisponivel: '40% a 60% restantes',
+    condicao: 'Ponto crítico para reiniciar a irrigação sem perda produtiva.',
+    cor: '#f59e0b'
+  },
+  {
+    estado: 'Estresse Moderado a Severo',
+    potencialMatricial: '-100 kPa a -500 kPa',
+    aguaDisponivel: '15% a 35% restantes',
+    condicao: 'Fechamento estomático, redução da fotossíntese e murcha.',
+    cor: '#ef4444'
+  },
+  {
+    estado: 'Ponto de Murcha Permanente (PMP)',
+    potencialMatricial: '-1.500 kPa (-1,5 MPa)',
+    aguaDisponivel: '0%',
+    condicao: 'Água fortemente retida; a planta não recupera a turgidez.',
+    cor: '#7f1d1d'
+  }
+];
+
+/**
+ * Arquitetura Geral da Ninhura (Topologia Mesh ESP-NOW + Gateway)
+ */
+export const ARQUITETURA_NINHURA = {
+  camadaAquisicao: [
+    { no: 'Nó 1', micro: 'ESP32', sensor: 'Potencial Matricial (Ψm) + Bioimpedância', cultura: 'Alface Crespa', talhao: 'Talhão 01' },
+    { no: 'Nó 2', micro: 'ESP32', sensor: 'Potencial Matricial (Ψm) + CE Solos', cultura: 'Milho Vegetativo', talhao: 'Talhão 02' },
+    { no: 'Nó 3', micro: 'ESP32', sensor: 'Potencial Matricial (Ψm) + Redox ORP', cultura: 'Feijão', talhao: 'Talhão 03' }
+  ],
+  protocoloLocal: 'ESP-NOW (2.4 GHz sem fio ponto-a-multiponto de ultra-baixo consumo)',
+  gateway: {
+    dispositivo: 'ESP32 Gateway',
+    funcao: 'Recepção dos pacotes ESP-NOW, identificação do talhão e encaminhamento seguro',
+    uplink: 'Wi-Fi / 4G LTE via HTTP POST'
+  },
+  backendFastapi: {
+    bancoDados: 'SQLite (Leituras históricas 7 dias + Telemetria ao vivo + Perfis Embrapa)',
+    motorAlertas: 'Regras agronômicas Embrapa + Predição de taxa de secagem (ΔkPa/dia) + Fator p'
+  },
+  aplicacoes: {
+    dashboard: 'WebApp Mobile-First (Gráficos em tempo real, visualização da Ninhura, Laudo PROAGRO)',
+    telegramBot: 'Alertas automáticos, consultas em linguagem simples e síntese de voz (TTS) para agricultores'
+  },
+  decisaoEngenharia: 'O ESP32 NÃO se comunica diretamente com o Telegram: os nós operam em Deep Sleep via rádio ESP-NOW leve (sem o pesado handshake TLS/TCP do Telegram), economizando bateria por semanas. Toda a lógica de regras agronômicas, alertas e formatação reside no FastAPI.'
+};
+
