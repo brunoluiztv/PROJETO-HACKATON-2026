@@ -18,7 +18,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("teko_bot")
 
 import telebot
+from telebot import apihelper
 from dotenv import load_dotenv
+
+apihelper.CONNECT_TIMEOUT = 30
+apihelper.READ_TIMEOUT = 60
+apihelper.RETRY_ON_ERROR = True
 from telebot.types import (
     ReplyKeyboardMarkup,
     KeyboardButton,
@@ -105,31 +110,65 @@ def inline_plant_state_keyboard():
     return markup
 
 
+_cached_avatar_file_id = None
+
+
 @bot.message_handler(commands=["start", "ajuda"])
 def send_welcome(message):
+    global _cached_avatar_file_id
     nome = message.from_user.first_name or "amigo(a) produtor(a)"
-    avatar_path = os.path.join(_bot_dir, "assets", "teko_bot_avatar_512.png")
-    if not os.path.exists(avatar_path):
-        avatar_path = os.path.join(_bot_dir, "assets", "bot_avatar_hackathon.png")
-    
-    if os.path.exists(avatar_path):
+    texto_boas_vindas = c.BOAS_VINDAS.format(nome=nome)
+
+    enviou_foto = False
+    if _cached_avatar_file_id:
         try:
-            with open(avatar_path, "rb") as photo:
-                bot.send_photo(
-                    message.chat.id,
-                    photo=photo,
-                    caption=c.BOAS_VINDAS.format(nome=nome),
-                    reply_markup=inline_welcome_keyboard()
-                )
+            bot.send_photo(
+                message.chat.id,
+                photo=_cached_avatar_file_id,
+                caption=texto_boas_vindas,
+                reply_markup=inline_welcome_keyboard()
+            )
+            enviou_foto = True
+        except Exception as e:
+            logger.warning(f"Erro ao reenviar foto com file_id: {e}")
+
+    if not enviou_foto:
+        avatar_path = os.path.join(_bot_dir, "assets", "teko_bot_avatar_512.png")
+        if not os.path.exists(avatar_path):
+            avatar_path = os.path.join(_bot_dir, "assets", "bot_avatar_hackathon.png")
+        if os.path.exists(avatar_path):
+            try:
+                with open(avatar_path, "rb") as photo:
+                    res = bot.send_photo(
+                        message.chat.id,
+                        photo=photo,
+                        caption=texto_boas_vindas,
+                        reply_markup=inline_welcome_keyboard()
+                    )
+                    if res and res.photo:
+                        _cached_avatar_file_id = res.photo[-1].file_id
+                enviou_foto = True
+            except Exception as e:
+                logger.warning(f"Erro ao enviar foto de boas-vindas: {e}")
+
+    if not enviou_foto:
+        try:
             bot.send_message(
                 message.chat.id,
-                "🌾 <b>Teclado do Produtor Ativado:</b> Toque nos botões abaixo a qualquer momento 👇",
-                reply_markup=main_menu_keyboard()
+                texto_boas_vindas,
+                reply_markup=inline_welcome_keyboard()
             )
-            return
         except Exception as e:
-            logger.warning(f"Erro ao enviar foto de boas-vindas: {e}")
-    bot.send_message(message.chat.id, c.BOAS_VINDAS.format(nome=nome), reply_markup=main_menu_keyboard())
+            logger.error(f"Erro ao enviar texto de boas-vindas: {e}")
+
+    try:
+        bot.send_message(
+            message.chat.id,
+            "🌾 <b>Teclado do Produtor Ativado:</b> Toque nos botões abaixo a qualquer momento 👇",
+            reply_markup=main_menu_keyboard()
+        )
+    except Exception as e:
+        logger.error(f"Erro ao enviar teclado fixo: {e}")
 
 
 @bot.message_handler(content_types=["voice", "audio"])
