@@ -276,12 +276,23 @@ function initSeletorCultura() {
       atualizarAguaDisponivel(tensaoAtualKpa);
       atualizarPredicaoUi(tensaoAtualKpa);
       renderChartSecagem(perfilCulturaAtual);
+
+      const badgeModo = document.getElementById('badge-modo-operacao');
+      const textoModo = document.getElementById('texto-modo-operacao');
+      if (badgeModo) {
+        badgeModo.textContent = '🧪 Modo Demonstração & Pitch (Banca)';
+        badgeModo.className = 'badge-modo-pitch';
+      }
+      if (textoModo) {
+        textoModo.textContent = 'Simule os 3 cenários da banca ou observe a classificação 100% autônoma pelo ESP32:';
+      }
+
       try {
         await fetch('http://127.0.0.1:8000/api/demo/reset', { method: 'POST' });
       } catch {}
       const liveRegion = document.getElementById('sr-anuncios');
       if (liveRegion) {
-        liveRegion.textContent = 'Histórico padrão de monitoramento restaurado com sucesso.';
+        liveRegion.textContent = 'Parâmetros de calibração padrão restaurados com sucesso.';
       }
     });
   }
@@ -669,6 +680,9 @@ function initPollingBackend() {
       if (!res.ok) return;
       const data = await res.json();
 
+      const badgeModo = document.getElementById('badge-modo-operacao');
+      const textoModo = document.getElementById('texto-modo-operacao');
+
       if (data && data.sensor_fisico_online) {
         if (bannerEl) {
           bannerEl.style.display = 'flex';
@@ -678,6 +692,14 @@ function initPollingBackend() {
         }
         if (textoEl) textoEl.textContent = '● SENSOR FÍSICO ONLINE (ESP32 - GPIO 34)';
         if (detalhesEl) detalhesEl.textContent = `${data.tensao_kpa} kPa (${data.segundos_desde_leitura}s atrás)`;
+
+        if (badgeModo) {
+          badgeModo.textContent = '📡 Telemetria Autônoma do ESP32 Ativa';
+          badgeModo.className = 'badge-modo-autonomo';
+        }
+        if (textoModo) {
+          textoModo.textContent = 'O biossensor físico está classificando a lavoura em tempo real sem intervenção humana:';
+        }
 
         // 1. Sincroniza estado estrutural primeiro (canvas, botões, semáforo)
         if (data.estado && data.estado !== estadoAtual) {
@@ -718,6 +740,13 @@ function initPollingBackend() {
         }
       } else {
         if (bannerEl) bannerEl.style.display = 'none';
+        if (badgeModo && badgeModo.className !== 'badge-modo-pitch') {
+          badgeModo.textContent = '🧪 Modo Demonstração & Pitch (Banca)';
+          badgeModo.className = 'badge-modo-pitch';
+        }
+        if (textoModo && !textoModo.textContent.includes('Simule')) {
+          textoModo.textContent = 'Simule os 3 cenários da banca ou observe a classificação 100% autônoma pelo ESP32:';
+        }
       }
     } catch {
       // Backend offline: modo contingência silencioso

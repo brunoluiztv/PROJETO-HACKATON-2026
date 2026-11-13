@@ -9,10 +9,10 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
-  <link rel="stylesheet" href="css/styles.css?v=10">
+  <link rel="stylesheet" href="css/styles.css?v=11">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=10"></script>
+  <script type="module" src="js/app.js?v=11"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -138,12 +138,12 @@
           </div>
           <p id="pred-msg-texto" class="predicao-mensagem">Solo com boa umidade. Restam 9 dias de segurança até o manejo Embrapa.</p>
           <div class="predicao-acoes">
-            <button type="button" id="btn-gatilho-caetano" class="btn-gatilho-teste" title="Capturar leitura em tempo real do sensor físico ESP32">
+            <button type="button" id="btn-gatilho-caetano" class="btn-gatilho-teste" title="Sincronizar telemetria em tempo real do sensor físico ESP32">
               <span>📡</span>
-              <strong>Coletar Leitura do Sensor Físico (Ao Vivo)</strong>
+              <strong>Sincronizar Leitura do Sensor Físico (ESP32)</strong>
             </button>
-            <button type="button" id="btn-reset-demo" class="btn-reset-teste" title="Restaurar histórico padrão de monitoramento">
-              <span>🔄</span> Restaurar Histórico
+            <button type="button" id="btn-reset-demo" class="btn-reset-teste" title="Restaurar parâmetros de calibração padrão">
+              <span>🔄</span> Restaurar Calibração
             </button>
           </div>
         </div>
@@ -153,6 +153,14 @@
       <div class="card-canvas-planta">
         <canvas id="canvas-planta" role="img" aria-label="Desenho animado do caule com biossensor laranja e raiz com haste bioenergética"></canvas>
         <p class="canvas-legenda">Clipe de Grafite + Bio-hidrogel KCl (50k/1kHz) · Haste P-MFC Geobacter (ORP)</p>
+      </div>
+
+      <!-- Painel de Modos: Simulação de Bancada vs Telemetria Autônoma -->
+      <div id="modo-operacao-box" class="modo-operacao-box">
+        <div class="modo-operacao-header">
+          <span id="badge-modo-operacao" class="badge-modo-pitch">🧪 Modo Demonstração & Pitch (Banca)</span>
+          <span id="texto-modo-operacao" class="modo-operacao-desc">Simule os 3 cenários da banca ou observe a classificação 100% autônoma pelo ESP32:</span>
+        </div>
       </div>
 
       <!-- Botões de Simulação dos 3 Estados -->

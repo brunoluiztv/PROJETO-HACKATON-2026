@@ -540,6 +540,53 @@ body {
   background: #3f3f46;
 }
 
+/* Painel de Modos: Simulação de Bancada vs Telemetria Autônoma */
+.modo-operacao-box {
+  margin: 14px 0 8px 0;
+  padding: 8px 12px;
+  background: rgba(39, 39, 42, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+}
+
+.modo-operacao-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge-modo-pitch {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-modo-autonomo {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.modo-operacao-desc {
+  font-size: 0.74rem;
+  color: #a1a1aa;
+  line-height: 1.35;
+}
+
 /* Botões Seletores dos 3 Estados (Ao vivo no palco) */
 .grupo-estados {
   display: flex;
