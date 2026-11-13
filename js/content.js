@@ -14,6 +14,8 @@ export const CONFIG_SOLOS = {
     estresseKpa: 30.0,
     severoKpa: 60.0,
     murchaKpa: 1500.0,
+    litrosDiaHaPoupados: 4800,
+    reaisDiaHaPoupados: 43.5,
     descricao: 'Drena rapidamente por gravidade (macroporos). Início do estresse hídrico em 30 kPa.',
     orientacaoBomba: 'Turnos curtos e frequentes. Em 30 kPa já necessita de irrigação imediata.'
   },
@@ -26,6 +28,8 @@ export const CONFIG_SOLOS = {
     estresseKpa: 45.0,
     severoKpa: 80.0,
     murchaKpa: 1500.0,
+    litrosDiaHaPoupados: 4200,
+    reaisDiaHaPoupados: 38.0,
     descricao: 'Textura média equilibrada. Capacidade de campo ideal em 22 kPa e estresse em 45 kPa.',
     orientacaoBomba: 'Gotejamento matinal cirúrgico (40 min às 6h) antes da evaporação do meio-dia.'
   },
@@ -38,10 +42,28 @@ export const CONFIG_SOLOS = {
     estresseKpa: 65.0,
     severoKpa: 120.0,
     murchaKpa: 1500.0,
+    litrosDiaHaPoupados: 5400,
+    reaisDiaHaPoupados: 49.0,
     descricao: 'Microporos retêm água fortemente. Capacidade de campo em 33 kPa; estresse apenas > 65 kPa.',
     orientacaoBomba: 'Demora a secar. Em 33 kPa não ligue a bomba, pois há água de sobra para as raízes.'
   }
 };
+
+export const MUNICIPIOS_RS = {
+  bento_goncalves: { nome: 'Bento Gonçalves (Serra Gaúcha)', lat: -29.1722, lon: -51.5189, alt: 620 },
+  caxias_do_sul: { nome: 'Caxias do Sul (Serra)', lat: -29.1678, lon: -51.1794, alt: 817 },
+  santa_maria: { nome: 'Santa Maria (Depressão Central)', lat: -29.6842, lon: -53.8069, alt: 113 },
+  pelotas: { nome: 'Pelotas (Zona Sul)', lat: -31.7654, lon: -52.3376, alt: 7 },
+  passo_fundo: { nome: 'Passo Fundo (Planalto Médio)', lat: -28.2628, lon: -52.4067, alt: 687 },
+  porto_alegre: { nome: 'Porto Alegre (Metropolitana)', lat: -30.0346, lon: -51.2177, alt: 10 }
+};
+
+export const CUSTOS_ASSOCIADOS_INSTALACAO = [
+  { item: 'BOM Puro de Componentes (Nó Sentinela)', fornecedor: 'AliExpress / Shopee / ML', custo: 42.0 },
+  { item: 'Mão de Obra de Montagem e Solda SMD/THT', fornecedor: 'Técnico local / Lote artesanal', custo: 15.0 },
+  { item: 'Frete Consolidado e Logística Rural', fornecedor: 'Transportadora regional RS', custo: 5.0 },
+  { item: 'Estaca de Campo, Fixação Mecânica e Instalação', fornecedor: 'Materiais de fixação local', custo: 8.0 }
+];
 
 /**
  * Perfis de Cultura de Referência Científica (Embrapa Hortaliças & Milho e Sorgo)
@@ -84,7 +106,7 @@ export const PERFIS_CULTURA = {
     categoria: 'Olericultura (Frutos)',
     icone: '🍅',
     solo: 'Argissolo (Textura Média)',
-    noId: 'esp32_no_01',
+    noId: 'esp32_no_04',
     ccKpa: 15.0,
     alertaKpa: 30.0,
     manejoKpa: 38.0,
@@ -99,7 +121,7 @@ export const PERFIS_CULTURA = {
     categoria: 'Leguminosas',
     icone: '🫘',
     solo: 'Textura Média',
-    noId: 'esp32_no_02',
+    noId: 'esp32_no_03',
     ccKpa: 20.0,
     alertaKpa: 35.0,
     manejoKpa: 45.0,

@@ -221,11 +221,12 @@ body {
 
 #canvas-planta {
   width: 100%;
-  max-width: 480px;
-  height: 240px;
+  max-width: 520px;
+  height: 340px;
   display: block;
-  border-radius: 8px;
-  background: #000000;
+  border-radius: 10px;
+  background: #09090b;
+  border: 1px solid var(--borda-suave);
 }
 
 .canvas-legenda {
@@ -1401,10 +1402,17 @@ body {
   color: #d4d4d8;
 }
 
-.box-decisao-engenharia strong {
+.box-decisao-engenharia > strong:first-child {
   color: var(--cor-laranja);
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.box-decisao-engenharia p strong {
+  display: inline;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .tabela-scroll-container {
@@ -1443,5 +1451,299 @@ body {
   font-family: monospace;
   font-size: 0.8rem;
   white-space: nowrap;
+}
+
+/* ==========================================================================
+   Widget de Georreferenciamento & Clima do Talhão (Open-Meteo)
+   ========================================================================== */
+.card-clima-box {
+  background: rgba(14, 165, 233, 0.06);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: var(--raio-borda);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.clima-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.clima-local-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clima-cidade-titulo {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+.clima-coords-sub {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+.clima-btn-gps {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.clima-btn-gps:hover {
+  background: rgba(56, 189, 248, 0.25);
+}
+
+.clima-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.clima-item {
+  background: #18181b;
+  border: 1px solid var(--borda-suave);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clima-item-label {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.clima-item-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.clima-banner-recomendacao {
+  background: rgba(16, 185, 129, 0.12);
+  border-left: 3px solid #10b981;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #d1fae5;
+  line-height: 1.4;
+}
+
+.clima-banner-alerta {
+  background: rgba(239, 68, 68, 0.15);
+  border-left: 3px solid #ef4444;
+  color: #fca5a5;
+}
+
+/* ==========================================================================
+   Receita Agronômica Prescritiva
+   ========================================================================== */
+.receita-prescritiva-box {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-destaque);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.receita-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.receita-status-verde {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #10b981;
+}
+
+.receita-status-amarelo {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #f59e0b;
+  color: #f59e0b;
+}
+
+.receita-status-vermelho {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+.receita-status-azul {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+}
+
+/* ==========================================================================
+   Controles do Simulador de Hectares & Portes
+   ========================================================================== */
+.input-ha-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-hectares-box {
+  background: #18181b;
+  border: 1px solid var(--borda-destaque);
+  border-radius: 8px;
+  color: #ff6b00;
+  font-size: 1.1rem;
+  font-weight: 800;
+  width: 72px;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.botoes-porte-grid {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-porte-propriedade {
+  flex: 1;
+  min-width: 90px;
+  background: #18181b;
+  border: 1px solid var(--borda-suave);
+  color: #a1a1aa;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-porte-propriedade.ativo {
+  background: rgba(255, 107, 0, 0.15);
+  border-color: var(--cor-laranja);
+  color: #ffffff;
+}
+
+.box-economia-enchente {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px dashed rgba(56, 189, 248, 0.4);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: #bae6fd;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Painel de Monitoramento & Alertas do Gateway Local
+   ========================================================================== */
+.card-gateway-painel {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.tabela-gateway-nos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: 10px;
+}
+
+.tabela-gateway-nos th,
+.tabela-gateway-nos td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--borda-suave);
+  text-align: left;
+}
+
+.tabela-gateway-nos th {
+  background: #141416;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.gateway-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.gateway-status-online {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.gateway-status-alerta {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.gateway-status-erro {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.gateway-log-box {
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: #a1a1aa;
+  max-height: 120px;
+  overflow-y: auto;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.gateway-log-box .log-destaque {
+  color: #38bdf8;
+}
+
+.gateway-log-box .log-alerta {
+  color: #f59e0b;
+}
+
+.gateway-log-box .log-erro {
+  color: #ef4444;
 }
 

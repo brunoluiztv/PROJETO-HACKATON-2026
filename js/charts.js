@@ -6,7 +6,7 @@
  * 3. Simulador de Hectares e Economia na Irrigação
  */
 
-import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA } from './content.js?v=7';
+import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA, CONFIG_SOLOS } from './content.js?v=7';
 
 let chartDivergenciaInstance = null;
 let chartEnergiaInstance = null;
@@ -38,7 +38,7 @@ function renderChartDivergencia() {
         labels: ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6 (Enchente)', 'Dia 7'],
         datasets: [
           {
-            label: '🌱 Tekó Biotech (Caule Real %)',
+            label: '🌱 Tekó In-Planta (Turgor Real do Caule %)',
             data: DADOS_GRAFICO_DIVERGENCIA.saudeCaule,
             borderColor: '#ff6b00',
             backgroundColor: 'rgba(255, 107, 0, 0.15)',
@@ -49,7 +49,7 @@ function renderChartDivergencia() {
             pointRadius: 5
           },
           {
-            label: '🪵 Sensor Comum de Solo (%)',
+            label: '🪵 Sensor Comum (Umidade da Terra %)',
             data: DADOS_GRAFICO_DIVERGENCIA.sensorSolo,
             borderColor: '#38bdf8',
             backgroundColor: 'rgba(56, 189, 248, 0.05)',
@@ -67,12 +67,18 @@ function renderChartDivergencia() {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            labels: { color: '#ffffff', font: { size: 11, family: 'sans-serif' } }
+            labels: { color: '#ffffff', font: { size: 10, family: 'sans-serif' } }
           },
           tooltip: {
-            backgroundColor: '#1e293b',
+            backgroundColor: '#0f172a',
             titleColor: '#ffffff',
-            bodyColor: '#cbd5e1'
+            bodyColor: '#cbd5e1',
+            callbacks: {
+              label: (item) => item.datasetIndex === 0
+                ? `🌱 Tekó In-Planta: ${item.raw}% (Turgor Celular Real)`
+                : `🪵 Sensor de Solo: ${item.raw}% (Umidade da Terra)`
+            }
+          }
           }
         },
         scales: {
@@ -273,35 +279,78 @@ function drawNativeEnergyChart(canvas) {
 }
 
 /**
- * 3. Simulador de Hectares e Economia
+ * 3. Simulador de Hectares e Economia (Até 20 ha - Média Nacional IBGE)
+ * Sincronizado com Input Numérico, Segmentação por Porte e Física do Solo
  */
 export function initHectaresSimulator() {
   const slider = document.getElementById('slider-hectares');
+  const inputHa = document.getElementById('input-hectares');
   const spanHectares = document.getElementById('val-hectares');
   const spanSensores = document.getElementById('calc-sensores');
   const spanLitros = document.getElementById('calc-litros');
   const spanReais = document.getElementById('calc-reais');
   const spanDiesel = document.getElementById('calc-diesel');
+  const spanEconomiaEnchente = document.getElementById('calc-economia-enchente');
+  const botoesPorte = document.querySelectorAll('.btn-porte-propriedade');
 
-  if (!slider) return;
+  function obterTipoSoloAtivo() {
+    return localStorage.getItem('teko_tipo_solo') || localStorage.getItem('phytosense_tipo_solo') || 'franco';
+  }
 
-  function atualizarCalculos() {
-    const ha = parseFloat(slider.value) || 1;
-    if (spanHectares) spanHectares.textContent = ha.toFixed(0);
+  function recalcular(haValor) {
+    let ha = Math.max(0.5, Math.min(100, parseFloat(haValor) || 1));
+    if (spanHectares) spanHectares.textContent = ha % 1 === 0 ? ha.toFixed(0) : ha.toFixed(1);
+    if (inputHa && parseFloat(inputHa.value) !== ha) inputHa.value = ha;
+    if (slider && parseFloat(slider.value) !== Math.min(20, Math.round(ha))) {
+      slider.value = Math.min(20, Math.round(ha));
+    }
 
-    const sensores = Math.round(ha);
-    const litrosMes = ha * 4200 * 8; // 8 dias de bomba desligada por mês
-    const reaisMes = ha * 38.0 * 8;
-    const dieselLitros = Math.round(reaisMes / 6.20); // Média diesel agrícola RS
+    const soloKey = obterTipoSoloAtivo();
+    const soloCfg = (CONFIG_SOLOS && CONFIG_SOLOS[soloKey]) || { litrosDiaHaPoupados: 4200, reaisDiaHaPoupados: 38.0 };
+
+    const diasPoupadosMes = 8;
+    const litrosMes = Math.round(ha * soloCfg.litrosDiaHaPoupados * diasPoupadosMes);
+    const reaisMes = ha * soloCfg.reaisDiaHaPoupados * diasPoupadosMes;
+    const dieselLitros = Math.round(reaisMes / 6.20);
+    const sensores = Math.max(1, Math.round(ha * 0.8));
 
     if (spanSensores) spanSensores.textContent = `${sensores} Sentinela${sensores > 1 ? 's' : ''}`;
     if (spanLitros) spanLitros.textContent = `${litrosMes.toLocaleString('pt-BR')} L/mês`;
     if (spanReais) spanReais.textContent = `R$ ${reaisMes.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    if (spanDiesel) spanDiesel.textContent = `~${dieselLitros} litros de diesel`;
+    if (spanDiesel) spanDiesel.textContent = `~${dieselLitros} litros diesel`;
+
+    // Indicador adicional de salvaguarda pós-enchente / alagamento
+    if (spanEconomiaEnchente) {
+      const aguaPoupadaEnchente = Math.round(ha * 42000);
+      const reaisPoupadosEnchente = Math.round(ha * 315);
+      spanEconomiaEnchente.textContent = `Economia de ${aguaPoupadaEnchente.toLocaleString('pt-BR')} L de água e R$ ${reaisPoupadosEnchente.toLocaleString('pt-BR')},00 em combustível ao suspender motobombas após chuvas torrenciais.`;
+    }
   }
 
-  slider.addEventListener('input', atualizarCalculos);
-  atualizarCalculos();
+  if (slider) {
+    slider.addEventListener('input', () => recalcular(slider.value));
+  }
+  if (inputHa) {
+    inputHa.addEventListener('input', () => recalcular(inputHa.value));
+    inputHa.addEventListener('change', () => recalcular(inputHa.value));
+  }
+
+  botoesPorte.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      botoesPorte.forEach((b) => b.classList.remove('ativo'));
+      btn.classList.add('ativo');
+      const targetHa = parseFloat(btn.getAttribute('data-ha')) || 3;
+      recalcular(targetHa);
+    });
+  });
+
+  // Exportar para atualizar dinamicamente quando o usuário mudar o solo na tela de triagem
+  window.recalcularSimuladorHectares = () => {
+    const haAtual = inputHa ? parseFloat(inputHa.value) : (slider ? parseFloat(slider.value) : 3);
+    recalcular(haAtual);
+  };
+
+  recalcular(slider ? slider.value : 3);
 }
 
 /**
@@ -337,12 +386,12 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
           {
             label: `🌱 Tensão no Solo (${perfil.cultura} - kPa)`,
             data: serieTensao,
-            borderColor: '#ff6b00',
-            backgroundColor: 'rgba(255, 107, 0, 0.2)',
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56, 189, 248, 0.15)',
             borderWidth: 3,
             fill: true,
             tension: 0.3,
-            pointBackgroundColor: '#ff6b00',
+            pointBackgroundColor: '#38bdf8',
             pointRadius: 5
           },
           {
@@ -357,7 +406,7 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
           {
             label: `⚠️ Alerta Atenção (${perfil.alertaKpa} kPa)`,
             data: serieAlerta,
-            borderColor: '#f59e0b',
+            borderColor: '#eab308',
             borderWidth: 1.5,
             borderDash: [3, 3],
             fill: false,

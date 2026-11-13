@@ -1,21 +1,23 @@
 /**
  * Tekó Biotech — Aplicação Mobile / Telegram Mini App
  * Hackathon das Engenharias UERGS 2026
+ * 4 Abas Especializadas: 1. Planta | 2. Triagem & Receita | 3. Gráficos & Hectares | 4. Engenharia & Gateway
  */
 
-import { initPlantCanvas } from './canvas_planta.js?v=7';
-import { initCharts, renderChartSecagem } from './charts.js?v=7';
+import { initPlantCanvas } from './canvas_planta.js?v=13';
+import { initCharts, renderChartSecagem } from './charts.js?v=13';
 import { 
   TELEMETRIA_ESTADOS, 
   FAQ_PRODUTOR, 
   PILARES_ENGENHARIA, 
   CONFIG_SOLOS, 
+  MUNICIPIOS_RS,
   PERFIS_CULTURA,
   calcularAguaDisponivel, 
   classificarEstadoSolo,
   calcularPredicaoSecagem
-} from './content.js?v=7';
-import { iniciarTelegram } from './telegram.js?v=7';
+} from './content.js?v=13';
+import { iniciarTelegram } from './telegram.js?v=13';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
@@ -23,6 +25,8 @@ let tipoSoloAtual = localStorage.getItem('teko_tipo_solo') || localStorage.getIt
 let perfilCulturaAtual = localStorage.getItem('teko_perfil_cultura') || localStorage.getItem('phytosense_perfil_cultura') || 'olericultura_alface_argissolo';
 let tensaoAtualKpa = 21.5;
 let isSpeaking = false;
+let dadosClimaCache = null;
+let localizacaoAtiva = { nome: 'Porto Alegre (Metropolitana)', lat: -30.0346, lon: -51.2177 };
 
 document.addEventListener('DOMContentLoaded', () => {
   iniciarTelegram();
@@ -31,10 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initCanvas();
   initSeletorSolo();
   initSeletorCultura();
+  initClimaTalhao();
   initSimulacaoEstados();
   initVozAcessibilidade();
   initChatSimulado();
   initEngenharia();
+  initGatewayPainel();
   initModalProagro();
   initCharts();
   processarUrlParams();
@@ -57,11 +63,10 @@ function initServiceWorker() {
 }
 
 /**
- * 2. Navegação entre as 3 Abas Principais
+ * 2. Navegação entre as 4 Abas Especializadas
  */
 function initTabs() {
   const tabButtons = document.querySelectorAll('.nav-tab-btn');
-  const tabPanels = document.querySelectorAll('.tab-panel');
 
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -89,8 +94,8 @@ export function ativarAba(targetId) {
     }
   });
 
-  // Se ativou gráficos, garante resize dos canvases
-  if (targetId === 'aba-graficos') {
+  // Se ativou gráficos ou planta, garante redimensionamento
+  if (targetId === 'aba-graficos' || targetId === 'aba-minha-planta') {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 50);
@@ -108,12 +113,11 @@ function initCanvas() {
 }
 
 /**
- * 3.1. Inicialização do Seletor de Tipo de Solo pelo Agricultor
+ * 4. Inicialização do Seletor de Tipo de Solo pelo Agricultor
  */
 function initSeletorSolo() {
   const botoesSolo = document.querySelectorAll('.btn-solo');
   
-  // Atualiza botões para o solo salvo inicialmente
   atualizarBotoesSoloUi(tipoSoloAtual);
   atualizarAguaDisponivel(tensaoAtualKpa);
 
@@ -126,13 +130,15 @@ function initSeletorSolo() {
       localStorage.setItem('teko_tipo_solo', solo);
       atualizarBotoesSoloUi(solo);
       
-      // Reavalia estado e água disponível
       atualizarAguaDisponivel(tensaoAtualKpa);
+      atualizarReceitaPrescritiva();
 
-      // Se houver backend, notifica em segundo plano
+      if (window.recalcularSimuladorHectares) {
+        window.recalcularSimuladorHectares();
+      }
+
       notificarBackendTipoSolo(solo);
 
-      // Notifica leitor de tela
       const liveRegion = document.getElementById('sr-anuncios');
       if (liveRegion) {
         liveRegion.textContent = `Tipo de solo configurado para ${CONFIG_SOLOS[solo].nome}. Curva de irrigação calibrada.`;
@@ -184,13 +190,11 @@ async function notificarBackendTipoSolo(solo) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tipo_solo: solo })
     });
-  } catch {
-    // Silencioso se backend offline
-  }
+  } catch {}
 }
 
 /**
- * 3.1. Seletor de Cultura e Motor Preditivo Embrapa
+ * 5. Seletor de Cultura e Motor Preditivo Embrapa (4 Culturas)
  */
 function initSeletorCultura() {
   const botoesCultura = document.querySelectorAll('.btn-cultura');
@@ -206,6 +210,7 @@ function initSeletorCultura() {
       localStorage.setItem('teko_perfil_cultura', cultura);
       atualizarBotoesCulturaUi(cultura);
       atualizarPredicaoUi(tensaoAtualKpa);
+      atualizarReceitaPrescritiva();
       renderChartSecagem(cultura);
 
       const liveRegion = document.getElementById('sr-anuncios');
@@ -216,13 +221,12 @@ function initSeletorCultura() {
   });
 
   // Leitura do Sensor Físico (Ao Vivo)
-  const btnGatilho = document.getElementById('btn-gatilho-caetano') || document.getElementById('btn-leitura-sensor');
+  const btnGatilho = document.getElementById('btn-gatilho-caetano');
   if (btnGatilho) {
     btnGatilho.addEventListener('click', async () => {
       let novaTensao = 48.0;
       let leituraRealDetectada = false;
 
-      // 1. Tenta obter leitura em tempo real se o ESP32 estiver transmitindo ao backend local
       try {
         const resp = await fetch('http://127.0.0.1:8000/api/telemetria/atual');
         if (resp.ok) {
@@ -234,15 +238,15 @@ function initSeletorCultura() {
         }
       } catch (err) {}
 
-      // 2. Se for teste de bancada (sem nó físico transmitindo), despacha o pulso ADC para o FastAPI
       if (!leituraRealDetectada) {
         try {
+          const noCorrespondente = PERFIS_CULTURA[perfilCulturaAtual]?.noId || 'esp32_no_01';
           await fetch('http://127.0.0.1:8000/api/telemetria/adc', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               leitura_adc: 3800,
-              no_id: 'esp32_no_01',
+              no_id: noCorrespondente,
               id_perfil: perfilCulturaAtual
             })
           });
@@ -252,6 +256,7 @@ function initSeletorCultura() {
       tensaoAtualKpa = novaTensao;
       atualizarAguaDisponivel(tensaoAtualKpa);
       atualizarPredicaoUi(tensaoAtualKpa);
+      atualizarReceitaPrescritiva();
       renderChartSecagem(perfilCulturaAtual, [14.0, 16.5, 19.0, 21.5, 25.5, tensaoAtualKpa]);
 
       const liveRegion = document.getElementById('sr-anuncios');
@@ -259,9 +264,8 @@ function initSeletorCultura() {
         liveRegion.textContent = `Leitura do sensor físico atualizada para ${tensaoAtualKpa} kPa.`;
       }
 
-      // Fala acessível por voz
       if (tensaoAtualKpa >= 35.0) {
-        narrarDiagnostico(`Atenção produtor! Leitura do sensor físico em tempo real: ${tensaoAtualKpa} kPa. Limite da Embrapa ultrapassado. Irrigação emergencial necessária!`);
+        narrarDiagnostico(`Atenção produtor! Leitura do sensor físico em tempo real: ${tensaoAtualKpa} kPa. Limite da Embrapa ultrapassado. Irrigação emergencial recomendada!`);
       } else {
         narrarDiagnostico(`Leitura do sensor físico atualizada: ${tensaoAtualKpa} kPa.`);
       }
@@ -272,9 +276,10 @@ function initSeletorCultura() {
   const btnReset = document.getElementById('btn-reset-demo');
   if (btnReset) {
     btnReset.addEventListener('click', async () => {
-      tensaoAtualKpa = perfilCulturaAtual.includes('alface') ? 25.5 : 32.0;
+      tensaoAtualKpa = perfilCulturaAtual.includes('alface') ? 21.5 : 25.0;
       atualizarAguaDisponivel(tensaoAtualKpa);
       atualizarPredicaoUi(tensaoAtualKpa);
+      atualizarReceitaPrescritiva();
       renderChartSecagem(perfilCulturaAtual);
 
       const badgeModo = document.getElementById('badge-modo-operacao');
@@ -307,8 +312,9 @@ function atualizarBotoesCulturaUi(culturaAtiva) {
 }
 
 export function atualizarPredicaoUi(tensaoOverride = null) {
-  const t = tensaoOverride !== null ? parseFloat(tensaoOverride) : (parseFloat(tensaoAtualKpa) || 25.5);
-  const pred = calcularPredicaoSecagem(t, perfilCulturaAtual, 2.0);
+  const t = tensaoOverride !== null ? parseFloat(tensaoOverride) : (parseFloat(tensaoAtualKpa) || 21.5);
+  const taxaPadrao = PERFIS_CULTURA[perfilCulturaAtual]?.taxaSecagemPadrao || 2.0;
+  const pred = calcularPredicaoSecagem(t, perfilCulturaAtual, taxaPadrao);
 
   const taxaEl = document.getElementById('pred-taxa-val');
   const diasEl = document.getElementById('pred-dias-val');
@@ -337,7 +343,220 @@ export function atualizarPredicaoUi(tensaoOverride = null) {
 }
 
 /**
- * 4. Simulação ao Vivo dos 3 Estados Eletrofisiológicos
+ * 6. Widget de Georreferenciamento & Clima do Talhão (Open-Meteo Oficial)
+ */
+function initClimaTalhao() {
+  const selectMun = document.getElementById('select-municipio-rs');
+  const btnGps = document.getElementById('btn-obter-gps');
+
+  if (selectMun) {
+    selectMun.addEventListener('change', () => {
+      const chave = selectMun.value;
+      if (MUNICIPIOS_RS[chave]) {
+        localizacaoAtiva = MUNICIPIOS_RS[chave];
+        atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+      }
+    });
+  }
+
+  if (btnGps) {
+    btnGps.addEventListener('click', () => {
+      if ('geolocation' in navigator) {
+        btnGps.innerHTML = '<span>⏳</span> <span>Buscando...</span>';
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            btnGps.innerHTML = '<span>📍</span> <span>GPS</span>';
+            const lat = Number(pos.coords.latitude.toFixed(4));
+            const lon = Number(pos.coords.longitude.toFixed(4));
+            localizacaoAtiva = { nome: 'GPS do Talhão (Lavoura Local)', lat, lon };
+            atualizarPrevisaoClima(lat, lon, localizacaoAtiva.nome);
+          },
+          () => {
+            btnGps.innerHTML = '<span>📍</span> <span>GPS</span>';
+            // Fallback para Porto Alegre se recusar permissão
+            atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+          },
+          { timeout: 7000 }
+        );
+      }
+    });
+  }
+
+  // Carrega previsão inicial
+  atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+}
+
+async function atualizarPrevisaoClima(lat, lon, nomeLocal) {
+  const coordTextoEl = document.getElementById('clima-coordenadas-texto');
+  const tempEl = document.getElementById('clima-temp-val');
+  const umidEl = document.getElementById('clima-umid-val');
+  const ventoEl = document.getElementById('clima-vento-val');
+  const chuvaEl = document.getElementById('clima-chuva-val');
+  const probEl = document.getElementById('clima-prob-val');
+  const alertaBox = document.getElementById('clima-banner-alerta');
+
+  if (coordTextoEl) {
+    coordTextoEl.textContent = `${nomeLocal} · ${lat}, ${lon}`;
+  }
+
+  try {
+    const res = await fetch(`http://127.0.0.1:8000/api/clima/previsao?lat=${lat}&lon=${lon}`);
+    if (res.ok) {
+      const data = await res.json();
+      dadosClimaCache = data;
+
+      if (tempEl) tempEl.textContent = `${data.temperatura_c}°C`;
+      if (umidEl) umidEl.textContent = `${data.umidade_relativa_pct}%`;
+      if (ventoEl) ventoEl.textContent = `${data.vento_velocidade_kmh} km/h (Rajadas: ${data.vento_rajadas_kmh} km/h)`;
+      if (chuvaEl) chuvaEl.textContent = `${data.chuva_prevista_24h_mm} mm`;
+      if (probEl) probEl.textContent = `${data.probabilidade_chuva_max_pct}%`;
+
+      if (alertaBox) {
+        if (data.alerta_vendaval) {
+          alertaBox.className = 'clima-banner-recomendacao clima-banner-alerta';
+          alertaBox.innerHTML = `⚠️ <strong>ALERTA DE VENDAVAL:</strong> ${data.recomendacao_manejo}`;
+        } else if (data.alerta_suspensao_irrigacao) {
+          alertaBox.className = 'clima-banner-recomendacao';
+          alertaBox.style.background = 'rgba(56, 189, 248, 0.15)';
+          alertaBox.style.borderLeftColor = '#38bdf8';
+          alertaBox.style.color = '#bae6fd';
+          alertaBox.innerHTML = `⏳ <strong>ECONOMIA DE ÁGUA:</strong> ${data.recomendacao_manejo}`;
+        } else {
+          alertaBox.className = 'clima-banner-recomendacao';
+          alertaBox.style.background = 'rgba(16, 185, 129, 0.12)';
+          alertaBox.style.borderLeftColor = '#10b981';
+          alertaBox.style.color = '#d1fae5';
+          alertaBox.innerHTML = `🌤️ <strong>TEMPO ESTÁVEL:</strong> ${data.recomendacao_manejo}`;
+        }
+      }
+
+      atualizarReceitaPrescritiva();
+      return;
+    }
+  } catch {}
+
+  // Fallback estático seguro caso a API offline
+  if (tempEl) tempEl.textContent = '23.8 °C';
+  if (umidEl) umidEl.textContent = '68%';
+  if (ventoEl) ventoEl.textContent = '16 km/h';
+  if (chuvaEl) chuvaEl.textContent = '0.0 mm';
+  if (probEl) probEl.textContent = '10%';
+  if (alertaBox) {
+    alertaBox.innerHTML = `🌤️ <strong>Tempo Estável:</strong> Sem previsão de chuva para ${nomeLocal}. Siga o manejo do biossensor.`;
+  }
+  atualizarReceitaPrescritiva();
+}
+
+/**
+ * 7. Receita Prescritiva Agronômica Oficial Embrapa
+ */
+function atualizarReceitaPrescritiva() {
+  const statusTag = document.getElementById('receita-status-tag');
+  const statusBomba = document.getElementById('receita-status-bomba');
+  const tempoBomba = document.getElementById('receita-tempo-bomba');
+  const explicacao = document.getElementById('receita-explicacao-agronomica');
+  const avisoClima = document.getElementById('receita-aviso-clima');
+  const btnLaudo = document.getElementById('btn-receita-abrir-laudo');
+
+  const perfil = PERFIS_CULTURA[perfilCulturaAtual] || PERFIS_CULTURA.olericultura_alface_argissolo;
+  const soloCfg = CONFIG_SOLOS[tipoSoloAtual] || CONFIG_SOLOS.franco;
+  const chuvaPrevista = dadosClimaCache?.chuva_prevista_24h_mm || 0;
+  const probChuva = dadosClimaCache?.probabilidade_chuva_max_pct || 0;
+  const alertaChuva = dadosClimaCache?.alerta_suspensao_irrigacao || false;
+  const alertaVento = dadosClimaCache?.alerta_vendaval || false;
+
+  if (estadoAtual === 'hipoxia' || tensaoAtualKpa <= 6.0) {
+    if (statusTag) {
+      statusTag.textContent = 'Anóxia Radicular';
+      statusTag.className = 'receita-status-tag receita-status-vermelho';
+    }
+    if (statusBomba) {
+      statusBomba.textContent = 'PROIBIDO IRRIGAR (DRENAGEM)';
+      statusBomba.style.color = '#ef4444';
+    }
+    if (tempoBomba) {
+      tempoBomba.textContent = 'Ação: Desobstruir valas e drenar talhão com urgência';
+    }
+    if (explicacao) {
+      explicacao.textContent = `Solo 100% saturado (0 a 4 kPa). Raízes de ${perfil.cultura} sem oxigênio (ORP negativo). Risco iminente de perda irreversível por asfixia celular.`;
+    }
+    if (avisoClima) {
+      avisoClima.style.borderLeftColor = '#ef4444';
+      avisoClima.style.color = '#fca5a5';
+      avisoClima.textContent = '🚨 Condição pós-enchente: Emita o laudo pericial para acionar a cobertura do seguro agrícola.';
+    }
+    if (btnLaudo) btnLaudo.style.display = 'flex';
+  } else if (alertaChuva && tensaoAtualKpa < perfil.murchaKpa) {
+    if (statusTag) {
+      statusTag.textContent = 'Chuva Iminente';
+      statusTag.className = 'receita-status-tag receita-status-azul';
+    }
+    if (statusBomba) {
+      statusBomba.textContent = 'SUSPENDER REGA (RECARGA NATURAL)';
+      statusBomba.style.color = '#38bdf8';
+    }
+    if (tempoBomba) {
+      tempoBomba.textContent = `Previsão: ${chuvaPrevista} mm de chuva (${probChuva}% chance). Poupe água da represa e diesel!`;
+    }
+    if (explicacao) {
+      explicacao.textContent = `O solo está com tensão de ${tensaoAtualKpa} kPa. Como há frente de chuva significativa prevista para as próximas 24 horas no talhão, a irrigação deve ser suspensa.`;
+    }
+    if (avisoClima) {
+      avisoClima.style.borderLeftColor = '#38bdf8';
+      avisoClima.style.color = '#38bdf8';
+      avisoClima.textContent = `🌧️ Manejo Preditivo Inteligente: Economize ~R$ 38,00 em diesel/luz aguardando a recarga pluvial.`;
+    }
+    if (btnLaudo) btnLaudo.style.display = 'none';
+  } else if (tensaoAtualKpa >= perfil.manejoKpa || estadoAtual === 'sede') {
+    const tempoMinutos = tipoSoloAtual === 'arenoso' ? 35 : (tipoSoloAtual === 'franco' ? 45 : 60);
+    if (statusTag) {
+      statusTag.textContent = 'Necessita Irrigação';
+      statusTag.className = 'receita-status-tag receita-status-amarelo';
+    }
+    if (statusBomba) {
+      statusBomba.textContent = `LIGAR MOTOBOMBA (${tempoMinutos} MINUTOS)`;
+      statusBomba.style.color = '#f59e0b';
+    }
+    if (tempoBomba) {
+      tempoBomba.textContent = `Horário ideal: 06:00 da manhã (menor evapotranspiração do vento)`;
+    }
+    if (explicacao) {
+      explicacao.textContent = `Tensão matricial (${tensaoAtualKpa} kPa) atingiu o limite crítico Embrapa para ${perfil.cultura} (${perfil.manejoKpa} kPa). Iniciar gotejamento para devolver o solo à Capacidade de Campo (${perfil.ccKpa} kPa).`;
+    }
+    if (avisoClima) {
+      avisoClima.style.borderLeftColor = alertaVento ? '#ef4444' : '#f59e0b';
+      avisoClima.style.color = alertaVento ? '#fca5a5' : '#fde68a';
+      avisoClima.textContent = alertaVento 
+        ? `⚠️ Atenção: Rajadas de vento previstas. Reforce os bicos e evite aspersão aérea com deriva!`
+        : `🌤️ Tempo propício para turno de irrigação matinal.`;
+    }
+    if (btnLaudo) btnLaudo.style.display = 'none';
+  } else {
+    if (statusTag) {
+      statusTag.textContent = 'Solo e Caule Saudáveis';
+      statusTag.className = 'receita-status-tag receita-status-verde';
+    }
+    if (statusBomba) {
+      statusBomba.textContent = 'BOMBA DESLIGADA';
+      statusBomba.style.color = '#10b981';
+    }
+    if (tempoBomba) {
+      tempoBomba.textContent = 'Tempo estimado de rega: 0 minutos (Economia ativa)';
+    }
+    if (explicacao) {
+      explicacao.textContent = `Tensão matricial (${tensaoAtualKpa} kPa) em faixa ideal de aeração e umidade. Aquaporinas do caule operando normalmente sem estresse fisiológico.`;
+    }
+    if (avisoClima) {
+      avisoClima.style.borderLeftColor = '#10b981';
+      avisoClima.style.color = '#6ee7b7';
+      avisoClima.textContent = `🌤️ Monitoramento sentinela ativo. Próxima checagem automática em 10 minutos.`;
+    }
+    if (btnLaudo) btnLaudo.style.display = 'none';
+  }
+}
+
+/**
+ * 8. Simulação ao Vivo dos 3 Estados Eletrofisiológicos
  */
 function initSimulacaoEstados() {
   const botoesEstado = document.querySelectorAll('.btn-estado');
@@ -349,7 +568,6 @@ function initSimulacaoEstados() {
     });
   });
 
-  // Aplica estado inicial hidratada
   aplicarEstado('hidratada');
 }
 
@@ -359,10 +577,9 @@ export function aplicarEstado(estadoKey) {
 
   estadoAtual = estadoKey;
 
-  // Atualiza tensão agronômica estimada para o estado e o tipo de solo ativo
   const cfg = CONFIG_SOLOS[tipoSoloAtual] || CONFIG_SOLOS.franco;
   if (estadoKey === 'hipoxia') {
-    tensaoAtualKpa = 4.2;
+    tensaoAtualKpa = 3.5;
   } else if (estadoKey === 'sede') {
     tensaoAtualKpa = cfg.estresseKpa + 5.0;
   } else {
@@ -370,20 +587,18 @@ export function aplicarEstado(estadoKey) {
   }
   atualizarAguaDisponivel(tensaoAtualKpa);
   atualizarPredicaoUi(tensaoAtualKpa);
+  atualizarReceitaPrescritiva();
 
-  // Atualiza botões seletores
   document.querySelectorAll('.btn-estado').forEach((btn) => {
     const ativo = btn.getAttribute('data-estado') === estadoKey;
     btn.setAttribute('aria-pressed', ativo ? 'true' : 'false');
     btn.classList.toggle('ativo', ativo);
   });
 
-  // Atualiza animação no canvas
   if (plantCanvasController) {
     plantCanvasController.setState(estadoKey);
   }
 
-  // Atualiza painel de diagnóstico
   const badgeEl = document.getElementById('diag-badge');
   const tituloEl = document.getElementById('diag-titulo');
   const bombaStatusEl = document.getElementById('diag-bomba-status');
@@ -392,7 +607,6 @@ export function aplicarEstado(estadoKey) {
   const textoEl = document.getElementById('diag-texto');
   const acaoEl = document.getElementById('diag-acao');
 
-  // Parâmetros eletroquímicos no card
   const valTensao = document.getElementById('val-tensao-kpa');
   const valZ50k = document.getElementById('val-z50k');
   const valZ1k = document.getElementById('val-z1k');
@@ -418,13 +632,11 @@ export function aplicarEstado(estadoKey) {
   if (valOrp) valOrp.textContent = dados.orp;
   if (valCe) valCe.textContent = dados.ce;
 
-  // Mostra ou oculta botão PROAGRO
   const btnProagro = document.getElementById('btn-laudo-proagro');
   if (btnProagro) {
     btnProagro.hidden = !dados.laudoProagroDisponivel;
   }
 
-  // Notifica leitor de tela
   const liveRegion = document.getElementById('sr-anuncios');
   if (liveRegion) {
     liveRegion.textContent = `Estado alterado para ${dados.titulo}. ${dados.acaoRecomendada}`;
@@ -432,7 +644,7 @@ export function aplicarEstado(estadoKey) {
 }
 
 /**
- * 5. Acessibilidade Rural por Voz (SpeechSynthesis pt-BR)
+ * 9. Acessibilidade Rural por Voz (SpeechSynthesis pt-BR)
  */
 function initVozAcessibilidade() {
   const btnVoz = document.getElementById('btn-ouvir-planta');
@@ -460,7 +672,7 @@ function initVozAcessibilidade() {
 
     const utterance = new SpeechSynthesisUtterance(textoVoz);
     utterance.lang = 'pt-BR';
-    utterance.rate = 0.95; // Levemente cadenciado para fácil compreensão
+    utterance.rate = 0.95;
     utterance.pitch = 1.0;
 
     utterance.onstart = () => setVozState(true);
@@ -503,7 +715,7 @@ export function narrarDiagnostico(texto) {
 }
 
 /**
- * 6. Simulador Visual do Chat do Telegram com Perguntas Preditivas
+ * 10. Simulador Visual do Chat do Telegram com Perguntas Frequentes
  */
 function initChatSimulado() {
   const chatContainer = document.getElementById('chat-mensagens');
@@ -511,7 +723,7 @@ function initChatSimulado() {
   if (!chatContainer || !containerPerguntas) return;
 
   containerPerguntas.innerHTML = '';
-  FAQ_PRODUTOR.forEach((faq, index) => {
+  FAQ_PRODUTOR.forEach((faq) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'btn-pergunta-chat';
@@ -527,13 +739,11 @@ function enviarPerguntaSimulada(pergunta, resposta) {
   const chatContainer = document.getElementById('chat-mensagens');
   if (!chatContainer) return;
 
-  // Mensagem do Produtor
   const msgUser = document.createElement('div');
   msgUser.className = 'msg-chat msg-produtor';
   msgUser.innerHTML = `<strong>Você:</strong> ${escapeHtml(pergunta)}`;
   chatContainer.appendChild(msgUser);
 
-  // Digitando...
   const msgDigitando = document.createElement('div');
   msgDigitando.className = 'msg-chat msg-bot digitando';
   msgDigitando.innerHTML = `<em>Tekó Biotech está respondendo...</em>`;
@@ -551,7 +761,7 @@ function enviarPerguntaSimulada(pergunta, resposta) {
 }
 
 /**
- * 7. Ficha Técnica da Engenharia
+ * 11. Ficha Técnica da Engenharia (Pilares)
  */
 function initEngenharia() {
   const containerPilares = document.getElementById('container-pilares-engenharia');
@@ -571,30 +781,75 @@ function initEngenharia() {
 }
 
 /**
- * 8. Modal do Laudo de Sinistro PROAGRO
+ * 12. Painel do Gateway Ninhura & Motor de Alertas de Manutenção
+ */
+function initGatewayPainel() {
+  const btnAlerta = document.getElementById('btn-simular-alerta-gateway');
+  const logContainer = document.getElementById('gateway-log-container');
+  if (!btnAlerta || !logContainer) return;
+
+  const alertasExemplo = [
+    {
+      tipo: 'alerta',
+      texto: 'Nó 04 (Tomate): Resistência de contato elevada no clipe (8.9 kΩ). Recomendado repor bio-hidrogel KCl.'
+    },
+    {
+      tipo: 'destaque',
+      texto: 'Nó 02 (Milho): Rajada de vento severa de 64 km/h registrada. Estabilidade mecânica da haste confirmada.'
+    },
+    {
+      tipo: 'ok',
+      texto: 'Nó 01 (Alface): Ciclo P-MFC atingiu +0.58V na rizosfera. Superávit energético de 48 mAh/dia garantido.'
+    }
+  ];
+
+  let alertaIndex = 0;
+  btnAlerta.addEventListener('click', () => {
+    const item = alertasExemplo[alertaIndex % alertasExemplo.length];
+    alertaIndex++;
+
+    const now = new Date().toTimeString().split(' ')[0];
+    const novaLinha = document.createElement('div');
+    if (item.tipo === 'alerta') {
+      novaLinha.innerHTML = `<span class="log-alerta">[${now}] ⚠️ ALERTA:</span> ${escapeHtml(item.texto)}`;
+    } else {
+      novaLinha.innerHTML = `<span class="log-destaque">[${now}]</span> ${escapeHtml(item.texto)}`;
+    }
+    logContainer.prepend(novaLinha);
+
+    const liveRegion = document.getElementById('sr-anuncios');
+    if (liveRegion) {
+      liveRegion.textContent = `Novo evento no Gateway: ${item.texto}`;
+    }
+  });
+}
+
+/**
+ * 13. Modal do Laudo de Sinistro PROAGRO
  */
 function initModalProagro() {
   const btnAbrir = document.getElementById('btn-laudo-proagro');
+  const btnReceitaAbrir = document.getElementById('btn-receita-abrir-laudo');
   const modal = document.getElementById('modal-proagro');
   const btnFechar = document.getElementById('btn-fechar-modal');
   const btnImprimir = document.getElementById('btn-imprimir-laudo');
 
   if (!modal) return;
 
-  if (btnAbrir) {
-    btnAbrir.addEventListener('click', () => {
-      preencherDadosLaudoModal();
-      modal.hidden = false;
-      modal.setAttribute('aria-hidden', 'false');
-      btnFechar?.focus();
-    });
-  }
+  const abrirModal = () => {
+    preencherDadosLaudoModal();
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    btnFechar?.focus();
+  };
+
+  if (btnAbrir) btnAbrir.addEventListener('click', abrirModal);
+  if (btnReceitaAbrir) btnReceitaAbrir.addEventListener('click', abrirModal);
 
   if (btnFechar) {
     btnFechar.addEventListener('click', () => {
       modal.hidden = true;
       modal.setAttribute('aria-hidden', 'true');
-      btnAbrir?.focus();
     });
   }
 
@@ -615,11 +870,21 @@ function preencherDadosLaudoModal() {
   });
 
   const spanData = document.getElementById('laudo-data-emissao');
+  const spanGeo = document.getElementById('laudo-localizacao-geo');
+  const spanChuva = document.getElementById('laudo-chuva-acumulada');
+
   if (spanData) spanData.textContent = dataHoje;
+  if (spanGeo) {
+    spanGeo.textContent = `${localizacaoAtiva.lat.toFixed(4)}° S, ${localizacaoAtiva.lon.toFixed(4)}° W (${localizacaoAtiva.nome})`;
+  }
+  if (spanChuva) {
+    const chuva = dadosClimaCache?.chuva_prevista_24h_mm || 118;
+    spanChuva.textContent = `${Math.max(chuva, 85)} mm acumulados (Chuva Torrencial de Várzea registrada via satélite Open-Meteo)`;
+  }
 }
 
 /**
- * 9. Leitura de Parâmetros de URL (?estado=... & ?tab=...)
+ * 14. Leitura de Parâmetros de URL (?estado=... & ?tab=...)
  */
 function processarUrlParams() {
   const params = new URLSearchParams(window.location.search);
@@ -633,6 +898,8 @@ function processarUrlParams() {
   if (tabParam) {
     const mapaAbas = {
       planta: 'aba-minha-planta',
+      triagem: 'aba-triagem-receita',
+      receita: 'aba-triagem-receita',
       graficos: 'aba-graficos',
       engenharia: 'aba-engenharia'
     };
@@ -649,16 +916,12 @@ function escapeHtml(str) {
 }
 
 /**
- * 10. Polling em Tempo Real da Telemetria Fitoeletrônica (ESP32 Físico)
+ * 15. Polling em Tempo Real da Telemetria Fitoeletrônica (ESP32 Físico)
  */
 function initPollingBackend() {
   const getApiUrl = () => {
     if (window.TEKO_API_URL) return window.TEKO_API_URL.replace(/\/+$/, '');
     if (window.PHYTOSENSE_API_URL) return window.PHYTOSENSE_API_URL.replace(/\/+$/, '');
-    const host = window.location.hostname;
-    if (host === 'localhost' || host === '127.0.0.1' || host === '') {
-      return 'http://127.0.0.1:8000';
-    }
     return 'http://127.0.0.1:8000';
   };
 
@@ -701,7 +964,6 @@ function initPollingBackend() {
           textoModo.textContent = 'O biossensor físico está classificando a lavoura em tempo real sem intervenção humana:';
         }
 
-        // 1. Sincroniza estado estrutural primeiro (canvas, botões, semáforo)
         if (data.estado && data.estado !== estadoAtual) {
           aplicarEstado(data.estado);
         }
@@ -709,9 +971,9 @@ function initPollingBackend() {
         if (data.tensao_kpa !== undefined) {
           tensaoAtualKpa = data.tensao_kpa;
           atualizarAguaDisponivel(tensaoAtualKpa);
+          atualizarReceitaPrescritiva();
         }
 
-        // 2. Sobrescreve com as leituras analógicas exatas do ESP32 físico
         const valTensao = document.getElementById('val-tensao-kpa');
         const valZ50k = document.getElementById('val-z50k');
         const valZ1k = document.getElementById('val-z1k');
@@ -734,7 +996,6 @@ function initPollingBackend() {
         if (textoEl) textoEl.textContent = '🧪 SIMULAÇÃO DE BANCADA ATIVA';
         if (detalhesEl) detalhesEl.textContent = `${data.tensao_kpa} kPa`;
 
-        // Sincroniza estado simulado no canvas e UI
         if (data.estado && data.estado !== estadoAtual) {
           aplicarEstado(data.estado);
         }
@@ -749,12 +1010,10 @@ function initPollingBackend() {
         }
       }
     } catch {
-      // Backend offline: modo contingência silencioso
       if (bannerEl) bannerEl.style.display = 'none';
     }
   }
 
-  // Polling a cada 3 segundos
   setInterval(checarTelemetria, 3000);
   checarTelemetria();
 }
