@@ -1,5 +1,5 @@
 /* Service Worker: Cache para uso offline no campo (Tekó Biotech) */
-const VERSAO = "teko-v6";
+const VERSAO = "teko-v7";
 const ARQUIVOS = [
   "./",
   "index.html",
