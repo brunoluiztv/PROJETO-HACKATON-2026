@@ -222,6 +222,33 @@ export function atualizarAguaDisponivel(tensaoKpa) {
   const explicacaoEl = document.getElementById('ad-explicacao-solo');
   const trilhoEl = document.querySelector('.ad-trilho');
 
+  const valEstadoHidrico = document.getElementById('val-estado-hidrico');
+  const valAdPct = document.getElementById('val-ad-pct');
+  const valTensao = document.getElementById('val-tensao-kpa');
+
+  if (valTensao) {
+    valTensao.textContent = `${tensaoAtualKpa.toFixed(1)} kPa`;
+  }
+  if (valAdPct) {
+    valAdPct.textContent = `${ad.porcentagem}%`;
+    valAdPct.style.color = ad.cor;
+  }
+  if (valEstadoHidrico) {
+    if (tensaoAtualKpa <= 5.0) {
+      valEstadoHidrico.textContent = 'Saturado';
+      valEstadoHidrico.style.color = '#38bdf8';
+    } else if (ad.porcentagem >= 60) {
+      valEstadoHidrico.textContent = 'Capacidade de Campo';
+      valEstadoHidrico.style.color = '#10b981';
+    } else if (ad.porcentagem >= 40) {
+      valEstadoHidrico.textContent = 'Início de Estresse';
+      valEstadoHidrico.style.color = '#f59e0b';
+    } else {
+      valEstadoHidrico.textContent = 'Estresse Hídrico';
+      valEstadoHidrico.style.color = '#ef4444';
+    }
+  }
+
   if (valorTextoEl) {
     valorTextoEl.textContent = `${ad.porcentagem}% (${ad.condicao})`;
     valorTextoEl.style.color = ad.cor;
@@ -396,6 +423,12 @@ export function atualizarPredicaoUi(tensaoOverride = null) {
   if (msgEl) {
     msgEl.textContent = pred.mensagem;
     msgEl.style.borderLeftColor = pred.cor;
+  }
+
+  const valLimite = document.getElementById('val-limite-embrapa');
+  const perfil = PERFIS_CULTURA[perfilCulturaAtual] || PERFIS_CULTURA.olericultura_alface_argissolo;
+  if (valLimite) {
+    valLimite.textContent = `${perfil.manejoKpa} kPa (${perfil.cultura})`;
   }
 }
 
@@ -794,15 +827,16 @@ export function aplicarEstado(estadoKey) {
 
   const cfg = CONFIG_SOLOS[tipoSoloAtual] || CONFIG_SOLOS.franco;
   if (estadoKey === 'hipoxia') {
-    tensaoAtualKpa = 3.5;
+    tensaoAtualKpa = 2.0; // Solo Saturado
   } else if (estadoKey === 'sede') {
-    tensaoAtualKpa = cfg.estresseKpa + 5.0;
+    tensaoAtualKpa = 48.0; // Estresse Hídrico Crítico
   } else {
-    tensaoAtualKpa = cfg.ccKpa;
+    tensaoAtualKpa = 21.5; // Capacidade de Campo (Ideal)
   }
   atualizarAguaDisponivel(tensaoAtualKpa);
   atualizarPredicaoUi(tensaoAtualKpa);
   atualizarReceitaPrescritiva();
+  renderChartSecagem(perfilCulturaAtual, [14.0, 16.5, 19.0, 21.5, 25.5, tensaoAtualKpa]);
 
   document.querySelectorAll('.btn-estado').forEach((btn) => {
     const ativo = btn.getAttribute('data-estado') === estadoKey;
