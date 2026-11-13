@@ -295,7 +295,7 @@ export const TELEMETRIA_ESTADOS = {
   hidratada: {
     id: 'hidratada',
     titulo: '🌿 HIDRATADA',
-    resumoCurto: 'Ψm = 21.5 kPa | Z = 1.4 kΩ | ORP = +310 mV',
+    resumoCurto: 'Quantidade de Água: 21.5 kPa (Capacidade de Campo)',
     badge: 'Saudável',
     badgeClass: 'badge-verde',
     corStatus: '#10b981',
@@ -315,11 +315,11 @@ export const TELEMETRIA_ESTADOS = {
   sede: {
     id: 'sede',
     titulo: '☀️ COM SEDE (SECA INVISÍVEL)',
-    resumoCurto: 'Ψm = 45.0 kPa | Z = 4.8 kΩ | ORP = +420 mV',
+    resumoCurto: 'Quantidade de Água: 48.0 kPa (Estresse Hídrico)',
     badge: 'Alerta de Estiagem',
     badgeClass: 'badge-amarelo',
     corStatus: '#f59e0b',
-    tensaoKpa: '45.0 kPa',
+    tensaoKpa: '48.0 kPa',
     z50k: '4.8 kΩ',
     z1k: '3.9 kΩ',
     orp: '+420 mV',
@@ -334,12 +334,12 @@ export const TELEMETRIA_ESTADOS = {
   },
   hipoxia: {
     id: 'hipoxia',
-    titulo: '🌊 AFOGADA / PÓS-ENCHENTE',
-    resumoCurto: 'Ψm = 4.2 kPa | Z = 5.9 kΩ | ORP = -140 mV',
+    titulo: '🌊 ENCHARCADA',
+    resumoCurto: 'Quantidade de Água: 2.0 kPa (Saturado / Alagado)',
     badge: 'Risco de Asfixia Radicular',
     badgeClass: 'badge-vermelho',
     corStatus: '#ef4444',
-    tensaoKpa: '4.2 kPa',
+    tensaoKpa: '2.0 kPa',
     z50k: '5.9 kΩ',
     z1k: '5.1 kΩ',
     orp: '-140 mV',
@@ -415,7 +415,7 @@ export const DADOS_GRAFICO_ENERGIA = {
  */
 export const ESTADOS_HIDRICOS_SOLO = [
   {
-    estado: 'Saturação',
+    estado: 'Saturado',
     potencialMatricial: '0 kPa',
     aguaDisponivel: '100%',
     condicao: 'Excesso de água e falta de oxigênio nas raízes (hipóxia/anóxia radicular).',

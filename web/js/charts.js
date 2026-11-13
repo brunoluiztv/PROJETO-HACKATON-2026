@@ -26,9 +26,9 @@ function getChartThemeColors() {
 }
 
 export function initCharts() {
+  renderChartSecagem();
   renderChartDivergencia();
   renderChartEnergia();
-  renderChartSecagem();
   initHectaresSimulator();
 }
 
@@ -408,7 +408,7 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
         labels: labels,
         datasets: [
           {
-            label: `🌱 Tensão no Solo (${perfil.cultura} - kPa)`,
+            label: `💧 Quantidade de Água no Solo (${perfil.cultura} - kPa)`,
             data: serieTensao,
             borderColor: '#ff6b00',
             backgroundColor: 'rgba(255, 107, 0, 0.15)',

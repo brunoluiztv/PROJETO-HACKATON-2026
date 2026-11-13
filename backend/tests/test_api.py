@@ -358,9 +358,9 @@ def test_endpoint_telemetria_adc_gatilho_caetano():
 def test_classificacao_fisica_solo_tabela_embrapa():
     from backend.motor_predicao import classificar_estado_hidrico_solo
 
-    # Saturação (0 kPa) -> Falta de oxigênio / risco de hipóxia
+    # Saturado (0 kPa) -> Falta de oxigênio / risco de hipóxia
     sat = classificar_estado_hidrico_solo(0.0, "franco")
-    assert sat["estado_hidrico"] == "Saturação"
+    assert sat["estado_hidrico"] == "Saturado"
     assert sat["agua_disponivel_pct"] == 100
     assert "falta de oxigênio" in sat["condicao_planta"]
     assert sat["risco_hipoxia"] is True

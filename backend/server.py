@@ -1180,7 +1180,7 @@ def listar_nos_ninhura():
         "total_nos_ativos": len(nos_lista),
         "nos": nos_lista,
         "tabela_fisica_solo_referencia": [
-            {"estado": "Saturação", "psi_m": "0 kPa", "ad_pct": "100%", "condicao": "Excesso de água e falta de oxigênio nas raízes."},
+            {"estado": "Saturado", "psi_m": "0 kPa", "ad_pct": "100%", "condicao": "Excesso de água e falta de oxigênio nas raízes."},
             {"estado": "Capacidade de Campo (CC)", "psi_m": "-10 a -33 kPa", "ad_pct": "100% (Limite superior)", "condicao": "Condição ideal de umidade e aeração."},
             {"estado": "Início do Estresse (Fator p)", "psi_m": "-30 a -70 kPa", "ad_pct": "40% a 60% restantes", "condicao": "Ponto crítico para reiniciar a irrigação sem perda produtiva."},
             {"estado": "Estresse Moderado a Severo", "psi_m": "-100 a -500 kPa", "ad_pct": "15% a 35% restantes", "condicao": "Fechamento estomático, redução da fotossíntese e murcha."},

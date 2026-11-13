@@ -126,12 +126,12 @@ def classificar_estado_hidrico_solo(tensao_kpa: float, tipo_solo: str = "franco"
 
     if t <= 5.0:
         return {
-            "estado_hidrico": "Saturação",
+            "estado_hidrico": "Saturado",
             "potencial_matricial_label": "0 kPa",
             "agua_disponivel_pct": 100,
             "agua_disponivel_faixa": "100%",
             "fator_p_esgotamento": 0.0,
-            "condicao_planta": "Excesso de água e falta de oxigênio nas raízes.",
+            "condicao_planta": "Excesso de água e falta de oxigênio nas raízes (saturado).",
             "cor": "#38bdf8",
             "risco_hipoxia": True
         }

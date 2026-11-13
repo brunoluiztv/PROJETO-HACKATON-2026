@@ -23,13 +23,13 @@ from dotenv import load_dotenv
 NOME_BOT = "Tekó — Biossensor Sentinela"
 SHORT_DESC = "Eu sou o Tekó, a voz da sua lavoura. Monitore a saúde da planta por dentro contra seca e enchente."
 LONG_DESC = (
-    "Ola! Eu sou o Teko, assistente fitoeletronico in-planta no RS.\n\n"
-    "O biossensor na planta sentinela mede a agua no caule e o oxigenio da raiz:\n"
-    "- Prevencao de estresse hidrico invisivel e taxa de secagem (Embrapa)\n"
+    "Olá! Eu sou o Tekó, assistente fitoeletrônico in-planta no RS.\n\n"
+    "O biossensor na planta sentinela mede a água no caule e o oxigênio da raiz:\n"
+    "- Prevenção de estresse hídrico invisível e taxa de secagem (Embrapa)\n"
     "- Alerta de enchente, asfixia radicular e Laudo PROAGRO\n"
-    "- Economia de milhares de litros de agua e combustivel\n"
-    "- Acessibilidade com botoes grandes e mensagens de audio\n\n"
-    "Toque em Comecar para iniciar!"
+    "- Economia de milhares de litros de água e combustível\n"
+    "- Acessibilidade com botões grandes e zero digitação\n\n"
+    "Toque em Começar para iniciar!"
 )
 
 COMANDOS_TEKO = [
@@ -41,7 +41,7 @@ COMANDOS_TEKO = [
     BotCommand("duvidas", "Dúvidas sobre o clipe e a bateria")
 ]
 
-DEFAULT_WEBAPP_URL = "https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=18"
+DEFAULT_WEBAPP_URL = "https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=21"
 
 
 def provisionar_teko(token: str, webapp_url: str = DEFAULT_WEBAPP_URL) -> bool:
@@ -54,6 +54,20 @@ def provisionar_teko(token: str, webapp_url: str = DEFAULT_WEBAPP_URL) -> bool:
         bot = telebot.TeleBot(token)
         me = bot.get_me()
         print(f"✅ Conectado com sucesso ao bot: @{me.username} (ID: {me.id})")
+
+        # 1. Configura Foto de Perfil Oficial Tekó (se existir)
+        avatar_path = os.path.join(_bot_dir, "assets", "teko_bot_avatar_512.png")
+        if not os.path.exists(avatar_path):
+            avatar_path = os.path.join(_bot_dir, "assets", "bot_avatar_hackathon.png")
+        if os.path.exists(avatar_path):
+            try:
+                from telebot.types import InputProfilePhotoStatic
+                with open(avatar_path, "rb") as f_img:
+                    sucesso_foto = bot.set_my_profile_photo(InputProfilePhotoStatic(photo=f_img))
+                    if sucesso_foto:
+                        print(f"  • Foto de perfil oficial do Tekó atualizada no Telegram com sucesso.")
+            except Exception as e:
+                print(f"  ⚠️ Aviso ao definir foto de perfil: {e}")
 
         # 1. Configura Nome Público
         try:

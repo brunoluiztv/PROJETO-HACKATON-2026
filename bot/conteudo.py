@@ -82,7 +82,7 @@ LAUDO_PROAGRO_TEXTO = (
     "• <b>Parâmetros Registrados:</b>\n"
     "  - Potencial Redox (ORP): -140 mV (Hipóxia severa confirmada)\n"
     "  - Bioimpedância de Caule (50 kHz): 5.9 kΩ (Fechamento de aquaporinas)\n"
-    "  - Saturação de Solo: 100% por mais de 30 horas consecutivas\n\n"
+    "  - Solo Saturado: 100% por mais de 30 horas consecutivas (0 kPa)\n\n"
     "⚠️ <i>Documento com validade agronômica para comprovação de perda por asfixia radicular em seguro rural.</i>"
 )
 

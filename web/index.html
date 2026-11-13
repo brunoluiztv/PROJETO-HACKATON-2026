@@ -81,7 +81,7 @@
         <button type="button" class="btn-estado ativo" data-estado="hidratada" aria-pressed="true">
           <div class="btn-estado-info">
             <strong>🌿 1. HIDRATADA (Seiva Normal)</strong>
-            <small>Z = 1.4 kΩ · ORP = +310 mV · Bomba Desligada</small>
+            <small>21.5 kPa (Capacidade de Campo) · Bomba Desligada</small>
           </div>
           <span class="indicador-ponto" aria-hidden="true"></span>
         </button>
@@ -89,15 +89,15 @@
         <button type="button" class="btn-estado" data-estado="sede" aria-pressed="false">
           <div class="btn-estado-info">
             <strong>☀️ 2. COM SEDE / SECA INVISÍVEL</strong>
-            <small>Z = 4.8 kΩ · ORP = +420 mV · Irrigar 06h</small>
+            <small>48.0 kPa (Estresse Hídrico) · Irrigar 06h</small>
           </div>
           <span class="indicador-ponto" aria-hidden="true"></span>
         </button>
 
         <button type="button" class="btn-estado" data-estado="hipoxia" aria-pressed="false">
           <div class="btn-estado-info">
-            <strong>🌊 3. AFOGADA / PÓS-ENCHENTE</strong>
-            <small>Z = 5.9 kΩ · ORP = -140 mV · Hipóxia & PROAGRO</small>
+            <strong>🌊 3. ENCHARCADA</strong>
+            <small>2.0 kPa (Saturado) · Hipóxia & PROAGRO</small>
           </div>
           <span class="indicador-ponto" aria-hidden="true"></span>
         </button>
@@ -142,29 +142,36 @@
           <span id="diag-acao">Manter a bomba desligada. Monitoramento sentinela ativo.</span>
         </div>
 
-        <!-- Grade de Parâmetros -->
+        <!-- Grade de Parâmetros MVP (Foco Exclusivo em Quantidade de Água) -->
         <div class="grade-parametros">
-          <div class="item-param">
-            <span class="item-param-label">Potencial Matricial Ψm</span>
-            <span id="val-tensao-kpa" class="item-param-val" style="color: #38bdf8;">21.5 kPa</span>
+          <div class="item-param item-param-destaque">
+            <span class="item-param-label">💧 Quantidade de Água (Tensão Ψm)</span>
+            <span id="val-tensao-kpa" class="item-param-val" style="color: #38bdf8; font-size: 1.15rem; font-weight: 800;">21.5 kPa</span>
           </div>
           <div class="item-param">
-            <span class="item-param-label">Z (50 kHz) Turgor</span>
-            <span id="val-z50k" class="item-param-val">1.4 kΩ</span>
+            <span class="item-param-label">🌿 Estado Hídrico</span>
+            <span id="val-estado-hidrico" class="item-param-val" style="color: #10b981;">Capacidade de Campo</span>
           </div>
           <div class="item-param">
-            <span class="item-param-label">Z (1 kHz) Xilema</span>
-            <span id="val-z1k" class="item-param-val">1.1 kΩ</span>
+            <span class="item-param-label">📊 Água Disponível (AD)</span>
+            <span id="val-ad-pct" class="item-param-val" style="color: #38bdf8;">100% (Ótima)</span>
           </div>
           <div class="item-param">
-            <span class="item-param-label">ORP da Rizosfera</span>
-            <span id="val-orp" class="item-param-val">+310 mV</span>
-          </div>
-          <div class="item-param">
-            <span class="item-param-label">Condutividade CE</span>
-            <span id="val-ce" class="item-param-val">1.2 dS/m</span>
+            <span class="item-param-label">🎯 Limite Crítico Embrapa</span>
+            <span id="val-limite-embrapa" class="item-param-val" style="color: #f59e0b;">28.0 kPa (Manejo)</span>
           </div>
         </div>
+
+        <!-- Parâmetros Laboratoriais P&D (Secundários - Preservados para Auditoria) -->
+        <details class="detalhes-parametros-secundarios" style="margin-top: 10px; font-size: 0.74rem; color: #a1a1aa; border: 1px dashed var(--borda-suave, #3f3f46); border-radius: 6px; padding: 6px 10px;">
+          <summary style="cursor: pointer; font-weight: 600; color: #94a3b8;">🔬 Ver Parâmetros Laboratoriais P&D (Opcional)</summary>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px;">
+            <div>Z 50 kHz Turgor: <strong id="val-z50k" style="color: var(--texto-primario);">1.4 kΩ</strong></div>
+            <div>Z 1 kHz Xilema: <strong id="val-z1k" style="color: var(--texto-primario);">1.1 kΩ</strong></div>
+            <div>ORP Rizosfera: <strong id="val-orp" style="color: var(--texto-primario);">+310 mV</strong></div>
+            <div>Condutividade CE: <strong id="val-ce" style="color: var(--texto-primario);">1.2 dS/m</strong></div>
+          </div>
+        </details>
 
         <!-- Botão Acionar Seguro PROAGRO (Só aparece em Hipóxia) -->
         <button type="button" id="btn-laudo-proagro" class="btn-proagro" hidden>
@@ -508,9 +515,20 @@
         </div>
       </article>
 
-      <!-- Gráfico 1: Linha de Divergência Crítica -->
+      <!-- Gráfico 1 Principal: Quantidade de Água & Tendência de Secagem Embrapa -->
       <article class="card-grafico-box">
-        <h2>1. Divergência Crítica de Enchente: Caule vs. Solo</h2>
+        <h2>💧 1. Quantidade de Água & Tensão no Solo (kPa) — Histórico 7 Dias</h2>
+        <p class="grafico-legenda-alerta" style="border-left-color: #38bdf8;">
+          📈 <strong>Métrica Principal do Sensor (kPa):</strong> Monitoramento contínuo da retenção hídrica em Azul Ciano (Tensão no Solo), Amarelo Dourado (Alerta de Atenção) e Vermelho (Limite Crítico de Manejo Embrapa: <span id="grafico-limite-embrapa-val">28 kPa</span>).
+        </p>
+        <div class="grafico-container">
+          <canvas id="canvas-grafico-secagem" role="img" aria-label="Gráfico de tendência de quantidade de água e secagem em kPa ao longo dos 7 dias com diferenciação cromática"></canvas>
+        </div>
+      </article>
+
+      <!-- Gráfico 2: Linha de Divergência Crítica -->
+      <article class="card-grafico-box">
+        <h2>2. Divergência Crítica de Enchente: Caule vs. Solo</h2>
         <p class="grafico-legenda-alerta">
           ⚠️ <strong>O Grande Perigo da Enchente:</strong> No Dia 6 (enchente pluvial), o sensor comum de terra marca <strong>100% de umidade</strong>, enquanto o biossensor Tekó In-Planta detecta queda brusca no caule para <strong>25% de turgor</strong> por asfixia radicular e fechamento das aquaporinas.
         </p>
@@ -519,9 +537,9 @@
         </div>
       </article>
 
-      <!-- Gráfico 2: Consumo Energético Logarítmico -->
+      <!-- Gráfico 3: Consumo Energético Logarítmico -->
       <article class="card-grafico-box">
-        <h2>2. Autonomia Energética (Consumo Diário em Log)</h2>
+        <h2>3. Autonomia Energética (Consumo Diário em Log)</h2>
         <p style="font-size: 0.84rem; color: #a1a1aa;">
           Comparativo entre o ESP32 comum com Wi-Fi/Telegram direto (1.800 mAh/dia), o Tekó Biotech com rádio ESP-NOW de 4ms em Deep Sleep (14 mAh/dia) e a bioenergia autônoma da Célula P-MFC (45 mAh/dia).
         </p>
@@ -529,32 +547,74 @@
           <canvas id="canvas-grafico-energia" role="img" aria-label="Gráfico de barras comparando consumo energético diário"></canvas>
         </div>
       </article>
-
-      <!-- Gráfico 3: Taxa de Secagem & Previsão Temporal Embrapa (7 Dias) -->
-      <article class="card-grafico-box">
-        <h2>3. Tendência de Secagem & Limite Embrapa (7 Dias)</h2>
-        <p class="grafico-legenda-alerta" style="border-left-color: #38bdf8;">
-          📈 <strong>Curva de Secagem do Solo:</strong> Monitoramento contínuo em Azul Ciano (Tensão no Solo), Amarelo Dourado (Alerta de Atenção) e Vermelho (Limite Crítico de Manejo: <span id="grafico-limite-embrapa-val">28 kPa</span>).
-        </p>
-        <div class="grafico-container">
-          <canvas id="canvas-grafico-secagem" role="img" aria-label="Gráfico de tendência de secagem em kPa ao longo dos 7 dias com diferenciação cromática"></canvas>
-        </div>
-      </article>
     </section>
 
     <!-- ======================================================================
-         ABA 4: ENGENHARIA & GATEWAY (Painel Ninhura, P-MFC, Solo e BOM)
+         ABA 4: PARÂMETROS TÉCNICOS & GATEWAY (Solo, Embrapa, Ninhura e BOM)
          ====================================================================== -->
     <section id="aba-engenharia" class="tab-panel" aria-labelledby="t-engenharia" hidden>
       <div>
-        <h1 id="t-engenharia" class="titulo-aba">🔬 Ficha Técnica, Engenharia & Gateway</h1>
-        <p class="desc-aba">Painel local do Gateway Ninhura, Biotecnologia P-MFC e Custos Turnkey.</p>
+        <h1 id="t-engenharia" class="titulo-aba">⚙️ Parâmetros Técnicos & Quantidade de Água</h1>
+        <p class="desc-aba">Tabela oficial de física do solo Embrapa, limites matriciais em kPa e telemetria do Gateway Ninhura.</p>
       </div>
 
-      <!-- Painel Local do Gateway Ninhura com Status dos 4 Nós e Motor de Alertas -->
+      <!-- PRIORIDADE 1: Tabela Científica: Estado Hídrico do Solo & Quantidade de Água (Embrapa) -->
+      <article class="card-tabela-hidrica-box">
+        <h2 style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">💧 1. Tabela de Quantidade de Água & Estado Hídrico do Solo (Embrapa)</h2>
+        <p style="font-size: 0.84rem; color: #a1a1aa; margin-top: 4px;">
+          Física da água no solo, limites matriciais em kPa e água disponível (AD %) ancorados na literatura científica da Embrapa.
+        </p>
+
+        <div class="tabela-scroll-container">
+          <table class="tabela-estado-hidrico">
+            <thead>
+              <tr>
+                <th scope="col">Estado Hídrico</th>
+                <th scope="col">Potencial Matricial (Ψm)</th>
+                <th scope="col">Água Disp. (AD)</th>
+                <th scope="col">Condição para a Planta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: rgba(56, 189, 248, 0.08);">
+                <td><strong>Saturado</strong></td>
+                <td><code class="tag-kpa">0 kPa</code></td>
+                <td><strong>100%</strong></td>
+                <td><span style="color: #38bdf8;">⚠️ Excesso de água e falta de oxigênio nas raízes (hipóxia/anóxia).</span></td>
+              </tr>
+              <tr style="background: rgba(16, 185, 129, 0.08);">
+                <td><strong>Capacidade de Campo (CC)</strong></td>
+                <td><code class="tag-kpa">-10 a -33 kPa</code></td>
+                <td><strong>100% (Limite sup.)</strong></td>
+                <td><span style="color: #10b981;">🌿 Condição ideal de umidade e aeração.</span></td>
+              </tr>
+              <tr style="background: rgba(245, 158, 11, 0.08);">
+                <td><strong>Início do Estresse (Fator p)</strong></td>
+                <td><code class="tag-kpa">-30 a -70 kPa</code></td>
+                <td><strong>40% a 60%</strong></td>
+                <td><span style="color: #f59e0b;">⚡ Ponto crítico para reiniciar a irrigação sem perda produtiva.</span></td>
+              </tr>
+              <tr style="background: rgba(239, 68, 68, 0.08);">
+                <td><strong>Estresse Moderado a Severo</strong></td>
+                <td><code class="tag-kpa">-100 a -500 kPa</code></td>
+                <td><strong>15% a 35%</strong></td>
+                <td><span style="color: #ef4444;">🚨 Fechamento estomático, redução da fotossíntese e murcha.</span></td>
+              </tr>
+              <tr style="background: rgba(127, 29, 29, 0.2);">
+                <td><strong>Ponto de Murcha (PMP)</strong></td>
+                <td><code class="tag-kpa">-1.500 kPa (-1,5 MPa)</code></td>
+                <td><strong>0%</strong></td>
+                <td><span style="color: #fca5a5;">💀 Água fortemente retida; a planta não recupera a turgidez.</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- PRIORIDADE 2: Painel Local do Gateway Ninhura com Status dos 4 Nós e Motor de Alertas -->
       <article class="card-gateway-painel" aria-labelledby="t-gateway-painel">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <h2 id="t-gateway-painel" style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">📡 Painel de Telemetria do Gateway Ninhura (Sede)</h2>
+          <h2 id="t-gateway-painel" style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">📡 2. Painel de Telemetria do Gateway Ninhura (Sede)</h2>
           <span class="gateway-status-pill gateway-status-online">● GATEWAY ONLINE (ESP-NOW 2.4 GHz)</span>
         </div>
         <p style="font-size: 0.8rem; color: #a1a1aa; margin-top: 4px;">
@@ -727,59 +787,6 @@
         </div>
       </article>
 
-      <!-- Tabela Científica: Estado Hídrico do Solo (Embrapa) -->
-      <article class="card-tabela-hidrica-box">
-        <h2 style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">💧 2. Estado Hídrico do Solo & Água Disponível (AD %)</h2>
-        <p style="font-size: 0.84rem; color: #a1a1aa; margin-top: 4px;">
-          Física da água no solo e limites matriciais ancorados na literatura científica da Embrapa.
-        </p>
-
-        <div class="tabela-scroll-container">
-          <table class="tabela-estado-hidrico">
-            <thead>
-              <tr>
-                <th scope="col">Estado Hídrico</th>
-                <th scope="col">Potencial Matricial (Ψm)</th>
-                <th scope="col">Água Disp. (AD)</th>
-                <th scope="col">Condição para a Planta</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="background: rgba(56, 189, 248, 0.08);">
-                <td><strong>Saturação</strong></td>
-                <td><code class="tag-kpa">0 kPa</code></td>
-                <td><strong>100%</strong></td>
-                <td><span style="color: #38bdf8;">⚠️ Excesso de água e falta de oxigênio nas raízes (hipóxia).</span></td>
-              </tr>
-              <tr style="background: rgba(16, 185, 129, 0.08);">
-                <td><strong>Capacidade de Campo (CC)</strong></td>
-                <td><code class="tag-kpa">-10 a -33 kPa</code></td>
-                <td><strong>100% (Limite sup.)</strong></td>
-                <td><span style="color: #10b981;">🌿 Condição ideal de umidade e aeração.</span></td>
-              </tr>
-              <tr style="background: rgba(245, 158, 11, 0.08);">
-                <td><strong>Início do Estresse (Fator p)</strong></td>
-                <td><code class="tag-kpa">-30 a -70 kPa</code></td>
-                <td><strong>40% a 60%</strong></td>
-                <td><span style="color: #f59e0b;">⚡ Ponto crítico para reiniciar a irrigação sem perda produtiva.</span></td>
-              </tr>
-              <tr style="background: rgba(239, 68, 68, 0.08);">
-                <td><strong>Estresse Moderado a Severo</strong></td>
-                <td><code class="tag-kpa">-100 a -500 kPa</code></td>
-                <td><strong>15% a 35%</strong></td>
-                <td><span style="color: #ef4444;">🚨 Fechamento estomático, redução da fotossíntese e murcha.</span></td>
-              </tr>
-              <tr style="background: rgba(127, 29, 29, 0.2);">
-                <td><strong>Ponto de Murcha (PMP)</strong></td>
-                <td><code class="tag-kpa">-1.500 kPa (-1,5 MPa)</code></td>
-                <td><strong>0%</strong></td>
-                <td><span style="color: #fca5a5;">💀 Água fortemente retida; a planta não recupera a turgidez.</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
       <!-- Estimativa de Custo BOM Puro (R$ 42,00) -->
       <article class="card-bom">
         <h2 style="font-size: 1.05rem; font-weight: 800; color: #ff6b00;">💰 Bill of Materials (BOM) — Custo por Nó Sentinela</h2>
@@ -912,8 +919,8 @@
       <span>3. Gráficos</span>
     </button>
     <button type="button" class="nav-tab-btn" id="tab-btn-engenharia" data-target="aba-engenharia" aria-selected="false">
-      <span class="nav-tab-icone" aria-hidden="true">🔬</span>
-      <span>4. Engenharia</span>
+      <span class="nav-tab-icone" aria-hidden="true">⚙️</span>
+      <span>4. Parâmetros</span>
     </button>
   </nav>
 
