@@ -5,22 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Slides do Pitch — Tekó Biotech (Hackathon UERGS 2026)</title>
   <meta name="description" content="Apresentação de 6 slides da Tekó Biotech para o Hackathon das Engenharias UERGS 2026 - Desafio 02: Água e Drenagem Rural.">
-  <meta name="theme-color" content="#0b0b0b">
+  <meta name="theme-color" content="#090e0c">
   <link rel="icon" href="icons/teko_emblem.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Hanken+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0b0b;
-      --card-bg: #151515;
-      --card-border: #262626;
-      --accent: #ff6b00;
-      --accent-glow: rgba(255, 107, 0, 0.25);
-      --green: #10b981;
+      /* Identidade Visual Oficial Tekó Biotech */
+      --brand-forest: #244C3C;
+      --brand-bio-lime: #B6D94C;
+      --brand-terracotta: #E27B48;
+      --brand-signal-blue: #355DEB;
+      --brand-soil-paper: #F2EBDD;
+      --brand-carbon: #252A26;
+
+      --bg: #090e0c;
+      --card-bg: #111714;
+      --card-border: #233029;
+      --accent: var(--brand-terracotta);
+      --accent-glow: rgba(226, 123, 72, 0.28);
+      --green: var(--brand-bio-lime);
       --red: #ef4444;
       --yellow: #f59e0b;
-      --cyan: #38bdf8;
+      --cyan: var(--brand-signal-blue);
       --text: #ffffff;
-      --text-muted: #a1a1aa;
-      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --text-muted: #a3b0a9;
+      --font-heading: 'HK Grotesk', 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-main: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * {
@@ -76,10 +88,11 @@
 
     /* Tipografia dos Slides */
     .slide-badge {
+      font-family: var(--font-heading);
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(255, 107, 0, 0.12);
+      background: rgba(226, 123, 72, 0.15);
       border: 1px solid var(--accent);
       color: var(--accent);
       padding: 0.35rem 0.85rem;
@@ -93,11 +106,13 @@
     }
 
     .slide-title {
+      font-family: var(--font-heading);
       font-size: clamp(1.8rem, 3.8vw, 3.1rem);
       font-weight: 800;
       line-height: 1.15;
       margin-bottom: 0.75rem;
       color: var(--text);
+      letter-spacing: -0.02em;
     }
 
     .slide-title span {
@@ -167,6 +182,7 @@
     }
 
     .card-box h3 {
+      font-family: var(--font-heading);
       font-size: 1.18rem;
       font-weight: 700;
     }

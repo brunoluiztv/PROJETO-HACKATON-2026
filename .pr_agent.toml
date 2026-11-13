@@ -1,0 +1,37 @@
+# Qodo Merge (PR-Agent) Configuration
+# https://qodo-merge-docs.qodo.ai/
+
+[pr_reviewer]
+# Ativa revisao automatica detalhada em cada Pull Request
+require_focused_review = true
+require_score_review = true
+require_tests_review = true
+require_security_review = true
+num_code_suggestions = 5
+enable_help_text = true
+
+# Instrucoes extras de revisao para a IA do Qodo
+extra_instructions = """
+Voce esta revisando o projeto Tekó Biotech (Hackathon das Engenharias UERGS 2026).
+Ao analisar Pull Requests, verifique rigorosamente:
+1. Acessibilidade Rural (WCAG 2.2 AA): alvos de toque >= 48px, contraste legivel sob sol forte (#0b0b0b, #ff6b00, #ffffff) e suporte a sintese de voz (Web Speech API).
+2. Fundamentacao Eletrofisiologica e Bioprocessos:
+   - Bioimpedancia dual-freq: 50 kHz para turgor celular intracelular e 1 kHz para fluxo no xilema.
+   - Rizosfera P-MFC: deteccao de hipoxia radicular quando ORP < -100 mV.
+   - Balanco energetico: garantir rotina Deep Sleep no ESP32 (10 uA, 14 mAh/dia).
+3. Seguranca: NUNCA permita que tokens de bot (TELEGRAM_TOKEN) ou chaves privadas sejam commitados.
+4. Linguagem e Empatia: textos para agricultores devem ser claros, sem jargao academico ou excesso de siglas tecnicas.
+"""
+
+[pr_description]
+publish_labels = true
+add_custom_labels = ["review-solicitada", "hackathon-uergs", "teko-biotech"]
+enable_pr_type = true
+use_bullet_points = true
+
+[pr_code_suggestions]
+num_code_suggestions = 4
+focus_only_on_problems = true
+
+[pr_questions]
+enable_auto_checking = true

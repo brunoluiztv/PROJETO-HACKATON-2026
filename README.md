@@ -64,7 +64,10 @@ PROJETO-HACKATON-2026/
 ├── firmware/                # Dev 3: sketches do nó e do gateway
 │   ├── sensor_node/
 │   └── gateway/
+├── skills/                  # Padrão sickn33/agentic-awesome-skills para IAs e Agentes
 ├── docs/                    # Relatórios, planos e registros técnicos
+│   └── BIOSSENSOR-LOGICA-E-MERCADO.md # Lógica in-planta, física de solos e mercado
+├── web/                     # WebApp mobile PWA responsivo (GitHub Pages)
 ├── legacy/                  # Protótipos anteriores, preservados
 │   ├── web/
 │   └── dashboard/

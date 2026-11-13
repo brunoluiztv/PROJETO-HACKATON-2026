@@ -1,0 +1,38 @@
+# CodeRabbit AI Configuration for Tekó Biotech
+# Hackathon das Engenharias UERGS 2026 - Desafio 02: Água e Drenagem Rural
+
+language: "pt-BR"
+
+tone_instructions: "Seja um revisor de código técnico, acolhedor e focado no contexto do agronegócio familiar e engenharia de bioprocessos."
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+
+chat:
+  auto_reply: true
+
+instructions: |
+  Você está revisando o código do projeto Tekó Biotech (Biossensor Fitoeletrônico In-Planta para a Agricultura Familiar no RS).
+  Critérios fundamentais que você deve auditar rigorosamente em cada Pull Request:
+  1. Acessibilidade Rural (WCAG 2.2 AA):
+     - Botões e alvos de toque interativos devem ter dimensões mínimas de 48x48px para manuseio facilitado com luvas ou mãos de trabalho.
+     - Alto contraste para legibilidade sob sol forte (#0b0b0b, #ff6b00, #38bdf8).
+     - Linguagem clara para agricultores familiares, sem termos herméticos.
+  2. Fisiologia Vegetal & Eletrofisiologia:
+     - Bioimpedância dual-frequency: 50 kHz para turgor celular intracelular e 1 kHz para condução de seiva no xilema.
+     - Rizosfera P-MFC: detecção de asfixia radicular / hipóxia quando ORP < -100 mV.
+     - Tensão matricial em kPa calibrada conforme recomendações técnicas da Embrapa Clima Temperado.
+  3. Eficiência Energética no ESP32:
+     - ESP-NOW em rajadas de 4 ms e Deep Sleep de 10 µA (balanço de 14 mAh/dia).
+  4. Segurança:
+     - Bloquear imediatamente commit de tokens (TELEGRAM_TOKEN), chaves privadas ou senhas.
