@@ -41,7 +41,7 @@ COMANDOS_TEKO = [
     BotCommand("duvidas", "Dúvidas sobre o clipe e a bateria")
 ]
 
-DEFAULT_WEBAPP_URL = "https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=18"
+DEFAULT_WEBAPP_URL = "https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=21"
 
 
 def provisionar_teko(token: str, webapp_url: str = DEFAULT_WEBAPP_URL) -> bool:
@@ -54,6 +54,20 @@ def provisionar_teko(token: str, webapp_url: str = DEFAULT_WEBAPP_URL) -> bool:
         bot = telebot.TeleBot(token)
         me = bot.get_me()
         print(f"✅ Conectado com sucesso ao bot: @{me.username} (ID: {me.id})")
+
+        # 1. Configura Foto de Perfil Oficial Tekó (se existir)
+        avatar_path = os.path.join(_bot_dir, "assets", "teko_bot_avatar_512.png")
+        if not os.path.exists(avatar_path):
+            avatar_path = os.path.join(_bot_dir, "assets", "bot_avatar_hackathon.png")
+        if os.path.exists(avatar_path):
+            try:
+                from telebot.types import InputProfilePhotoStatic
+                with open(avatar_path, "rb") as f_img:
+                    sucesso_foto = bot.set_my_profile_photo(InputProfilePhotoStatic(photo=f_img))
+                    if sucesso_foto:
+                        print(f"  • Foto de perfil oficial do Tekó atualizada no Telegram com sucesso.")
+            except Exception as e:
+                print(f"  ⚠️ Aviso ao definir foto de perfil: {e}")
 
         # 1. Configura Nome Público
         try:

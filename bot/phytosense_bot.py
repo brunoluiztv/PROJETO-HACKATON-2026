@@ -8,10 +8,14 @@ Foco em Zero Digitação e acessibilidade para o pequeno produtor do Rio Grande 
 
 import os
 import sys
+import logging
 
 _bot_dir = os.path.dirname(os.path.abspath(__file__))
 if _bot_dir not in sys.path:
     sys.path.insert(0, _bot_dir)
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("teko_bot")
 
 import telebot
 from dotenv import load_dotenv
@@ -32,7 +36,7 @@ load_dotenv(os.path.join(_bot_dir, "..", ".env"))
 load_dotenv()
 
 TOKEN = os.getenv("TELEGRAM_TOKEN", "").strip()
-WEBAPP_URL = os.getenv("WEBAPP_URL", "https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=18").rstrip("/")
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://brunoluiztv.github.io/PROJETO-HACKATON-2026/?v=21").rstrip("/")
 
 TAG_SENSOR_ONLINE = "📡 <b>[SENSOR FÍSICO ESP32 ONLINE — GPIO 34]</b>\n"
 _preferencia_solo = {}
@@ -45,7 +49,7 @@ bot = telebot.TeleBot(TOKEN or "0:invalido", parse_mode="HTML")
 
 def main_menu_keyboard():
     """Teclado fixo gigante na base do Telegram (Zero Digitação para o Agricultor)."""
-    markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, is_persistent=True, row_width=2)
     btn_status = KeyboardButton(c.BTN_PLANTA)
     btn_bomba = KeyboardButton(c.BTN_BOMBA)
     btn_chuva = KeyboardButton(c.BTN_CHUVA)
@@ -58,6 +62,23 @@ def main_menu_keyboard():
     markup.add(btn_status, btn_bomba)
     markup.add(btn_chuva, btn_bateria)
     markup.add(btn_solo, btn_painel)
+    return markup
+
+
+def inline_welcome_keyboard():
+    """Botões rápidos aninhados à mensagem de boas-vindas."""
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        InlineKeyboardButton("🌱 Minha Planta", callback_data="cmd_planta"),
+        InlineKeyboardButton("💧 Irrigar Hoje?", callback_data="cmd_bomba"),
+    )
+    markup.add(
+        InlineKeyboardButton("🌧️ Raiz & Drenagem", callback_data="cmd_chuva"),
+        InlineKeyboardButton("🚜 Tipo de Solo", callback_data="cmd_solo"),
+    )
+    markup.add(
+        InlineKeyboardButton("📱 Abrir Painel Tekó (Web)", web_app=WebAppInfo(url=WEBAPP_URL)),
+    )
     return markup
 
 
@@ -87,7 +108,10 @@ def inline_plant_state_keyboard():
 @bot.message_handler(commands=["start", "ajuda"])
 def send_welcome(message):
     nome = message.from_user.first_name or "amigo(a) produtor(a)"
-    avatar_path = os.path.join(_bot_dir, "assets", "bot_avatar_hackathon.png")
+    avatar_path = os.path.join(_bot_dir, "assets", "teko_bot_avatar_512.png")
+    if not os.path.exists(avatar_path):
+        avatar_path = os.path.join(_bot_dir, "assets", "bot_avatar_hackathon.png")
+    
     if os.path.exists(avatar_path):
         try:
             with open(avatar_path, "rb") as photo:
@@ -95,9 +119,14 @@ def send_welcome(message):
                     message.chat.id,
                     photo=photo,
                     caption=c.BOAS_VINDAS.format(nome=nome),
-                    reply_markup=main_menu_keyboard()
+                    reply_markup=inline_welcome_keyboard()
                 )
-                return
+            bot.send_message(
+                message.chat.id,
+                "🌾 <b>Teclado do Produtor Ativado:</b> Toque nos botões abaixo a qualquer momento 👇",
+                reply_markup=main_menu_keyboard()
+            )
+            return
         except Exception as e:
             logger.warning(f"Erro ao enviar foto de boas-vindas: {e}")
     bot.send_message(message.chat.id, c.BOAS_VINDAS.format(nome=nome), reply_markup=main_menu_keyboard())
@@ -219,6 +248,23 @@ def callback_estados(call):
     estado = call.data.replace("estado_", "")
     bot.answer_callback_query(call.id, "Lendo bioimpedância da planta...")
     responder_telemetria(call.message.chat.id, estado=estado)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("cmd_"))
+def callback_cmd(call):
+    cmd = call.data.replace("cmd_", "")
+    bot.answer_callback_query(call.id)
+    solo_pref = _preferencia_solo.get(call.message.chat.id, "franco")
+    tele = obter_telemetria_tempo_real(tipo_solo=solo_pref)
+    estado = tele.get("estado", "hidratada")
+    if cmd == "planta":
+        responder_telemetria(call.message.chat.id, estado=estado, dados_reais=tele)
+    elif cmd == "bomba":
+        responder_telemetria(call.message.chat.id, estado=estado, dados_reais=tele)
+    elif cmd == "chuva":
+        _responder_chuva(call.message.chat.id, tele, estado)
+    elif cmd == "solo":
+        bot.send_message(call.message.chat.id, c.RESPOSTA_SOLO_MENU, reply_markup=inline_soil_keyboard())
 
 
 @bot.message_handler(commands=["planta", "status"])
