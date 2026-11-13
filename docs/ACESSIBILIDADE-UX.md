@@ -1,5 +1,7 @@
 # UX e acessibilidade aplicados
 
+Registro da implementação anterior. O site citado como `web/` está preservado em `legacy/web/`; o portal atual fica em [frontend/](../frontend/README.md). Consulte a [organização atual](ORGANIZACAO-REPOSITORIO.md).
+
 Referência: WCAG 2.2 AA (com partes AAA), Material Design e boas práticas de mobile-first.
 
 ## Site (`web/`)

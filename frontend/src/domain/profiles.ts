@@ -3,7 +3,7 @@ export const profiles: Profile[] = [{
   id: 'signal-demo',
   version: 1,
   label: 'Sinal demonstrativo',
-  description: 'Série numérica em percentual. Não corresponde a um sensor escolhido.',
+  description: 'Índice fictício do canal de demonstração. Não indica nível de água, sensor convencional ou estado real do caule.',
   kind: 'numeric',
   unit: '%',
   decimals: 1,

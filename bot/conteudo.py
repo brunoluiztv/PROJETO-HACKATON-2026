@@ -1,6 +1,6 @@
 """Textos do bot AgroSponge RS (fonte única de conteúdo, formato HTML do Telegram).
 
-Os números principais espelham web/js/content.js. Os testes conferem os valores.
+Os números principais espelham legacy/web/js/content.js. Os testes conferem os valores.
 """
 
 LITROS_POR_SACO = 13

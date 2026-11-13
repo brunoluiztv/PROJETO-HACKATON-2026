@@ -37,6 +37,8 @@ export type Reading = {
   id: string;
   deviceId: string;
   sensorId: string;
+  channelId?: string;
+  bootId?: string;
   profileId: string;
   profileVersion: number;
   sequence: number;
@@ -113,6 +115,6 @@ export function assessment(profile: Profile, reading: Reading | undefined, demoR
 }
 const cell = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
 export function toCsv(profile: Profile, readings: Reading[]): string {
-  const header = ['id', 'dispositivo', 'sensor', 'analise', 'versao', 'valor', 'unidade', 'qualidade', 'aquisicao_utc', 'recebimento_utc', 'qualidade_horario', 'origem'];
-  return '\uFEFF' + [header, ...readings.map(r => [r.id, r.deviceId, r.sensorId, r.profileId, r.profileVersion, r.result?.value ?? '', profile.kind === 'numeric' ? profile.unit : '', r.quality, r.measuredAt === null ? '' : new Date(r.measuredAt).toISOString(), new Date(r.receivedAt).toISOString(), r.timeQuality, r.source])].map(row => row.map(cell).join(';')).join('\r\n');
+  const header = ['id', 'dispositivo', 'sessao', 'canal', 'sensor', 'analise', 'versao', 'valor', 'unidade', 'qualidade', 'aquisicao_utc', 'recebimento_utc', 'qualidade_horario', 'origem'];
+  return '\uFEFF' + [header, ...readings.map(r => [r.id, r.deviceId, r.bootId ?? '', r.channelId ?? '', r.sensorId, r.profileId, r.profileVersion, r.result?.value ?? '', profile.kind === 'numeric' ? profile.unit : '', r.quality, r.measuredAt === null ? '' : new Date(r.measuredAt).toISOString(), new Date(r.receivedAt).toISOString(), r.timeQuality, r.source])].map(row => row.map(cell).join(';')).join('\r\n');
 }

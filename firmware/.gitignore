@@ -1,0 +1,10 @@
+# Configurações locais das placas; exemplos continuam versionados.
+firmware_config.h
+
+# Artefatos de compilação Arduino/PlatformIO.
+.pio/
+build/
+*.bin
+*.elf
+*.hex
+*.map

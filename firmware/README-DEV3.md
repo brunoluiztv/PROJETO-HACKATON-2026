@@ -2,7 +2,7 @@
 
 Este diretório implementa o nó e o gateway conforme a arquitetura ESP-NOW → Wi-Fi → FastAPI. O firmware não escolhe sensor, pinos, frequência, unidade, MAC, credenciais nem IP do notebook. Esses dados precisam ser preenchidos quando a equipe os confirmar.
 
-Esta entrega está em outputs/ porque o workspace aberto não contém um clone do repositório. Os arquivos preservam os caminhos internos ESPs32 - Hard/ para serem copiados ao checkout da equipe; a branch remota não foi alterada.
+O firmware está integrado ao repositório em `firmware/`. Os sketches ficam em `sensor_node/sensor_node.ino` e `gateway/gateway.ino`; o [guia da pasta](README.md) apresenta os caminhos atuais. A reorganização de 13/11/2026 preservou o código existente.
 
 ## O que foi conferido na branch remota
 
@@ -26,10 +26,10 @@ Antes da alteração, os dois sketches eram mocks iguais: imprimiam JSON pela Se
 
 ## Configurar sem versionar segredos
 
-1. Copie espcentral_sensor/firmware_config.example.h para espcentral_sensor/firmware_config.h.
+1. Copie gateway/firmware_config.example.h para gateway/firmware_config.h.
 2. Preencha GATEWAY_ID, SSID e senha localmente. Use o token Bearer emitido para o gateway. Configure API_URL com o endereço local informado pelo Dev 1, por exemplo no formato http://IP_DO_NOTEBOOK:8000/api/v1/readings. O plano do projeto prevê a porta 8000; confirme a porta real antes de usar.
 3. Grave o gateway e abra o Serial Monitor em 115200. Copie o MAC STA do gateway para a configuração do nó. Após conectar ao roteador, copie o canal mostrado como ESP-NOW pronto no canal ....
-4. Copie esp1_sensor/firmware_config.example.h para esp1_sensor/firmware_config.h. Preencha os IDs cadastrados pela equipe, o MAC copiado e o mesmo canal de rádio. Para manter o mock, deixe NODE_USE_MOCK como 1. O valor de perfil deve existir no catálogo da API; 0 indica configuração incompleta.
+4. Copie sensor_node/firmware_config.example.h para sensor_node/firmware_config.h. Preencha os IDs cadastrados pela equipe, o MAC copiado e o mesmo canal de rádio. Para manter o mock, deixe NODE_USE_MOCK como 1. O valor de perfil deve existir no catálogo da API; 0 indica configuração incompleta.
 5. Grave o nó, abra sua Serial em 115200 e digite r + Enter. Observe o ACK do gateway. A configuração local é ignorada pelo .gitignore deste diretório.
 
 O sketch não contém nenhum IP, MAC, SSID, senha, token ou canal real. Se o roteador mudar de canal, atualize NODE_RADIO_CHANNEL no nó e confirme o canal atual impresso pelo gateway.

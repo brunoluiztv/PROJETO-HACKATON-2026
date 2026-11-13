@@ -2,9 +2,11 @@
 
 Atualização de topologia: a equipe adotou nós ESP32 + gateway + API no notebook. Antes de conectar a interface, implementar seleção de nó/canal e adaptação das sessões/recência conforme o [contrato v1](CONTRATO-API-V1.md). O [plano da equipe](PLANO-EQUIPE-MVP.md) organiza os responsáveis e marcos.
 
-Data: 12 de novembro de 2026. Estado: proposta de implementação, baseada na leitura dos dois frontends; sem alteração funcional nesta etapa.
+Data da proposta: 12 de novembro de 2026.
 
-Atualização de implementação: a primeira versão do núcleo e da interface está em [frontend/](../frontend/README.md), com quatro perfis de exemplo, cenários, gráficos, tabela, CSV e conteúdos da equipe. Sete testes de domínio passaram após transpilar os módulos com Babel. Build TypeScript e validação visual permanecem pendentes por falha de DNS na instalação de dependências. API, cache persistente e painel na ESP32 são etapas futuras. O restante deste documento registra o plano e seus critérios de evolução.
+**Estado em 13/11/2026:** a interface atual em `frontend/` oferece modos API e demonstração, com testes e build aprovados conforme seu README. Os protótipos comparados abaixo estão preservados em `legacy/web/` e `legacy/dashboard/`. A dependência de `web/js/content.js` já foi removida. O [registro da organização](ORGANIZACAO-REPOSITORIO.md) descreve os caminhos atuais; as propostas abaixo registram a evolução inicial.
+
+Atualização de implementação: a primeira versão do núcleo e da interface está em [frontend/](../frontend/README.md), com quatro perfis de exemplo, cenários, gráficos, tabela, CSV e conteúdos da equipe. A consulta à API foi implementada depois dessa proposta. Cache persistente, painel na ESP32 e ensaio integrado no celular continuam pendentes. O restante deste documento registra o plano e seus critérios de evolução.
 
 ## 1. Direção proposta
 

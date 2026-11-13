@@ -1,10 +1,12 @@
-# Campo Vivo — dashboard
+# Campo Vivo — dashboard histórico
+
+O portal atual fica em [frontend/](../../frontend/README.md). Este diretório preserva o primeiro protótipo.
 
 Dashboard público em React, TypeScript e Vite. Não há login ou autenticação. Todos os dados são fictícios e gerados no navegador; nenhuma API, placa ou bot está conectado nesta etapa.
 
 ## Organização do repositório
 
-Este dashboard está dentro do [repositório da equipe](../README.md). Ele permanece como protótipo demonstrativo e ainda não foi integrado funcionalmente à aplicação `web/`. O [relatório consolidado](../docs/RELATORIO-PROJETO.md) registra a arquitetura atual e as pendências.
+Este dashboard está dentro do [repositório da equipe](../../README.md). Ele permanece como protótipo demonstrativo e ainda não foi integrado funcionalmente à aplicação `legacy/web/`. O [relatório consolidado](../../docs/RELATORIO-PROJETO.md) registra a arquitetura atual e as pendências.
 
 Os sensores e grandezas continuam em definição. Referências a umidade, índice percentual, imunossensor e limiar de 30% descrevem apenas a simulação inicial. O cenário “sem sinal” não implementa armazenamento offline nem sincronização com a ESP32.
 
@@ -13,7 +15,7 @@ Os sensores e grandezas continuam em definição. Referências a umidade, índic
 Com Node.js e npm instalados, a partir da raiz do repositório da equipe:
 
 ```bash
-cd dashboard
+cd legacy/dashboard
 npm install
 npm run dev
 ```

@@ -1,5 +1,5 @@
 {
-  "name": "agrosponge-monitoramento",
+  "name": "teko-biotech-monitoramento",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "tsc -p tsconfig.test.json && node --test tests/*.test.mjs"
+    "test": "tsc -p tsconfig.test.json && tsc -p tsconfig.test-api.json && node --test tests/*.test.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

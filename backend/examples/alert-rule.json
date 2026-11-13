@@ -1,0 +1,19 @@
+{
+  "id": "demo-low-signal",
+  "label": "Sinal abaixo do limiar demonstrativo",
+  "node_id": "node-demo-01",
+  "channel_id": "signal-01",
+  "profile_id": "signal-demo",
+  "profile_version": 1,
+  "source": "simulation",
+  "direction": "below",
+  "threshold": 30,
+  "recovery_threshold": 35,
+  "consecutive": 3,
+  "recovery_consecutive": 3,
+  "max_gap_seconds": 300,
+  "max_age_seconds": 300,
+  "cooldown_seconds": 0,
+  "experimental": true,
+  "enabled": true
+}

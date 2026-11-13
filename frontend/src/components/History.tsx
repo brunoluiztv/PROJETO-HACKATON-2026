@@ -69,7 +69,7 @@ export function HistoryChart({
         v
       }) => <circle key={r.id} cx={x(r.measuredAt!)} cy={y(v)} r={points.length > 50 ? 2 : 4} fill="#327b59"><title>{dateLabel(r.measuredAt)}: {formatResult(profile, r)}</title></circle>)}
     <text x={left} y={H - 10}>{dateLabel(start)}</text><text x={W - right} y={H - 10} textAnchor="end">{dateLabel(end)}</text>
-  </svg><figcaption>{profile.unit} · Valores simulados. Interrupções superiores a 20 minutos não são conectadas.</figcaption></figure>;
+  </svg><figcaption><strong>{profile.label}</strong> ({profile.unit}). {profile.description} {profile.unit === '%' ? 'O percentual corresponde a este perfil; só representa nível de água ou sinal do caule se o canal estiver identificado dessa forma.' : ''} {readings.some(r => r.source === 'physical_sensor') && readings.some(r => r.source === 'simulation') ? 'Origens: sensor físico e simulação.' : readings.some(r => r.source === 'physical_sensor') ? 'Origem: sensor físico cadastrado no canal.' : 'Origem: simulação.'} Interrupções superiores a 20 minutos não são conectadas.</figcaption></figure>;
 }
 export function ReadingsTable({
   profile,

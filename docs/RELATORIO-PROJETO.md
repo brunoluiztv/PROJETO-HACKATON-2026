@@ -1,6 +1,8 @@
 # Relatório geral e análise do projeto
 
-Atualização: 12 de novembro de 2026.
+Análise inicial: 12 de novembro de 2026.
+
+**Estado em 13/11/2026:** backend MVP implementado e testes manuais validados pelo usuário; frontend com modos API e demonstração; firmware organizado em `firmware/`. Os protótipos citados abaixo como `web/` e `dashboard/` estão agora em `legacy/web/` e `legacy/dashboard/`. Consulte o [mapa de organização](ORGANIZACAO-REPOSITORIO.md) e os READMEs dos componentes para o estado atual. As seções de análise inicial mantêm os caminhos e pendências da época.
 
 **Decisão posterior da equipe:** a topologia passa a ter nós ESP32 e uma ESP32 gateway, com API e SQLite no notebook local. O armazenamento e painel embarcados ficam no gateway. O [plano da equipe](PLANO-EQUIPE-MVP.md) e o [contrato v1](CONTRATO-API-V1.md) são as referências para a próxima integração e prevalecem sobre os exemplos anteriores de placa única e `/api/measurements` registrados abaixo.
 
@@ -8,7 +10,7 @@ Este documento consolida o código encontrado no repositório da equipe, o prot�
 
 O [plano do frontend adaptável](PLANO-FRONTEND-ADAPTAVEL.md) detalha a comparação das duas interfaces, os perfis de análise, a evolução do contrato para resultados numéricos, categóricos e booleanos e a migração proposta.
 
-Atualização: a primeira interface integrada foi implementada em [frontend/](../frontend/README.md), com catálogo local de perfis e dados simulados. A aplicação estática e o protótipo anteriores permanecem preservados. Sete testes do domínio passaram; build completo e validação no navegador aguardam instalação das dependências, bloqueada por DNS. As seções seguintes registram a análise inicial e a arquitetura; não representam integração física concluída.
+Atualização: a primeira interface integrada foi implementada em [frontend/](../frontend/README.md), com catálogo local de perfis e dados simulados. A aplicação estática e o protótipo anteriores permanecem preservados. Os testes existentes e o build do frontend passaram posteriormente, conforme seu README; validação visual e integração física continuam sendo etapas próprias. As seções seguintes registram a análise inicial e a arquitetura; não representam integração física concluída.
 
 ## 1. Objetivo e decisões
 

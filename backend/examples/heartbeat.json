@@ -1,0 +1,14 @@
+{
+  "gateway_boot_count": 0,
+  "gateway_boot_id": "gateway-boot-demo-001",
+  "nodes": [
+    {
+      "last_radio_age_ms": 1000,
+      "node_boot_count": 0,
+      "node_boot_id": "boot-demo-001",
+      "node_id": "node-demo-01"
+    }
+  ],
+  "schema_version": 1,
+  "sequence": 1
+}

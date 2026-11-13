@@ -1,5 +1,7 @@
 # Resumo do chat de desenvolvimento (Antigravity)
 
+Registro da implementação anterior. O site citado como `web/` está preservado em `legacy/web/`; o portal atual fica em [frontend/](../frontend/README.md). Consulte a [organização atual](ORGANIZACAO-REPOSITORIO.md).
+
 Data: 12/11/2026. Este arquivo registra o que foi pedido e decidido na conversa com o Antigravity, para dar continuidade ao projeto neste repositório.
 
 ## Pedido

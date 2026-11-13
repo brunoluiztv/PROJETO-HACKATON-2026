@@ -4,7 +4,7 @@ AgroSponge RS - Bot do Telegram para Agricultura Familiar (Hackathon das Engenha
 Como rodar:
 1. Crie um bot no @BotFather do Telegram e copie o TOKEN.
 2. Copie .env.example para .env e preencha TELEGRAM_TOKEN (ou defina a variável de ambiente).
-3. Hospede a pasta web/ (Netlify/GitHub Pages, HTTPS) e coloque a URL em WEBAPP_URL.
+3. Para o protótipo antigo, hospede legacy/web/ em HTTPS e configure WEBAPP_URL.
 4. pip install -r requirements.txt  &&  python agrosponge_telegram_bot.py
 """
 

@@ -2,6 +2,10 @@
 
 Documento central para os três desenvolvedores do hackathon. Reúne a arquitetura acordada, divisão de responsabilidades, fluxo de trabalho, etapas de entrega e contrato proposto de integração.
 
+O [plano do backend — Dev 1](PLANO-BACKEND.md) detalha a organização da API, banco, serviços, testes e marcos de implementação, complementando este contrato.
+
+Backend MVP (entregas 1 a 5) implementado, com banco versão 4 e 53 testes ASGI aprovados. Em 13/11/2026, o usuário confirmou a validação dos testes manuais do backend. O [roteiro de aceite](backend/ENTREGA-FINAL-BACKEND.md) permanece como referência. A organização do repositório foi realizada após esse aceite e está descrita no [mapa de pastas](docs/ORGANIZACAO-REPOSITORIO.md). O frontend já recebeu um modo API; a integração do worker do Dev 2, a validação no celular e o ensaio físico continuam pendentes. O [README do backend](backend/README.md) documenta instalação e operação.
+
 **Configuração acordada:** nós ESP32 → ESP-NOW → ESP32 gateway → FastAPI e SQLite no notebook local → dashboard React e bot Telegram. **Sensores e grandezas continuam em definição.**
 
 O conteúdo descreve o planejamento da integração. Critérios de aceite e serviços futuros não devem ser confundidos com funcionalidades já validadas. Os registros de implementação de cada componente devem acompanhar seus respectivos READMEs.
@@ -13,13 +17,13 @@ O conteúdo descreve o planejamento da integração. Critérios de aceite e serv
 
 ## Parte 1 — Plano da equipe
 
-Decisões consolidadas em 12/11/2026. Documento de planejamento: API, banco de medições e firmware ainda não foram implementados neste workspace.
+Decisões iniciais consolidadas em 12/11/2026. As seções seguintes registram a organização das entregas; o progresso atualizado do backend está no início deste documento e nos roteiros de aceite manual.
 
 ### 1. Escopo acordado
 
 Três desenvolvedores, sensores ainda em definição, frontend React existente e bot Python já iniciado. O MVP terá nós ESP32 e uma ESP32 central (gateway), API FastAPI, SQLite no notebook, dashboard responsivo e Telegram para consultas, alertas e link do painel.
 
-O notebook local foi escolhido pela equipe. Não será necessário PostgreSQL, broker MQTT ou infraestrutura de microsserviços para a primeira integração. O nome Ninhura aparece na proposta recente e AgroSponge RS identifica o código atual; confirmar a identidade de apresentação antes de renomear arquivos, bot ou publicação. Esta organização não altera a marca da aplicação.
+O notebook local foi escolhido pela equipe. Não será necessário PostgreSQL, broker MQTT ou infraestrutura de microsserviços para a primeira integração. A equipe adotou **tekó biotech**, conforme a [direção do portal](docs/DIRECAO-PORTAL-TEKO.md); registro e domínio ainda estão em verificação. Ninhura e AgroSponge aparecem nos registros anteriores. O bot ainda precisa adaptar seus textos à identidade atual.
 
 Começar com um nó e um canal simulados; ampliar para dois nós e um gateway como alvo da demonstração se houver placas e tempo. Sensor escolhido depois altera aquisição, calibração e catálogo de perfis, sem mudar o fluxo principal.
 
@@ -63,20 +67,26 @@ O contrato em [contrato de integração v1](#contrato-de-integracao-v1) é a ref
 
 ```text
 PROJETO-HACKATON-2026/
-  backend/                 # Futuro: API, banco, schemas, routers, serviços e testes
+  README.md
+  PLANO-DO-PROJETO.md       # Arquitetura, equipe e contrato v1
+  PLANO-BACKEND.md          # Entregas do Dev 1
+  backend/                 # API, banco, schemas, routers, serviços e testes
   bot/                     # Existente: evoluir o bot atual
   frontend/                # Existente: interface integrada em React/TypeScript
-  firmware/                # Futuro
+  firmware/                # Sketches existentes, guia e configurações de exemplo
     sensor_node/
     gateway/
-  docs/                    # Contrato, plano e roteiro da demonstração
-  web/                     # Aplicação anterior, preservada durante a migração
-  dashboard/               # Primeiro protótipo React, referência histórica
+  docs/                    # Índice, organização, relatórios e evidências
+  legacy/                  # Interfaces anteriores preservadas
+    web/
+    dashboard/
+  extension/               # Extensão existente, integração a revisar
+  assets/                  # Materiais existentes de apresentação
 ```
 
-As pastas futuras ainda não significam serviços disponíveis. Trabalhar no repositório da equipe, sem novos repositórios Git dentro dessas pastas.
+Esta é a estrutura atual. Consulte os READMEs de cada componente para distinguir código existente de integração validada. Trabalhar no repositório da equipe, sem novos repositórios Git dentro dessas pastas.
 
-Concentrar novas telas em `frontend/`. `dashboard/` será referência histórica; `web/` permanece para compatibilidade e porque o novo frontend ainda importa `web/js/content.js`. Não excluir ou mover esse módulo sem atualizar a importação e validar o build. Evitar evoluir três versões de dashboard em paralelo.
+Concentrar novas telas em `frontend/`. Os dois protótipos anteriores ficam em `legacy/`, preservados para consulta. O frontend já deixou de importar `web/js/content.js`; essa independência permite a movimentação. O hardware foi organizado em `firmware/sensor_node/` e `firmware/gateway/`, com nomes dos sketches correspondentes às pastas. O [registro da organização](docs/ORGANIZACAO-REPOSITORIO.md) relaciona os caminhos anteriores e atuais.
 
 Rotina recomendada: cada pessoa clona o repositório no próprio computador; branches curtas por entrega (`feat/api-ingestion`, `feat/frontend-api`, `feat/gateway-ingestion`); commits pequenos; pull request revisado por outra pessoa. Integrar uma entrega funcional por vez e buscar atualizações de `main` antes de iniciar a próxima. Não compartilhar a mesma branch para trabalho simultâneo.
 
@@ -136,7 +146,7 @@ Nós e gateway precisam usar canal compatível; o gateway conectado ao roteador 
 | D | Motor de alertas e outbox | Comandos + envio Telegram | Geração de condição experimental | Uma ocorrência persiste e gera aviso com link. |
 | E | Recuperação e diagnósticos | Conferência no celular, PC e Telegram | Corte de rede e recuperação | Pendências sincronizam sem apresentar evento antigo como atual. |
 
-Configuração pelo dashboard, autenticação multiusuário, mapa e previsões ficam fora do primeiro ensaio. O número “5/14 concluídas” da conversa anterior não é um inventário verificado deste repositório. O que há hoje é frontend demonstrativo e bot iniciado; API de medições e firmware continuam pendentes.
+Configuração de regras pelo dashboard, autenticação multiusuário, mapa e previsões ficam fora do primeiro ensaio. O número “5/14 concluídas” da conversa anterior não é um inventário verificado deste repositório. O backend MVP está implementado e teve os testes manuais validados; o frontend oferece modos API e demonstração, e o bot permanece em adaptação. A integração completa com o firmware e o envio real pelo Telegram ainda precisam ser concluídos.
 
 ### 9. Critérios de aceite e demonstração
 
@@ -148,7 +158,7 @@ As regras do ensaio serão demonstrativas. Não afirmar detecção de contaminan
 
 ### 10. Próxima tarefa concreta
 
-Implementar a ingestão e consulta da API usando o [contrato v1](#contrato-de-integracao-v1), enquanto o frontend prepara seu adaptador e o hardware produz o mesmo exemplo no gateway. Fazer a primeira integração com dados simulados antes de expandir sensores ou interface.
+Com o backend validado e o repositório organizado, executar a integração do frontend com a API no notebook e celular. Dev 2 integra o worker à outbox; Dev 3 configura o firmware em `firmware/` e valida ingestão, referência de tempo, heartbeat e reenvio. Usar o [contrato v1](#contrato-de-integracao-v1) e os exemplos do backend, mantendo dados simulados identificados antes de expandir para sensores físicos.
 
 ---
 
@@ -156,7 +166,7 @@ Implementar a ingestão e consulta da API usando o [contrato v1](#contrato-de-in
 
 ## Parte 2 — Contrato de integração v1
 
-Referência para implementação coordenada. Ainda não existe API correspondente neste workspace. Este documento atualiza os exemplos anteriores de `/api/measurements` para a arquitetura de nós + gateway e unifica o caminho em `/api/v1/readings`. Não há endpoint antigo implementado a migrar.
+Referência para implementação coordenada. Saúde, ingestão, catálogo, histórico, dispositivos, sessões, alertas numéricos e operações internas de notificação estão implementados no backend MVP. Este contrato atualiza os exemplos anteriores de `/api/measurements` para a arquitetura de nós + gateway e unifica a ingestão em `/api/v1/readings`.
 
 ### 1. Identidade e catálogo
 
@@ -266,9 +276,19 @@ Cada leitura de resposta expõe `id`, identificadores de origem, perfil, resulta
 
 Quando o gateway informa a sessão atual pelo heartbeat, a API distingue essa sessão das pendências antigas. Se não houver evidência suficiente para ordenar sessões sem relógio, sinalizar incerteza na recência; não transformar uma hipótese em status atual. Recepção de um lote antigo não atualiza o horário de última coleta do nó. Registrar separadamente última comunicação do gateway, último contato de rádio informado e última aquisição conhecida.
 
+### 5.1. Regras concretas da entrega 3
+
+`GET /api/v1/readings` usa ordem decrescente de aquisição, com ID de desempate. Sem horário, registros aparecem depois, em ordem técnica de ID. Cursor opaco preserva o snapshot inicial e exige repetir filtros; não é credencial. `from` e `to` são inclusivos e exigem fuso; a combinação com `time_quality=unknown` é rejeitada.
+
+`GET /api/v1/devices` distingue `role: gateway` e `role: node`, lista canais e separa comunicação HTTP de contato de rádio. `GET /api/v1/devices/{node_id}/latest` informa `reading`, `selection` e `freshness` por canal. Os estados são `fresh`, `stale`, `unknown` e `no_data`. Sem ordenação confiável entre sessões, não escolhe arbitrariamente uma amostra atual.
+
+Heartbeat autenticado: `schema_version`, `gateway_boot_id`, `gateway_boot_count`, `sequence` e `nodes`. Cada nó informa `node_id`, `node_boot_id`, `node_boot_count` e `last_radio_age_ms` opcional. Contadores de inicialização são persistidos e monotônicos; sequência é local à inicialização do gateway. O relatório deve refletir estado atual, sem entrar na fila de histórico. Relatórios antigos não substituem a sessão atual; duplicação não renova o contato de rádio. A estimativa de contato não é horário de aquisição. Formato, erros e exemplos para o firmware estão no [roteiro da entrega 3](backend/TESTE-MANUAL-ENTREGA-3.md).
+
+Na entrega 3, o esquema SQLite passou para 3; na conclusão do backend, passou para **4**. O contrato das mensagens mantém `schema_version: 1`. Os contadores de inicialização do heartbeat são uma extensão explícita para o Dev 3; não são acrescentados obrigatoriamente ao envelope de leituras já validado na entrega 2.
+
 ### 6. Adaptação ao frontend existente
 
-O frontend atual é mock e usa camelCase/epoch em milissegundos. Criar adaptador explícito: `node_id → deviceId`, `sensor_id → sensorId`, `profile_id → profileId`, `profile_version → profileVersion`, datas ISO → epoch, preservando `null`. Acrescentar `channelId`, `gatewayId` e `nodeBootId` ao modelo de domínio antes de conectar múltiplos nós/sessões.
+O frontend oferece modos API e demonstração. O adaptador em `frontend/src/data/api.ts` converte o contrato para camelCase/epoch em milissegundos: `node_id → deviceId`, `sensor_id → sensorId`, `profile_id → profileId`, `profile_version → profileVersion` e datas ISO → epoch, preservando `null`. A identidade de canal e sessão é preservada para distinguir múltiplos nós/sessões; a seleção da última leitura fica a cargo do backend.
 
 O modelo de perfil já existente pode ser usado no catálogo com normalização dos nomes no adaptador. Não criar duas listas divergentes de unidades no frontend e backend. O catálogo da API será a referência para dados reais; mocks mantêm seus perfis simulados separados.
 
@@ -290,6 +310,16 @@ O bot requisita notificações à API interna com token próprio: operação de 
 
 Comandos: `/start`, `/status`, `/sensores`, `/alertas`, `/painel`, `/ajuda`. Somente chat permitido consulta os dados de demonstração. Nenhum comando controla remotamente o hardware nesta etapa.
 
+### 7.1. Contrato concreto de alertas e bot no MVP
+
+`GET /api/v1/alert-rules` expõe regras e estado; `GET /api/v1/alerts` e `GET /api/v1/alerts/{id}` retornam ocorrências e situação de entrega sem chat ou credenciais; `GET /api/v1/alert-evaluations/summary` contabiliza avaliações por regra e motivo. Regras são configuradas por comandos locais e ficam imutáveis por ID.
+
+O motor avalia apenas resultados numéricos com aquisição conhecida, não futura e dentro de `max_age_seconds`. `max_gap_seconds` limita o intervalo entre observações consecutivas. Erro, sessão incerta ou tempo desconhecido não produzem abertura/recuperação automática. Os registros são preservados para análise; reprocessamento histórico fica fora deste MVP. O firmware que hoje envia horário nulo precisa de referência temporal confiável antes de acionar esse motor.
+
+Rotas internas do bot exigem `BotServiceToken`, separado do gateway e Telegram: `GET /api/v1/internal/bot-config`, `GET /api/v1/internal/notifications`, `POST /api/v1/internal/notifications/claim`, `POST /api/v1/internal/notifications/{id}/delivered` e `/failed`. Reserva usa `worker_id`, token temporário e expiração; confirmação repetida idêntica é idempotente. A outbox não realiza o envio externo. Destinatário e link vêm da configuração da API; o Dev 2 restringe os comandos ao chat autorizado.
+
+Exemplos completos, retentativas, recuperação manual e configuração do worker estão no [aceite final do backend](backend/ENTREGA-FINAL-BACKEND.md). O envio real ao Telegram permanece uma integração do bot; a evolução do frontend em paralelo foi preservada, sem alterações em seu código por esta entrega do backend.
+
 ### 8. Primeiro teste compartilhado
 
 1. Backend recebe o exemplo simulado e retorna `accepted`.
@@ -300,4 +330,4 @@ Comandos: `/start`, `/status`, `/sensores`, `/alertas`, `/painel`, `/ajuda`. Som
 6. Segundo nó com mesmo contador não se mistura ao primeiro.
 7. Hora desconhecida permanece desconhecida na tela e na exportação.
 
-Esses são critérios para implementação e revisão dos três desenvolvedores, não testes já executados de uma API disponível.
+Esses critérios orientam os testes de integração já iniciados e a revisão dos três desenvolvedores. Os testes de software realizados no backend não substituem o aceite manual nem o ensaio físico completo.

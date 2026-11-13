@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "gateway_id": "gateway-demo-01",
+  "readings": [
+    {
+      "node_id": "node-demo-01",
+      "node_boot_id": "boot-demo-001",
+      "sequence": 42,
+      "sensor_id": "sensor-demo-01",
+      "channel_id": "signal-01",
+      "profile_id": "signal-demo",
+      "profile_version": 1,
+      "result": {
+        "kind": "numeric",
+        "value": 42.5
+      },
+      "quality": "valid",
+      "source": "simulation",
+      "measured_at": null,
+      "time_quality": "unknown",
+      "node_uptime_ms": 420000
+    }
+  ]
+}
