@@ -110,11 +110,11 @@ function initThemeManager() {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-      navigator.serviceWorker.getRegistrations().then((regs) => {
-        regs.forEach((r) => r.unregister());
-      });
+      void navigator.serviceWorker.getRegistrations().then((regs) => {
+        regs.forEach((r) => { void r.unregister(); });
+      }).catch(() => {});
     } else {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      void navigator.serviceWorker.register('sw.js').catch(() => {});
     }
   }
 }
@@ -194,7 +194,7 @@ function initSeletorSolo() {
         window.recalcularSimuladorHectares();
       }
 
-      notificarBackendTipoSolo(solo);
+      void notificarBackendTipoSolo(solo);
 
       const liveRegion = document.getElementById('sr-anuncios');
       if (liveRegion) {
@@ -241,7 +241,7 @@ export function atualizarAguaDisponivel(tensaoKpa) {
 async function notificarBackendTipoSolo(solo) {
   try {
     const host = window.location.hostname;
-    const url = (host === 'localhost' || host === '127.0.0.1' || host === '') ? 'http://127.0.0.1:8000' : 'http://127.0.0.1:8000';
+    const url = (host === 'localhost' || host === '127.0.0.1' || host === '') ? 'http://127.0.0.1:8000' : '';
     await fetch(`${url}/api/config/solo`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -431,7 +431,7 @@ function initClimaTalhao() {
           localStorage.setItem('teko_municipio_rs', chave);
         } catch {}
         const rotuloFormatado = `${localizacaoAtiva.nome} (${localizacaoAtiva.regiao || 'RS'})`;
-        atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloFormatado);
+        void atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloFormatado);
       }
     });
   }
@@ -445,7 +445,7 @@ function initClimaTalhao() {
       const rotuloAtual = localizacaoAtiva.regiao 
         ? `${localizacaoAtiva.nome} (${localizacaoAtiva.regiao})`
         : localizacaoAtiva.nome;
-      atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloAtual);
+      void atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloAtual);
     });
   }
 
@@ -502,7 +502,7 @@ function initClimaTalhao() {
             selectMun.value = 'gps_talhao';
           }
 
-          atualizarPrevisaoClima(lat, lon, rotuloGps);
+          void atualizarPrevisaoClima(lat, lon, rotuloGps);
         },
         (err) => {
           btnGps.disabled = false;
@@ -531,7 +531,7 @@ function initClimaTalhao() {
   const rotuloInicial = localizacaoAtiva.regiao 
     ? `${localizacaoAtiva.nome} (${localizacaoAtiva.regiao})`
     : localizacaoAtiva.nome;
-  atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloInicial);
+  void atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, rotuloInicial);
 }
 
 /**
@@ -1229,6 +1229,6 @@ function initPollingBackend() {
     }
   }
 
-  setInterval(checarTelemetria, 3000);
-  checarTelemetria();
+  setInterval(() => { void checarTelemetria(); }, 3000);
+  void checarTelemetria();
 }

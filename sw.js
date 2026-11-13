@@ -33,7 +33,9 @@ self.addEventListener("fetch", (e) => {
       .then((resp) => {
         if (resp && resp.status === 200) {
           const copia = resp.clone();
-          caches.open(VERSAO).then((c) => c.put(e.request, copia));
+          void caches.open(VERSAO).then((c) => {
+            void c.put(e.request, copia);
+          }).catch(() => {});
         }
         return resp;
       })
