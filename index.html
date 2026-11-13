@@ -82,6 +82,12 @@
 
       <!-- Cartão Semáforo de Diagnóstico -->
       <article class="card-diagnostico" aria-live="polite">
+        <!-- Status de Conexão Física ESP32 -->
+        <div id="banner-status-sensor" class="banner-status-sensor" style="display: none; align-items: center; justify-content: space-between; padding: 6px 12px; margin-bottom: 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #10b981;">
+          <span id="sensor-status-texto">● SENSOR FÍSICO ONLINE (ESP32 - GPIO 34)</span>
+          <span id="sensor-status-detalhes" style="font-size: 0.72rem; opacity: 0.85;">--s atrás</span>
+        </div>
+
         <div class="diag-cabecalho">
           <h2 id="diag-titulo" style="font-size: 1.1rem; font-weight: 800;">🌿 HIDRATADA</h2>
           <span id="diag-badge" class="badge badge-verde">Saudável</span>
@@ -104,6 +110,10 @@
 
         <!-- Grade de Parâmetros -->
         <div class="grade-parametros">
+          <div class="item-param">
+            <span class="item-param-label">Potencial Matricial Ψm</span>
+            <span id="val-tensao-kpa" class="item-param-val" style="color: #38bdf8;">21.5 kPa</span>
+          </div>
           <div class="item-param">
             <span class="item-param-label">Z (50 kHz) Turgor</span>
             <span id="val-z50k" class="item-param-val">1.4 kΩ</span>

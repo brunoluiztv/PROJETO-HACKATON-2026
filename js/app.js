@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalProagro();
   initCharts();
   processarUrlParams();
+  initPollingBackend();
 });
 
 /**
@@ -137,11 +138,13 @@ export function aplicarEstado(estadoKey) {
   const acaoEl = document.getElementById('diag-acao');
 
   // Parâmetros eletroquímicos no card
+  const valTensao = document.getElementById('val-tensao-kpa');
   const valZ50k = document.getElementById('val-z50k');
   const valZ1k = document.getElementById('val-z1k');
   const valOrp = document.getElementById('val-orp');
   const valCe = document.getElementById('val-ce');
 
+  if (valTensao && dados.tensaoKpa) valTensao.textContent = dados.tensaoKpa;
   if (badgeEl) {
     badgeEl.textContent = dados.badge;
     badgeEl.className = `badge ${dados.badgeClass}`;
@@ -371,4 +374,91 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+/**
+ * 10. Polling em Tempo Real da Telemetria Fitoeletrônica (ESP32 Físico)
+ */
+function initPollingBackend() {
+  const getApiUrl = () => {
+    if (window.PHYTOSENSE_API_URL) return window.PHYTOSENSE_API_URL.replace(/\/+$/, '');
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '') {
+      return 'http://127.0.0.1:8000';
+    }
+    return 'http://127.0.0.1:8000';
+  };
+
+  const API_URL = getApiUrl();
+  const bannerEl = document.getElementById('banner-status-sensor');
+  const textoEl = document.getElementById('sensor-status-texto');
+  const detalhesEl = document.getElementById('sensor-status-detalhes');
+
+  async function checarTelemetria() {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const res = await fetch(`${API_URL}/api/telemetria/atual`, {
+        signal: controller.signal,
+        headers: { Accept: 'application/json' }
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (data && data.sensor_fisico_online) {
+        if (bannerEl) {
+          bannerEl.style.display = 'flex';
+          bannerEl.style.background = 'rgba(16, 185, 129, 0.15)';
+          bannerEl.style.borderColor = '#10b981';
+          bannerEl.style.color = '#10b981';
+        }
+        if (textoEl) textoEl.textContent = '● SENSOR FÍSICO ONLINE (ESP32 - GPIO 34)';
+        if (detalhesEl) detalhesEl.textContent = `${data.tensao_kpa} kPa (${data.segundos_desde_leitura}s atrás)`;
+
+        // 1. Sincroniza estado estrutural primeiro (canvas, botões, semáforo)
+        if (data.estado && data.estado !== estadoAtual) {
+          aplicarEstado(data.estado);
+        }
+
+        // 2. Sobrescreve com as leituras analógicas exatas do ESP32 físico
+        const valTensao = document.getElementById('val-tensao-kpa');
+        const valZ50k = document.getElementById('val-z50k');
+        const valZ1k = document.getElementById('val-z1k');
+        const valOrp = document.getElementById('val-orp');
+        const valCe = document.getElementById('val-ce');
+
+        if (valTensao) valTensao.textContent = `${data.tensao_kpa} kPa`;
+        if (valZ50k && data.z_50k_ohms) valZ50k.textContent = `${(data.z_50k_ohms / 1000).toFixed(1)} kΩ`;
+        if (valZ1k && data.z_1k_ohms) valZ1k.textContent = `${(data.z_1k_ohms / 1000).toFixed(1)} kΩ`;
+        if (valOrp && data.orp_mv !== undefined) valOrp.textContent = `${data.orp_mv >= 0 ? '+' : ''}${data.orp_mv} mV`;
+        if (valCe && data.ce_dsm !== undefined) valCe.textContent = `${data.ce_dsm} dS/m`;
+
+      } else if (data && data.fonte === 'simulado' && data.segundos_desde_leitura < 20) {
+        if (bannerEl) {
+          bannerEl.style.display = 'flex';
+          bannerEl.style.background = 'rgba(56, 189, 248, 0.15)';
+          bannerEl.style.borderColor = '#38bdf8';
+          bannerEl.style.color = '#38bdf8';
+        }
+        if (textoEl) textoEl.textContent = '🧪 SIMULAÇÃO DE BANCADA ATIVA';
+        if (detalhesEl) detalhesEl.textContent = `${data.tensao_kpa} kPa`;
+
+        // Sincroniza estado simulado no canvas e UI
+        if (data.estado && data.estado !== estadoAtual) {
+          aplicarEstado(data.estado);
+        }
+      } else {
+        if (bannerEl) bannerEl.style.display = 'none';
+      }
+    } catch {
+      // Backend offline: modo contingência silencioso
+      if (bannerEl) bannerEl.style.display = 'none';
+    }
+  }
+
+  // Polling a cada 3 segundos
+  setInterval(checarTelemetria, 3000);
+  checarTelemetria();
 }
