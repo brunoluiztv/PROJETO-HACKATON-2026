@@ -1,1 +1,0 @@
-{"compilerOptions":{"target":"ES2022","lib":["ES2022","DOM"],"module":"ESNext","moduleResolution":"bundler","strict":true,"skipLibCheck":true,"outDir":".test-build-api","rootDir":"src"},"include":["src/data/api.ts","src/domain/model.ts"]}

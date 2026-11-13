@@ -1,2 +1,0 @@
-# Versões do ambiente verificado; atualizar o lock após validar mudanças.
--r requirements.lock.txt
