@@ -352,6 +352,10 @@ function initClimaTalhao() {
   if (selectMun) {
     selectMun.addEventListener('change', () => {
       const chave = selectMun.value;
+      if (btnGps && chave !== 'gps_talhao') {
+        btnGps.innerHTML = '<span>📍</span> <span>GPS</span>';
+        btnGps.classList.remove('ativo');
+      }
       if (MUNICIPIOS_RS[chave]) {
         localizacaoAtiva = MUNICIPIOS_RS[chave];
         atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
@@ -361,29 +365,149 @@ function initClimaTalhao() {
 
   if (btnGps) {
     btnGps.addEventListener('click', () => {
-      if ('geolocation' in navigator) {
-        btnGps.innerHTML = '<span>⏳</span> <span>Buscando...</span>';
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            btnGps.innerHTML = '<span>📍</span> <span>GPS</span>';
-            const lat = Number(pos.coords.latitude.toFixed(4));
-            const lon = Number(pos.coords.longitude.toFixed(4));
-            localizacaoAtiva = { nome: 'GPS do Talhão (Lavoura Local)', lat, lon };
-            atualizarPrevisaoClima(lat, lon, localizacaoAtiva.nome);
-          },
-          () => {
-            btnGps.innerHTML = '<span>📍</span> <span>GPS</span>';
-            // Fallback para Porto Alegre se recusar permissão
-            atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
-          },
-          { timeout: 7000 }
-        );
+      if (!('geolocation' in navigator)) {
+        alert('Geolocalização não é suportada pelo seu navegador/dispositivo.');
+        return;
       }
+
+      const coordTextoEl = document.getElementById('clima-coordenadas-texto');
+      btnGps.innerHTML = '<span>🛰️</span> <span>Localizando...</span>';
+      btnGps.disabled = true;
+      if (coordTextoEl) {
+        coordTextoEl.textContent = '🛰️ Conectando satélites e obtendo coordenadas GPS do talhão...';
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          btnGps.disabled = false;
+          btnGps.innerHTML = '<span>📍</span> <span>GPS Ativo</span>';
+          btnGps.classList.add('ativo');
+
+          const lat = Number(pos.coords.latitude.toFixed(4));
+          const lon = Number(pos.coords.longitude.toFixed(4));
+          const rotuloGps = `📍 Talhão Sentinela (GPS: ${lat}, ${lon})`;
+
+          localizacaoAtiva = { nome: rotuloGps, lat, lon };
+
+          if (selectMun) {
+            let optGps = selectMun.querySelector('option[value="gps_talhao"]');
+            if (!optGps) {
+              optGps = document.createElement('option');
+              optGps.value = 'gps_talhao';
+              selectMun.insertBefore(optGps, selectMun.firstChild);
+            }
+            optGps.textContent = rotuloGps;
+            selectMun.value = 'gps_talhao';
+          }
+
+          atualizarPrevisaoClima(lat, lon, rotuloGps);
+        },
+        (err) => {
+          btnGps.disabled = false;
+          btnGps.innerHTML = '<span>📍</span> <span>GPS</span>';
+          btnGps.classList.remove('ativo');
+          console.warn('Erro ao obter GPS:', err);
+
+          if (coordTextoEl) {
+            coordTextoEl.textContent = `⚠️ Sinal GPS indisponível (${err.message || 'permissão não concedida'}). Mantendo ${localizacaoAtiva.nome}.`;
+          }
+          atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 30000
+        }
+      );
     });
   }
 
   // Carrega previsão inicial
   atualizarPrevisaoClima(localizacaoAtiva.lat, localizacaoAtiva.lon, localizacaoAtiva.nome);
+}
+
+/**
+ * Busca previsão meteorológica resiliente:
+ * 1. Open-Meteo Oficial via HTTPS (Sem necessidade de chave, CORS habilitado, funciona em GitHub Pages e Celular).
+ * 2. Backend FastAPI local (quando em ambiente dev local).
+ * 3. Fallback estático de emergência caso completamente sem internet.
+ */
+async function buscarPrevisaoOpenMeteo(lat, lon, nomeLocal) {
+  // 1. Chamada direta HTTPS para Open-Meteo
+  try {
+    const urlMeteo = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_gusts_10m&hourly=precipitation,precipitation_probability&forecast_days=2&timezone=auto`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6500);
+
+    const res = await fetch(urlMeteo, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      const tempAtual = data.current?.temperature_2m ?? 23.5;
+      const umidAtual = data.current?.relative_humidity_2m ?? 65;
+      const ventoVel = data.current?.wind_speed_10m ?? 12.0;
+      const ventoRaj = data.current?.wind_gusts_10m ?? ventoVel * 1.35;
+
+      const precipitacoes = data.hourly?.precipitation || [];
+      const probsChuva = data.hourly?.precipitation_probability || [];
+      const chuva24h = precipitacoes.length > 0
+        ? Number(precipitacoes.slice(0, 24).reduce((acc, v) => acc + (Number(v) || 0), 0).toFixed(1))
+        : 0.0;
+      const probChuvaMax = probsChuva.length > 0
+        ? Math.max(...probsChuva.slice(0, 24).map(v => Number(v) || 0))
+        : 0;
+
+      const alertaVendaval = ventoRaj >= 50.0;
+      const alertaSuspensao = chuva24h >= 15.0 || probChuvaMax >= 70;
+
+      let recomendacao = `Tempo firme para ${nomeLocal}. Sem previsão de chuva expressiva. Siga o manejo do biossensor.`;
+      if (alertaVendaval) {
+        recomendacao = `Rajadas severas previstas (${ventoRaj.toFixed(0)} km/h). Reforce escoras das estufas e verifique fixação das linhas de gotejo.`;
+      } else if (alertaSuspensao) {
+        recomendacao = `Chuva prevista de ${chuva24h} mm (${probChuvaMax}% probab.). Suspenda irrigação programada para economizar água e combustível.`;
+      }
+
+      return {
+        temperatura_c: Number(tempAtual.toFixed(1)),
+        umidade_relativa_pct: Math.round(umidAtual),
+        vento_velocidade_kmh: Number(ventoVel.toFixed(1)),
+        vento_rajadas_kmh: Number(ventoRaj.toFixed(1)),
+        chuva_prevista_24h_mm: chuva24h,
+        probabilidade_chuva_max_pct: probChuvaMax,
+        alerta_vendaval: alertaVendaval,
+        alerta_suspensao_irrigacao: alertaSuspensao,
+        recomendacao_manejo: recomendacao,
+        fonte: 'open-meteo-https-live'
+      };
+    }
+  } catch (err) {
+    console.warn('Conexão direta Open-Meteo indisponível, tentando backend local...', err);
+  }
+
+  // 2. Tenta backend local FastAPI se estiver rodando
+  try {
+    const resLocal = await fetch(`http://127.0.0.1:8000/api/clima/previsao?lat=${lat}&lon=${lon}`);
+    if (resLocal.ok) {
+      const data = await resLocal.json();
+      data.fonte = 'fastapi-backend';
+      return data;
+    }
+  } catch {}
+
+  // 3. Fallback estático seguro caso o dispositivo esteja sem conexão de dados
+  return {
+    temperatura_c: 23.8,
+    umidade_relativa_pct: 68,
+    vento_velocidade_kmh: 16.0,
+    vento_rajadas_kmh: 22.0,
+    chuva_prevista_24h_mm: 0.0,
+    probabilidade_chuva_max_pct: 10,
+    alerta_vendaval: false,
+    alerta_suspensao_irrigacao: false,
+    recomendacao_manejo: `Sem previsão de chuva para ${nomeLocal}. Siga o manejo do biossensor.`,
+    fonte: 'fallback-offline'
+  };
 }
 
 async function atualizarPrevisaoClima(lat, lon, nomeLocal) {
@@ -399,51 +523,34 @@ async function atualizarPrevisaoClima(lat, lon, nomeLocal) {
     coordTextoEl.textContent = `${nomeLocal} · ${lat}, ${lon}`;
   }
 
-  try {
-    const res = await fetch(`http://127.0.0.1:8000/api/clima/previsao?lat=${lat}&lon=${lon}`);
-    if (res.ok) {
-      const data = await res.json();
-      dadosClimaCache = data;
+  const data = await buscarPrevisaoOpenMeteo(lat, lon, nomeLocal);
+  dadosClimaCache = data;
 
-      if (tempEl) tempEl.textContent = `${data.temperatura_c}°C`;
-      if (umidEl) umidEl.textContent = `${data.umidade_relativa_pct}%`;
-      if (ventoEl) ventoEl.textContent = `${data.vento_velocidade_kmh} km/h (Rajadas: ${data.vento_rajadas_kmh} km/h)`;
-      if (chuvaEl) chuvaEl.textContent = `${data.chuva_prevista_24h_mm} mm`;
-      if (probEl) probEl.textContent = `${data.probabilidade_chuva_max_pct}%`;
+  if (tempEl) tempEl.textContent = `${data.temperatura_c}°C`;
+  if (umidEl) umidEl.textContent = `${data.umidade_relativa_pct}%`;
+  if (ventoEl) ventoEl.textContent = `${data.vento_velocidade_kmh} km/h (Rajadas: ${data.vento_rajadas_kmh} km/h)`;
+  if (chuvaEl) chuvaEl.textContent = `${data.chuva_prevista_24h_mm} mm`;
+  if (probEl) probEl.textContent = `${data.probabilidade_chuva_max_pct}%`;
 
-      if (alertaBox) {
-        if (data.alerta_vendaval) {
-          alertaBox.className = 'clima-banner-recomendacao clima-banner-alerta';
-          alertaBox.innerHTML = `⚠️ <strong>ALERTA DE VENDAVAL:</strong> ${data.recomendacao_manejo}`;
-        } else if (data.alerta_suspensao_irrigacao) {
-          alertaBox.className = 'clima-banner-recomendacao';
-          alertaBox.style.background = 'rgba(56, 189, 248, 0.15)';
-          alertaBox.style.borderLeftColor = '#38bdf8';
-          alertaBox.style.color = '#bae6fd';
-          alertaBox.innerHTML = `⏳ <strong>ECONOMIA DE ÁGUA:</strong> ${data.recomendacao_manejo}`;
-        } else {
-          alertaBox.className = 'clima-banner-recomendacao';
-          alertaBox.style.background = 'rgba(16, 185, 129, 0.12)';
-          alertaBox.style.borderLeftColor = '#10b981';
-          alertaBox.style.color = '#d1fae5';
-          alertaBox.innerHTML = `🌤️ <strong>TEMPO ESTÁVEL:</strong> ${data.recomendacao_manejo}`;
-        }
-      }
-
-      atualizarReceitaPrescritiva();
-      return;
-    }
-  } catch {}
-
-  // Fallback estático seguro caso a API offline
-  if (tempEl) tempEl.textContent = '23.8 °C';
-  if (umidEl) umidEl.textContent = '68%';
-  if (ventoEl) ventoEl.textContent = '16 km/h';
-  if (chuvaEl) chuvaEl.textContent = '0.0 mm';
-  if (probEl) probEl.textContent = '10%';
   if (alertaBox) {
-    alertaBox.innerHTML = `🌤️ <strong>Tempo Estável:</strong> Sem previsão de chuva para ${nomeLocal}. Siga o manejo do biossensor.`;
+    if (data.alerta_vendaval) {
+      alertaBox.className = 'clima-banner-recomendacao clima-banner-alerta';
+      alertaBox.innerHTML = `⚠️ <strong>ALERTA DE VENDAVAL:</strong> ${data.recomendacao_manejo}`;
+    } else if (data.alerta_suspensao_irrigacao) {
+      alertaBox.className = 'clima-banner-recomendacao';
+      alertaBox.style.background = 'rgba(56, 189, 248, 0.15)';
+      alertaBox.style.borderLeftColor = '#38bdf8';
+      alertaBox.style.color = '#bae6fd';
+      alertaBox.innerHTML = `⏳ <strong>ECONOMIA DE ÁGUA:</strong> ${data.recomendacao_manejo}`;
+    } else {
+      alertaBox.className = 'clima-banner-recomendacao';
+      alertaBox.style.background = 'rgba(16, 185, 129, 0.12)';
+      alertaBox.style.borderLeftColor = '#10b981';
+      alertaBox.style.color = '#d1fae5';
+      alertaBox.innerHTML = `🌤️ <strong>TEMPO ESTÁVEL:</strong> ${data.recomendacao_manejo}`;
+    }
   }
+
   atualizarReceitaPrescritiva();
 }
 
