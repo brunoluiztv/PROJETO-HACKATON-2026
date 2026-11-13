@@ -1,0 +1,266 @@
+{
+  "perfis_cultura_referencia": [
+    {
+      "id_perfil": "olericultura_alface_argissolo",
+      "cultura": "Alface Crespa (Olericultura)",
+      "solo": "Argissolo (Textura Média)",
+      "profundidade_raiz_cm": 20,
+      "tensao_capacidade_campo_kpa": 12.0,
+      "tensao_alerta_kpa": 20.0,
+      "tensao_critica_manejo_kpa": 28.0,
+      "tensao_ponto_murcha_kpa": 40.0,
+      "fonte_cientifica": "Embrapa Hortaliças - Manejo de Irrigação por Tensiometria"
+    },
+    {
+      "id_perfil": "olericultura_tomate_argissolo",
+      "cultura": "Tomate / Morango (Olericultura)",
+      "solo": "Argissolo (Textura Média)",
+      "profundidade_raiz_cm": 30,
+      "tensao_capacidade_campo_kpa": 15.0,
+      "tensao_alerta_kpa": 30.0,
+      "tensao_critica_manejo_kpa": 38.0,
+      "tensao_ponto_murcha_kpa": 60.0,
+      "fonte_cientifica": "Embrapa Hortaliças - Irrigação e Fertirrigação em Hortaliças"
+    },
+    {
+      "id_perfil": "graos_feijao_textura_media",
+      "cultura": "Feijão (Vegetativo / Floração)",
+      "solo": "Textura Média / Argissolo",
+      "profundidade_raiz_cm": 35,
+      "tensao_capacidade_campo_kpa": 20.0,
+      "tensao_alerta_kpa": 35.0,
+      "tensao_critica_manejo_kpa": 45.0,
+      "tensao_ponto_murcha_kpa": 70.0,
+      "fonte_cientifica": "Embrapa Arroz e Feijão / Clima Temperado"
+    },
+    {
+      "id_perfil": "graos_milho_argissolo",
+      "cultura": "Milho (Estágio Vegetativo)",
+      "solo": "Argissolo (Textura Média)",
+      "profundidade_raiz_cm": 40,
+      "tensao_capacidade_campo_kpa": 18.0,
+      "tensao_alerta_kpa": 35.0,
+      "tensao_critica_manejo_kpa": 50.0,
+      "tensao_ponto_murcha_kpa": 80.0,
+      "fonte_cientifica": "Embrapa Milho e Sorgo / Referência Watermark 200SS"
+    }
+  ],
+  "historico_simulado_leituras": [
+    {
+      "no_id": "esp32_no_01",
+      "id_perfil": "olericultura_alface_argissolo",
+      "dia_label": "D-5",
+      "dias_atras": 5,
+      "tensao_kpa": 14.0,
+      "temp_c": 22.5,
+      "bateria_mv": 3310
+    },
+    {
+      "no_id": "esp32_no_01",
+      "id_perfil": "olericultura_alface_argissolo",
+      "dia_label": "D-4",
+      "dias_atras": 4,
+      "tensao_kpa": 16.5,
+      "temp_c": 23.0,
+      "bateria_mv": 3305
+    },
+    {
+      "no_id": "esp32_no_01",
+      "id_perfil": "olericultura_alface_argissolo",
+      "dia_label": "D-3",
+      "dias_atras": 3,
+      "tensao_kpa": 19.0,
+      "temp_c": 24.1,
+      "bateria_mv": 3300
+    },
+    {
+      "no_id": "esp32_no_01",
+      "id_perfil": "olericultura_alface_argissolo",
+      "dia_label": "D-2",
+      "dias_atras": 2,
+      "tensao_kpa": 21.5,
+      "temp_c": 24.8,
+      "bateria_mv": 3295
+    },
+    {
+      "no_id": "esp32_no_01",
+      "id_perfil": "olericultura_alface_argissolo",
+      "dia_label": "D-1",
+      "dias_atras": 1,
+      "tensao_kpa": 23.5,
+      "temp_c": 25.2,
+      "bateria_mv": 3290
+    },
+    {
+      "no_id": "esp32_no_01",
+      "id_perfil": "olericultura_alface_argissolo",
+      "dia_label": "Hoje",
+      "dias_atras": 0,
+      "tensao_kpa": 25.5,
+      "temp_c": 25.5,
+      "bateria_mv": 3280
+    },
+    {
+      "no_id": "esp32_no_02",
+      "id_perfil": "graos_milho_argissolo",
+      "dia_label": "D-5",
+      "dias_atras": 5,
+      "tensao_kpa": 22.0,
+      "temp_c": 23.0,
+      "bateria_mv": 3320
+    },
+    {
+      "no_id": "esp32_no_02",
+      "id_perfil": "graos_milho_argissolo",
+      "dia_label": "D-4",
+      "dias_atras": 4,
+      "tensao_kpa": 24.0,
+      "temp_c": 23.5,
+      "bateria_mv": 3315
+    },
+    {
+      "no_id": "esp32_no_02",
+      "id_perfil": "graos_milho_argissolo",
+      "dia_label": "D-3",
+      "dias_atras": 3,
+      "tensao_kpa": 26.5,
+      "temp_c": 24.5,
+      "bateria_mv": 3310
+    },
+    {
+      "no_id": "esp32_no_02",
+      "id_perfil": "graos_milho_argissolo",
+      "dia_label": "D-2",
+      "dias_atras": 2,
+      "tensao_kpa": 28.0,
+      "temp_c": 25.0,
+      "bateria_mv": 3300
+    },
+    {
+      "no_id": "esp32_no_02",
+      "id_perfil": "graos_milho_argissolo",
+      "dia_label": "D-1",
+      "dias_atras": 1,
+      "tensao_kpa": 30.0,
+      "temp_c": 25.8,
+      "bateria_mv": 3295
+    },
+    {
+      "no_id": "esp32_no_02",
+      "id_perfil": "graos_milho_argissolo",
+      "dia_label": "Hoje",
+      "dias_atras": 0,
+      "tensao_kpa": 32.0,
+      "temp_c": 26.0,
+      "bateria_mv": 3285
+    },
+    {
+      "no_id": "esp32_no_03",
+      "id_perfil": "graos_feijao_textura_media",
+      "dia_label": "D-5",
+      "dias_atras": 5,
+      "tensao_kpa": 16.0,
+      "temp_c": 22.0,
+      "bateria_mv": 3320
+    },
+    {
+      "no_id": "esp32_no_03",
+      "id_perfil": "graos_feijao_textura_media",
+      "dia_label": "D-4",
+      "dias_atras": 4,
+      "tensao_kpa": 17.5,
+      "temp_c": 22.8,
+      "bateria_mv": 3315
+    },
+    {
+      "no_id": "esp32_no_03",
+      "id_perfil": "graos_feijao_textura_media",
+      "dia_label": "D-3",
+      "dias_atras": 3,
+      "tensao_kpa": 19.0,
+      "temp_c": 23.5,
+      "bateria_mv": 3310
+    },
+    {
+      "no_id": "esp32_no_03",
+      "id_perfil": "graos_feijao_textura_media",
+      "dia_label": "D-2",
+      "dias_atras": 2,
+      "tensao_kpa": 20.0,
+      "temp_c": 24.2,
+      "bateria_mv": 3305
+    },
+    {
+      "no_id": "esp32_no_03",
+      "id_perfil": "graos_feijao_textura_media",
+      "dia_label": "D-1",
+      "dias_atras": 1,
+      "tensao_kpa": 21.0,
+      "temp_c": 24.8,
+      "bateria_mv": 3300
+    },
+    {
+      "no_id": "esp32_no_03",
+      "id_perfil": "graos_feijao_textura_media",
+      "dia_label": "Hoje",
+      "dias_atras": 0,
+      "tensao_kpa": 22.0,
+      "temp_c": 25.0,
+      "bateria_mv": 3295
+    },
+    {
+      "no_id": "esp32_no_04",
+      "id_perfil": "olericultura_tomate_argissolo",
+      "dia_label": "D-5",
+      "dias_atras": 5,
+      "tensao_kpa": 16.0,
+      "temp_c": 23.0,
+      "bateria_mv": 3315
+    },
+    {
+      "no_id": "esp32_no_04",
+      "id_perfil": "olericultura_tomate_argissolo",
+      "dia_label": "D-4",
+      "dias_atras": 4,
+      "tensao_kpa": 18.5,
+      "temp_c": 23.8,
+      "bateria_mv": 3310
+    },
+    {
+      "no_id": "esp32_no_04",
+      "id_perfil": "olericultura_tomate_argissolo",
+      "dia_label": "D-3",
+      "dias_atras": 3,
+      "tensao_kpa": 21.0,
+      "temp_c": 24.5,
+      "bateria_mv": 3305
+    },
+    {
+      "no_id": "esp32_no_04",
+      "id_perfil": "olericultura_tomate_argissolo",
+      "dia_label": "D-2",
+      "dias_atras": 2,
+      "tensao_kpa": 23.5,
+      "temp_c": 25.0,
+      "bateria_mv": 3300
+    },
+    {
+      "no_id": "esp32_no_04",
+      "id_perfil": "olericultura_tomate_argissolo",
+      "dia_label": "D-1",
+      "dias_atras": 1,
+      "tensao_kpa": 25.5,
+      "temp_c": 25.5,
+      "bateria_mv": 3295
+    },
+    {
+      "no_id": "esp32_no_04",
+      "id_perfil": "olericultura_tomate_argissolo",
+      "dia_label": "Hoje",
+      "dias_atras": 0,
+      "tensao_kpa": 27.0,
+      "temp_c": 26.0,
+      "bateria_mv": 3290
+    }
+  ]
+}
