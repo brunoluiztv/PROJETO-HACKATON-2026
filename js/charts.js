@@ -79,7 +79,6 @@ function renderChartDivergencia() {
                 : `🪵 Sensor de Solo: ${item.raw}% (Umidade da Terra)`
             }
           }
-          }
         },
         scales: {
           y: {

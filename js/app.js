@@ -4,8 +4,8 @@
  * 4 Abas Especializadas: 1. Planta | 2. Triagem & Receita | 3. Gráficos & Hectares | 4. Engenharia & Gateway
  */
 
-import { initPlantCanvas } from './canvas_planta.js?v=13';
-import { initCharts, renderChartSecagem } from './charts.js?v=13';
+import { initPlantCanvas } from './canvas_planta.js?v=14';
+import { initCharts, renderChartSecagem } from './charts.js?v=14';
 import { 
   TELEMETRIA_ESTADOS, 
   FAQ_PRODUTOR, 
@@ -16,8 +16,8 @@ import {
   calcularAguaDisponivel, 
   classificarEstadoSolo,
   calcularPredicaoSecagem
-} from './content.js?v=13';
-import { iniciarTelegram } from './telegram.js?v=13';
+} from './content.js?v=14';
+import { iniciarTelegram } from './telegram.js?v=14';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
