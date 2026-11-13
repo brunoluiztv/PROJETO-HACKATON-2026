@@ -9,10 +9,10 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
-  <link rel="stylesheet" href="css/styles.css?v=5">
+  <link rel="stylesheet" href="css/styles.css?v=6">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=5"></script>
+  <script type="module" src="js/app.js?v=6"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -46,6 +46,47 @@
         <h1 id="t-planta" class="titulo-aba">🌱 Minha Planta Sentinela</h1>
         <p class="desc-aba">Monitoramento bioelétrico direto no caule e rizosfera em tempo real.</p>
       </div>
+
+      <!-- Formulário de Seleção do Tipo de Solo pelo Agricultor -->
+      <section class="card-solo-seletor" aria-labelledby="t-seletor-solo">
+        <div class="solo-header">
+          <div class="solo-titulo-wrapper">
+            <span class="solo-badge-tag">Entrada do Produtor</span>
+            <h2 id="t-seletor-solo" class="solo-titulo">🚜 1. Tipo de Solo do Talhão</h2>
+          </div>
+          <p class="solo-dica">Altera a curva de retenção de água e o ponto crítico de irrigação do biossensor.</p>
+        </div>
+
+        <div class="solo-botoes-grid" role="radiogroup" aria-label="Selecione o tipo de solo da lavoura">
+          <button type="button" class="btn-solo" data-solo="arenoso" role="radio" aria-checked="false">
+            <span class="solo-icone" aria-hidden="true">🏖️</span>
+            <strong>Solo Arenoso</strong>
+            <small>Drena rápido (CC: 10 kPa)</small>
+          </button>
+          <button type="button" class="btn-solo solo-ativo" data-solo="franco" role="radio" aria-checked="true">
+            <span class="solo-icone" aria-hidden="true">🌾</span>
+            <strong>Solo Franco</strong>
+            <small>Equilibrado (CC: 22 kPa)</small>
+          </button>
+          <button type="button" class="btn-solo" data-solo="argiloso" role="radio" aria-checked="false">
+            <span class="solo-icone" aria-hidden="true">🧱</span>
+            <strong>Solo Argiloso</strong>
+            <small>Terra Roxa (CC: 33 kPa)</small>
+          </button>
+        </div>
+
+        <!-- Barra de Água Disponível (AD %) -->
+        <div class="card-ad-medidor">
+          <div class="ad-cabecalho">
+            <span>💧 Água Disponível para as Raízes (AD):</span>
+            <strong id="ad-valor-texto">85% (Ideal)</strong>
+          </div>
+          <div class="ad-trilho" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Porcentagem de Água Disponível no solo">
+            <div id="ad-barra" class="ad-barra" style="width: 85%; background-color: #10b981;"></div>
+          </div>
+          <p id="ad-explicacao-solo" class="ad-explicacao">Solo Franco: Em 22 kPa a planta absorve água facilmente sem esforço osmótico.</p>
+        </div>
+      </section>
 
       <!-- Canvas Interativo -->
       <div class="card-canvas-planta">

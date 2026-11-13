@@ -5,11 +5,20 @@
 
 import { initPlantCanvas } from './canvas_planta.js?v=3';
 import { initCharts } from './charts.js?v=3';
-import { TELEMETRIA_ESTADOS, FAQ_PRODUTOR, PILARES_ENGENHARIA } from './content.js?v=3';
+import { 
+  TELEMETRIA_ESTADOS, 
+  FAQ_PRODUTOR, 
+  PILARES_ENGENHARIA, 
+  CONFIG_SOLOS, 
+  calcularAguaDisponivel, 
+  classificarEstadoSolo 
+} from './content.js?v=6';
 import { iniciarTelegram } from './telegram.js?v=3';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
+let tipoSoloAtual = localStorage.getItem('phytosense_tipo_solo') || 'franco';
+let tensaoAtualKpa = 21.5;
 let isSpeaking = false;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initServiceWorker();
   initTabs();
   initCanvas();
+  initSeletorSolo();
   initSimulacaoEstados();
   initVozAcessibilidade();
   initChatSimulado();
@@ -94,6 +104,88 @@ function initCanvas() {
 }
 
 /**
+ * 3.1. Inicialização do Seletor de Tipo de Solo pelo Agricultor
+ */
+function initSeletorSolo() {
+  const botoesSolo = document.querySelectorAll('.btn-solo');
+  
+  // Atualiza botões para o solo salvo inicialmente
+  atualizarBotoesSoloUi(tipoSoloAtual);
+  atualizarAguaDisponivel(tensaoAtualKpa);
+
+  botoesSolo.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const solo = btn.getAttribute('data-solo');
+      if (!solo || !CONFIG_SOLOS[solo]) return;
+
+      tipoSoloAtual = solo;
+      localStorage.setItem('phytosense_tipo_solo', solo);
+      atualizarBotoesSoloUi(solo);
+      
+      // Reavalia estado e água disponível
+      atualizarAguaDisponivel(tensaoAtualKpa);
+
+      // Se houver backend, notifica em segundo plano
+      notificarBackendTipoSolo(solo);
+
+      // Notifica leitor de tela
+      const liveRegion = document.getElementById('sr-anuncios');
+      if (liveRegion) {
+        liveRegion.textContent = `Tipo de solo configurado para ${CONFIG_SOLOS[solo].nome}. Curva de irrigação calibrada.`;
+      }
+    });
+  });
+}
+
+function atualizarBotoesSoloUi(soloAtivo) {
+  document.querySelectorAll('.btn-solo').forEach((btn) => {
+    const isAtivo = btn.getAttribute('data-solo') === soloAtivo;
+    btn.classList.toggle('solo-ativo', isAtivo);
+    btn.setAttribute('aria-checked', isAtivo ? 'true' : 'false');
+  });
+}
+
+export function atualizarAguaDisponivel(tensaoKpa) {
+  tensaoAtualKpa = parseFloat(tensaoKpa) || tensaoAtualKpa;
+  const ad = calcularAguaDisponivel(tensaoAtualKpa, tipoSoloAtual);
+  const cfg = CONFIG_SOLOS[tipoSoloAtual] || CONFIG_SOLOS.franco;
+
+  const valorTextoEl = document.getElementById('ad-valor-texto');
+  const barraEl = document.getElementById('ad-barra');
+  const explicacaoEl = document.getElementById('ad-explicacao-solo');
+  const trilhoEl = document.querySelector('.ad-trilho');
+
+  if (valorTextoEl) {
+    valorTextoEl.textContent = `${ad.porcentagem}% (${ad.condicao})`;
+    valorTextoEl.style.color = ad.cor;
+  }
+  if (barraEl) {
+    barraEl.style.width = `${ad.porcentagem}%`;
+    barraEl.style.backgroundColor = ad.cor;
+  }
+  if (trilhoEl) {
+    trilhoEl.setAttribute('aria-valuenow', ad.porcentagem);
+  }
+  if (explicacaoEl) {
+    explicacaoEl.textContent = `${cfg.nome}: Capacidade de Campo em ${cfg.ccKpa} kPa. Início de irrigação em ${cfg.estresseKpa} kPa. ${cfg.orientacaoBomba}`;
+  }
+}
+
+async function notificarBackendTipoSolo(solo) {
+  try {
+    const host = window.location.hostname;
+    const url = (host === 'localhost' || host === '127.0.0.1' || host === '') ? 'http://127.0.0.1:8000' : 'http://127.0.0.1:8000';
+    await fetch(`${url}/api/config/solo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo_solo: solo })
+    });
+  } catch {
+    // Silencioso se backend offline
+  }
+}
+
+/**
  * 4. Simulação ao Vivo dos 3 Estados Eletrofisiológicos
  */
 function initSimulacaoEstados() {
@@ -115,6 +207,17 @@ export function aplicarEstado(estadoKey) {
   if (!dados) return;
 
   estadoAtual = estadoKey;
+
+  // Atualiza tensão agronômica estimada para o estado e o tipo de solo ativo
+  const cfg = CONFIG_SOLOS[tipoSoloAtual] || CONFIG_SOLOS.franco;
+  if (estadoKey === 'hipoxia') {
+    tensaoAtualKpa = 4.2;
+  } else if (estadoKey === 'sede') {
+    tensaoAtualKpa = cfg.estresseKpa + 5.0;
+  } else {
+    tensaoAtualKpa = cfg.ccKpa;
+  }
+  atualizarAguaDisponivel(tensaoAtualKpa);
 
   // Atualiza botões seletores
   document.querySelectorAll('.btn-estado').forEach((btn) => {
@@ -199,7 +302,11 @@ function initVozAcessibilidade() {
     if (!dados) return;
 
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(dados.ttsVoz);
+    const ad = calcularAguaDisponivel(tensaoAtualKpa, tipoSoloAtual);
+    const cfg = CONFIG_SOLOS[tipoSoloAtual] || CONFIG_SOLOS.franco;
+    const textoVoz = `Atenção produtor. ${cfg.nome}. Água disponível para as raízes em ${ad.porcentagem} por cento. ` + dados.ttsVoz;
+
+    const utterance = new SpeechSynthesisUtterance(textoVoz);
     utterance.lang = 'pt-BR';
     utterance.rate = 0.95; // Levemente cadenciado para fácil compreensão
     utterance.pitch = 1.0;
@@ -398,7 +505,7 @@ function initPollingBackend() {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-      const res = await fetch(`${API_URL}/api/telemetria/atual`, {
+      const res = await fetch(`${API_URL}/api/telemetria/atual?tipo_solo=${encodeURIComponent(tipoSoloAtual)}`, {
         signal: controller.signal,
         headers: { Accept: 'application/json' }
       });
@@ -420,6 +527,11 @@ function initPollingBackend() {
         // 1. Sincroniza estado estrutural primeiro (canvas, botões, semáforo)
         if (data.estado && data.estado !== estadoAtual) {
           aplicarEstado(data.estado);
+        }
+
+        if (data.tensao_kpa !== undefined) {
+          tensaoAtualKpa = data.tensao_kpa;
+          atualizarAguaDisponivel(tensaoAtualKpa);
         }
 
         // 2. Sobrescreve com as leituras analógicas exatas do ESP32 físico

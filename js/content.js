@@ -4,6 +4,119 @@
  * Desafio 02: Água para o Futuro e Drenagem Urbana (Agricultura Familiar no RS)
  */
 
+export const CONFIG_SOLOS = {
+  arenoso: {
+    id: 'arenoso',
+    nome: 'Solo Arenoso (Leve / Litoral)',
+    nomeCurto: 'Arenoso',
+    icone: '🏖️',
+    ccKpa: 10.0,
+    estresseKpa: 30.0,
+    severoKpa: 60.0,
+    murchaKpa: 1500.0,
+    descricao: 'Drena rapidamente por gravidade (macroporos). Início do estresse hídrico em 30 kPa.',
+    orientacaoBomba: 'Turnos curtos e frequentes. Em 30 kPa já necessita de irrigação imediata.'
+  },
+  franco: {
+    id: 'franco',
+    nome: 'Solo Franco / Médio',
+    nomeCurto: 'Franco (Médio)',
+    icone: '🌾',
+    ccKpa: 22.0,
+    estresseKpa: 45.0,
+    severoKpa: 80.0,
+    murchaKpa: 1500.0,
+    descricao: 'Textura média equilibrada. Capacidade de campo ideal em 22 kPa e estresse em 45 kPa.',
+    orientacaoBomba: 'Gotejamento matinal cirúrgico (40 min às 6h) antes da evaporação do meio-dia.'
+  },
+  argiloso: {
+    id: 'argiloso',
+    nome: 'Solo Argiloso (Terra Roxa / Várzea)',
+    nomeCurto: 'Argiloso',
+    icone: '🧱',
+    ccKpa: 33.0,
+    estresseKpa: 65.0,
+    severoKpa: 120.0,
+    murchaKpa: 1500.0,
+    descricao: 'Microporos retêm água fortemente. Capacidade de campo em 33 kPa; estresse apenas > 65 kPa.',
+    orientacaoBomba: 'Demora a secar. Em 33 kPa não ligue a bomba, pois há água de sobra para as raízes.'
+  }
+};
+
+/**
+ * Calcula a porcentagem de Água Disponível (AD %) para a planta com base
+ * na curva de retenção do solo (Capacidade de Campo -> Estresse -> Ponto de Murcha).
+ */
+export function calcularAguaDisponivel(tensaoKpa, tipoSolo = 'franco') {
+  const cfg = CONFIG_SOLOS[tipoSolo] || CONFIG_SOLOS.franco;
+  const t = Math.max(0.0, parseFloat(tensaoKpa) || 0.0);
+
+  let adPct = 100.0;
+  if (t <= cfg.ccKpa) {
+    adPct = 100.0;
+  } else if (t <= cfg.estresseKpa) {
+    // Da Capacidade de Campo (100%) até o Início de Estresse (50%)
+    const fator = (t - cfg.ccKpa) / (cfg.estresseKpa - cfg.ccKpa);
+    adPct = 100.0 - (fator * 50.0);
+  } else if (t <= cfg.murchaKpa) {
+    // Do Estresse (50%) até o Ponto de Murcha Permanente (0%)
+    const logAtual = Math.log10(Math.max(1.0, t));
+    const logEstresse = Math.log10(cfg.estresseKpa);
+    const logMurcha = Math.log10(cfg.murchaKpa);
+    const fator = (logAtual - logEstresse) / (logMurcha - logEstresse);
+    adPct = Math.max(0.0, 50.0 - (fator * 50.0));
+  } else {
+    adPct = 0.0;
+  }
+
+  adPct = Math.round(adPct);
+
+  let condicao = 'Ótima (Água Plena)';
+  let cor = '#10b981';
+  if (t < (cfg.ccKpa * 0.4)) {
+    condicao = 'Solo Encharcado (Risco de Hipóxia)';
+    cor = '#ef4444';
+  } else if (adPct >= 60) {
+    condicao = 'Capacidade de Campo (Ideal)';
+    cor = '#10b981';
+  } else if (adPct >= 40) {
+    condicao = 'Faixa de Irrigação (Início de Estresse)';
+    cor = '#f59e0b';
+  } else {
+    condicao = 'Seca Severa / Estresse Crítico';
+    cor = '#ef4444';
+  }
+
+  return {
+    porcentagem: adPct,
+    condicao,
+    cor,
+    tipoSolo: cfg.id,
+    soloNome: cfg.nomeCurto,
+    ccKpa: cfg.ccKpa,
+    estresseKpa: cfg.estresseKpa
+  };
+}
+
+/**
+ * Classifica dinamicamente o estado eletrofisiológico de acordo com a textura do solo.
+ */
+export function classificarEstadoSolo(tensaoKpa, orpMv, tipoSolo = 'franco') {
+  const cfg = CONFIG_SOLOS[tipoSolo] || CONFIG_SOLOS.franco;
+  const t = parseFloat(tensaoKpa) || 0.0;
+  const orp = parseFloat(orpMv) || 0.0;
+
+  // Hipóxia: solo saturado por enchente (tensão abaixo de 40% da CC) ou anóxia redox
+  if (t < (cfg.ccKpa * 0.45) || orp < -100.0) {
+    return 'hipoxia';
+  }
+  // Sede: tensão superou o ponto de início de estresse hídrico do solo
+  if (t > cfg.estresseKpa) {
+    return 'sede';
+  }
+  return 'hidratada';
+}
+
 export const TELEMETRIA_ESTADOS = {
   hidratada: {
     id: 'hidratada',
