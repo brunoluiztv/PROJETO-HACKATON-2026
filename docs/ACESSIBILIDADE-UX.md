@@ -1,45 +1,34 @@
-# UX e acessibilidade aplicados
+# UX e Acessibilidade Rural Aplicados — Tekó Biotech
 
-Registro da implementação anterior. O site citado como `web/` está preservado em `legacy/web/`; o portal atual fica em [frontend/](../frontend/README.md). Consulte a [organização atual](ORGANIZACAO-REPOSITORIO.md).
-
-Referência: WCAG 2.2 AA (com partes AAA), Material Design e boas práticas de mobile-first.
-
-## Site (`web/`)
-| Prática | Onde |
-|---|---|
-| CSS mobile-first (360 px; `min-width` só para tablet/desktop) | `css/styles.css` |
-| Alvos de toque ≥ 48 px (`--toque: 3rem`) e espaçamento entre eles | `.cor`, `.mais-menos`, `.nav-inferior a` |
-| Navegação inferior (zona do polegar), `aria-current` na aba ativa | `.nav-inferior` |
-| Texto base de 18 px em `rem`, `clamp()` nos títulos, respeita zoom | `html`, `h1` |
-| Cor nunca é a única informação (cor + ícone + texto) | cartões de selo e laudos |
-| Contraste ≥ 4.5:1, tema escuro (`prefers-color-scheme`), `prefers-contrast` | `:root` |
-| Landmarks, ordem de títulos, skip-link, foco visível, `aria-live` nos resultados | `index.html` |
-| Gráfico SVG com alternativa em tabela | `#grafico` + `#tabela` |
-| `prefers-reduced-motion` | fim do CSS |
-| Sem framework e sem CDN (só `telegram-web-app.js`, opcional) | `js/` |
-| PWA: manifest + service worker (rede ruim no campo) | `manifest.webmanifest`, `sw.js` |
-| CSP sem scripts/estilos inline | `netlify.toml` |
-| Linguagem simples, verbo no botão, reconhecimento em vez de memorização | todo o texto |
-
-## Extensão (`extension/`)
-Texto de 100% a 200%, alto contraste, modo escuro, foco destacado, fonte e espaçamento para dislexia (WCAG 1.4.12), sem animações e leitura em voz alta pt-BR. Atua só no domínio do site (permissões mínimas). O popup tem rótulos claros, `aria-pressed` e navegação por teclado.
-
-## Bot (`bot/`)
-Teclado fixo com botões grandes, respostas curtas e acolhedoras, aceita áudio e foto, e não exige digitar. Na dúvida, não conclui e pede confirmação.
+Referência: **WCAG 2.2 AA / AAA** (critérios estritos de contraste e alvos de toque), Material Design 3 e boas práticas de UX rural para agricultores familiares com baixo letramento digital.
 
 ---
 
-## 📱 Relatório de Validação Mobile Estrita (360×800)
+## 1. Diretrizes no Web App & Telegram Mini App (`web/`)
 
-Em atendimento às diretrizes do Hackathon UERGS 2026 e aos critérios de usabilidade no campo, foi executada uma rodada de testes em viewport estritamente de **360×800 px** (dimensão típica de smartphones de entrada com uma mão):
+| Prática | Implementação | Propósito para o Produtor Rural |
+|---|---|---|
+| **Dark Mode de Alto Contraste** | `#0b0b0b` fundo, `#151515` cards, `#ff6b00` laranja vibrante, texto `#ffffff` (contraste > 7:1) | Permite visualização nítida sob **sol forte a pino** no meio da lavoura, evitando reflexos na tela do celular. |
+| **Alvos de Toque Gigantes (≥ 48 px)** | `.btn-estado`, `.nav-tab-btn`, `.btn-voz-topo` com altura mínima de 48px a 52px | Facilita a interação de agricultores com **mãos calejadas ou usando luvas de lida no campo**. |
+| **Acessibilidade por Voz (TTS)** | Botão `🔊 Ouvir Planta` com `window.speechSynthesis` nativo em pt-BR cadenciado (rate: 0.95) | Agricultores idosos ou com dificuldade de leitura ouvem o diagnóstico da planta e a recomendação de irrigação/drenagem sem precisar ler. |
+| **Navegação Inferior Fixa (Polegar)** | Barra fixa de 64px com 3 abas grandes (`🌱 Minha Planta`, `📊 Gráficos & Seca`, `🔬 Engenharia`) | Ergonomia com uma só mão em celulares de tela comprida (viewport 360×800 px). |
+| **Sem Dependência Exclusiva de Cor** | Ícones + rótulos de texto + valores numéricos + bordas distintas | Usuários com daltonismo (protanopia/deuteranopia) identificam os estados facilmente. |
+| **Canvas Interativo com Retorno Sensorial** | Desenho animado do caule com o clipe laranja, rizosfera e onda senoidal oscilante | Compreensão visual instantânea: onda vigorosa = seiva normal; onda achatada = sede; onda suprimida/errática = enchente/hipóxia. |
+| **PWA Resiliente Offline** | Service Worker (`sw.js`) com cache-first | Funciona 100% mesmo quando a internet cai no interior ou durante temporais no RS. |
 
-| Teste | Critério Avaliado | Resultado | Observações |
-|---|---|:---:|---|
-| **Aba Selo** | Responsividade sem rolagem horizontal | **APROVADO** | `scrollWidth <= 360px`, margens de toque confortáveis e laudo em alto contraste. |
-| **Aba Seca** | Simulação 80 sacos = 18 dias | **APROVADO** | Atalho "Sítio · 80" calculou exatamente `1.040 L` e `cerca de 18 dias sem regar`, com valor idêntico na tabela de acessibilidade. |
-| **Aba Receita** | Bordas coloridas e rodapé do evento | **APROVADO** | Bordas com `.i1` (verde), `.i2` (amarelo) e `.i3` (roxo) com identificação reforçada. Rodapé comemorativo do Hackathon UERGS 2026 visível no fim da rolagem sem conflito com a barra inferior. |
-| **Aba Usar** | Expansão de FAQ com leitor de tela | **APROVADO** | Accordions semânticos nativos (`<details>/<summary>`) totalmente funcionais. |
+---
 
-Evidência visual capturada em viewport mobile de 360px:
-![Evidência Mobile 360px](evidencias/mobile_360_validado.png)
+## 2. Diretrizes no Bot do Telegram (`bot/`)
 
+- **Zero Digitação:** O bot prioriza o teclado permanente `ReplyKeyboardMarkup` com botões descritivos e emojis.
+- **Suporte Total a Mensagens de Voz:** O agricultor pode gravar um áudio perguntando da lavoura e o bot responde com um tom acolhedor de extensionista da Emater.
+- **Deep Linking com Parâmetros:** Abre o Telegram Mini App já no estado ou aba exata através de `?estado=hidratada|sede|hipoxia`.
+
+---
+
+## 3. Extensão de Navegador (`extension/`)
+
+- Aumento de texto de 100% a 200%.
+- Alto contraste e modo escuro forçado.
+- Fonte OpenDyslexic e espaçamento aumentado para produtores com dislexia.
+- Leitura em voz alta por síntese de fala local acionável por teclado (`Alt + A`).

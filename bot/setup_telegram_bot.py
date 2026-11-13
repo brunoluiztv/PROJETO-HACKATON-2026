@@ -1,8 +1,8 @@
 """
-Script de configuração direta do bot no Telegram via Bot API.
+Script de configuração direta do bot Tekó Biotech via Telegram Bot API.
 
 Configura automaticamente:
-1. Comandos do bot (/start, /painel, /selo, /seca, /usar, /receita, /ajuda)
+1. Comandos (/start, /painel, /planta, /irrigar, /chuva, /energia, /laudo, /ajuda)
 2. Descrição na tela de início (setMyDescription)
 3. Descrição curta / Bio (setMyShortDescription)
 4. Botão Menu WebApp (setChatMenuButton) com link HTTPS do GitHub Pages
@@ -26,14 +26,12 @@ WEBAPP_URL = os.getenv("WEBAPP_URL", "https://brunoluiztv.github.io/PROJETO-HACK
 
 if not TOKEN or TOKEN == "coloque_o_token_do_BotFather_aqui":
     print("=" * 70)
-    print("⚠️  TELEGRAM_TOKEN NÃO ENCONTRADO OU PADRÃO")
+    print("⚠️  TELEGRAM_TOKEN NÃO ENCONTRADO")
     print("=" * 70)
-    print("Para configurar seu bot no Telegram automaticamente:")
-    print("1. Abra o Telegram e fale com @BotFather")
-    print("2. Digite /newbot e siga as instruções para criar o bot")
-    print("3. Copie o TOKEN gerado e cole no arquivo bot/.env:")
+    print("1. Crie seu bot no @BotFather do Telegram (/newbot)")
+    print("2. Cole o token gerado em bot/.env:")
     print("   TELEGRAM_TOKEN=seu_token_aqui")
-    print("4. Rode este script novamente: python setup_telegram_bot.py")
+    print("3. Execute novamente: python setup_telegram_bot.py")
     print("=" * 70)
     sys.exit(1)
 
@@ -59,11 +57,10 @@ def api_call(method: str, data: dict = None) -> dict:
 
 def main():
     print("=" * 70)
-    print("🌱 AGROSPONGE RS — CONFIGURADOR TELEGRAM BOT API")
+    print("🌱 TEKÓ BIOTECH — CONFIGURADOR TELEGRAM BOT API")
     print(f"🌐 WebApp HTTPS: {WEBAPP_URL}")
     print("=" * 70)
 
-    # 1. Verificar bot
     me = api_call("getMe")
     if not me.get("ok"):
         print("❌ Token inválido ou sem resposta da API do Telegram.")
@@ -74,50 +71,51 @@ def main():
     username = bot_info.get("username", "")
     print(f"✅ Conectado ao bot: {bot_name} (@{username})")
 
-    # 2. Configurar lista de comandos
+    # 1. Comandos
     comandos = [
-        {"command": "start", "description": "🌱 Iniciar o Assistente AgroSponge RS"},
-        {"command": "painel", "description": "📊 Abrir painel web e gráficos de estiagem"},
-        {"command": "selo", "description": "📷 Analisar a cor do selo (Verde/Amarelo/Vermelho)"},
-        {"command": "seca", "description": "💧 Calcular água guardada para a estiagem"},
-        {"command": "usar", "description": "🌾 Como usar o saco de gel na terra"},
-        {"command": "receita", "description": "🛠️ Receita do saco caseiro (R$ 5,80)"},
-        {"command": "ajuda", "description": "❓ Dúvidas comuns e como falar com a equipe"},
+        {"command": "start", "description": "🌱 Iniciar o Assistente Tekó (Tekó Biotech)"},
+        {"command": "painel", "description": "📊 Abrir Gráficos da Planta e Laudo PROAGRO"},
+        {"command": "planta", "description": "🌿 Ver saúde fitoelétrica da Planta Sentinela"},
+        {"command": "irrigar", "description": "💧 Saber se precisa ligar a bomba hoje"},
+        {"command": "chuva", "description": "🌧️ Diagnóstico de alagamento e oxigênio da raiz"},
+        {"command": "energia", "description": "🔋 Bateria e autossuficiência P-MFC"},
+        {"command": "laudo", "description": "📄 Laudo de Enchente para Seguro PROAGRO"},
+        {"command": "ajuda", "description": "❓ Como funciona o biossensor de caule"},
     ]
     r_cmd = api_call("setMyCommands", {"commands": comandos})
     if r_cmd.get("ok"):
-        print("✅ Comandos registrados com sucesso (/start, /painel, /selo, /seca, /usar, /receita, /ajuda).")
+        print("✅ Comandos registrados com sucesso (/start, /painel, /planta, /irrigar, /chuva, /energia, /laudo, /ajuda).")
 
-    # 3. Configurar descrição de boas-vindas (tela inicial antes de clicar em Start)
+    # 2. Descrição na tela inicial
     descricao = (
-        "🌱 AgroSponge RS — Assistente para a Agricultura Familiar\n"
-        "⚡ Desenvolvido no Hackathon das Engenharias UERGS 2026\n\n"
-        "Guarde a enxurrada e tenha água limpa na época de seca!\n\n"
-        "✨ O que eu faço:\n"
-        "• Leio a cor do selo do saco por foto ou áudio\n"
-        "• Mostro se a água pode ir direto pra horta ou precisa compostagem\n"
-        "• Calculo quantos dias sua horta aguenta sem rega (+18 dias)\n"
-        "• Passo a receita do saco caseiro por R$ 5,80\n\n"
-        "👇 Toque em Começar ou envie uma foto do selo!"
+        "🌱 Tekó Biotech — Biossensor Eletrofisiológico In-Planta\n"
+        "⚡ Hackathon das Engenharias UERGS 2026 — Desafio 02: Água e Drenagem\n\n"
+        "A voz da sua lavoura na palma da mão!\n\n"
+        "✨ O que o sensor faz:\n"
+        "• Clipe de caule mede seiva e turgor celular (1k e 50 kHz)\n"
+        "• Haste na raiz detecta sufocamento por enchente (ORP < -100 mV)\n"
+        "• Economiza até 4.200 L de água e R$ 38 de luz/diesel por dia\n"
+        "• Gera laudo técnico para acionamento do seguro PROAGRO\n"
+        "• Energia limpa colhida de bactérias da terra (P-MFC) + solar\n\n"
+        "👇 Toque em Começar para falar com seu sensor sentinela!"
     )
     r_desc = api_call("setMyDescription", {"description": descricao})
     if r_desc.get("ok"):
-        print("✅ Descrição inicial (apresentação) configurada.")
+        print("✅ Descrição de apresentação configurada.")
 
-    # 4. Configurar bio / descrição curta
+    # 3. Bio / Descrição curta
     bio = (
-        "🌱 Assistente AgroSponge RS (Hackathon UERGS 2026): "
-        "biossensor de enxurrada, guarda d'água e laudos para agricultura familiar."
+        "🌱 Tekó Biotech (UERGS 2026): biossensor no caule e raiz com laudos PROAGRO e economia de água para o agricultor."
     )
     r_short = api_call("setMyShortDescription", {"short_description": bio[:120]})
     if r_short.get("ok"):
         print("✅ Bio / Descrição curta configurada.")
 
-    # 5. Configurar Botão de Menu WebApp (no canto inferior esquerdo do chat)
+    # 4. Botão Menu WebApp
     menu_button = {
         "menu_button": {
             "type": "web_app",
-            "text": "📊 Painel AgroSponge",
+            "text": "📊 Painel Tekó",
             "web_app": {"url": WEBAPP_URL}
         }
     }
@@ -128,9 +126,8 @@ def main():
     print("=" * 70)
     print("🎉 CONFIGURAÇÃO CONCLUÍDA COM SUCESSO!")
     print(f"👉 Abra seu bot no Telegram: https://t.me/{username}")
-    print("👉 Para subir o avatar oficial, envie a imagem:")
+    print("👉 Envie o avatar oficial no @BotFather com /setuserpic:")
     print("   bot/assets/bot_avatar_hackathon.png")
-    print("   ao @BotFather usando o comando /setuserpic")
     print("=" * 70)
 
 

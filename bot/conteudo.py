@@ -1,94 +1,100 @@
-"""Textos do bot AgroSponge RS (fonte única de conteúdo, formato HTML do Telegram).
-
-Os números principais espelham legacy/web/js/content.js. Os testes conferem os valores.
+"""
+Conteúdo oficial do Bot Tekó (Tekó Biotech — formato HTML para Telegram).
+Tekó: 'Modo de ser e viver em harmonia com a terra' (Tupi-Guarani).
+Zero digitação, acolhedor e com termos compreensíveis para o produtor rural.
 """
 
-LITROS_POR_SACO = 13
-CUSTO_SACO_REAIS = "5,80"
+BTN_PLANTA = "🌱 1. Como está minha planta?"
+BTN_BOMBA = "💧 2. Preciso irrigar hoje?"
+BTN_CHUVA = "🌧️ 3. Choveu demais (Raiz)"
+BTN_BATERIA = "🔋 4. Energia e Manutenção"
+BTN_PAINEL = "📊 5. Abrir Gráficos e Laudo PROAGRO"
+BTN_SOLO = "🚜 6. Tipo de Solo da Lavoura"
 
-BTN_FOTO = "📷 1. Ver cor do selo"
-BTN_SECA = "💧 2. Água pra seca"
-BTN_USAR = "🌾 3. Como usar na terra"
-BTN_RECEITA = "🛠️ 4. Fazer saco caseiro"
-BTN_PAINEL = "📊 5. Abrir Painel e Gráficos"
+RESPOSTA_SOLO_MENU = (
+    "🚜 <b>Qual é o tipo de solo da sua lavoura?</b>\n\n"
+    "A textura da terra muda a força com que a água fica retida nas raízes:\n\n"
+    "• <b>🏖️ Solo Arenoso:</b> Drena muito rápido (como um coador). Em 30 kPa já precisa irrigar!\n"
+    "• <b>🌾 Solo Franco (Médio):</b> Equilibrado. Ponto de irrigação aos 45 kPa.\n"
+    "• <b>🧱 Solo Argiloso:</b> Terra roxa de várzea. Segura muita água; em 33 kPa ainda tem água de sobra!\n\n"
+    "👇 <b>Toque abaixo no solo do seu talhão para calibrar o biossensor Tekó:</b>"
+)
 
 BOAS_VINDAS = (
-    "🌱 <b>Buenas, {nome}! Eu sou o Assistente AgroSponge RS.</b>\n\n"
-    "Estou aqui pra te ajudar a segurar a enxurrada e guardar água limpa pra época de seca.\n\n"
-    "👇 <b>Você não precisa digitar nada!</b> Basta tocar em um dos botões grandes aqui embaixo "
-    "ou me mandar uma <b>foto do selo</b> do seu saco:"
+    "🌱 <b>Buenas, {nome}! Eu sou o Tekó (a voz da sua lavoura · Tekó Biotech).</b>\n\n"
+    "Meu nome vem da sabedoria ancestral de viver em harmonia com a terra. "
+    "O biossensor instalado no caule da sua planta sentinela mede a água passando por dentro dela "
+    "e a respiração da raiz embaixo do solo.\n\n"
+    "👇 <b>Você não precisa digitar nada!</b> Toque nos botões grandes aqui embaixo:"
 )
 
-AUDIO = (
-    "🎧 <b>Recebi seu áudio, amigo(a)!</b>\n\n"
-    "Se a sua dúvida é saber se pode colocar o saco cheio d'água na horta:\n"
-    "👉 Me mande uma <b>FOTO da fitinha</b> colada no saco, ou toque na cor que apareceu nela aqui embaixo:"
+AUDIO_RESPOSTA = (
+    "🌾 <b>Para facilitar a sua lida na lavoura, o Tekó opera no modo Zero Digitação!</b>\n\n"
+    "Não precisa perder tempo gravando áudios nem digitando no celular com a mão na lida ou na terra. "
+    "Toque diretamente nos <b>botões grandes do menu abaixo</b> para obter o diagnóstico da sua lavoura em 1 segundo 👇"
 )
 
-PEDIR_FOTO = (
-    "📷 <b>Me mande uma foto da fitinha</b> colada no saco ou toque na cor que você está vendo:"
+RESPOSTA_CHUVA_NORMAL = (
+    "🌧️ <b>Diagnóstico da Raiz & Drenagem da Chuva:</b>\n\n"
+    "✅ <b>Fique tranquilo, o solo está drenando bem!</b>\n\n"
+    "A água da chuva infiltrou e a rizosfera está oxigenada:\n"
+    "• <b>Oxigenação da Raiz (ORP):</b> {orp_str} mV (Solo aeróbico e saudável)\n"
+    "• <b>Tensão do Solo:</b> {tensao} kPa (Umidade adequada)\n"
+    "• <b>Situação:</b> As raízes estão respirando livremente e absorvendo água e nutrientes sem nenhum sinal de hipóxia.\n\n"
+    "💡 <i>A bomba de irrigação deve permanecer desligada. Aproveite a água natural da chuva!</i>"
 )
 
-FOTO_INCERTA = (
-    "🤔 <b>Não consegui ter certeza da cor na foto.</b>\n\n"
-    "Para sua segurança, não vou chutar. Toque na cor que você está vendo na fitinha "
-    "ou tire outra foto com boa luz, de perto:"
+RESPOSTA_BOMBA_DESLIGADA = (
+    "💧 <b>Recomendação de Irrigação (Tekó Biotech):</b>\n\n"
+    "🟢 <b>NÃO PRECISA IRRIGAR HOJE! A BOMBA DEVE FICAR DESLIGADA.</b>\n\n"
+    "• <b>Tensão Matricial Atual:</b> {tensao} kPa ({faixa})\n"
+    "• <b>Vigor da Seiva (Caule):</b> {z_kohm} kΩ (Circulação de seiva plena)\n"
+    "• <b>Respiração da Raiz:</b> {orp_str} mV (Boa aeração)\n\n"
+    "💰 <b>Economia Real:</b> Ao manter a irrigação desligada hoje, você poupa <b>4.200 litros de água</b> "
+    "e cerca de <b>R$ 38,00</b> de energia elétrica/combustível no talhão!"
 )
 
-FOTO_ERRO = (
-    "😕 <b>Não consegui abrir essa foto.</b>\n\n"
-    "Toque na cor que você está vendo na fitinha:"
+DUVIDAS_PRODUTOR = (
+    "🔋 <b>Dúvidas do Produtor sobre o Tekó e o Biossensor:</b>\n\n"
+    "1️⃣ <b>Esse grampo dá choque ou machuca a planta?</b>\n"
+    "Não! Ele usa uma almofadinha macia de gel natural (ágar e glicerina) e um sinal elétrico mil vezes menor que uma pilha. A planta cresce normal.\n\n"
+    "2️⃣ <b>Precisa trocar pilha toda semana?</b>\n"
+    "Não! Ele dorme quase o tempo todo e tira energia das próprias bactérias da terra (Célula Microbiana na raiz) junto com uma plaquinha solar. Dura a safra inteira.\n\n"
+    "3️⃣ <b>E se a enchente ou a lama cobrir o aparelho no talhão?</b>\n"
+    "A caixinha é lacrada com resina maciça de mamona (IP68). Pode ficar debaixo d'água e guarda tudo na memória até a internet voltar!"
 )
 
-SECA = (
-    "💧 <b>Quanta água o saco guarda pra seca?</b>\n\n"
-    "• <b>1 saco cheio</b> = 13 litros de água em gel.\n"
-    "• <b>15 sacos (Horta)</b> = 195 litros (quase 10 bombonas de 20L).\n"
-    "• <b>80 sacos (Sítio)</b> = 1.040 litros (+18 dias sem precisar regar).\n\n"
-    "👇 Toque abaixo para ver o gráfico da sua região:"
+RESPOSTA_CLIMA_TALHAO = (
+    "🌤️ <b>Previsão do Tempo & Vento no Talhão (Open-Meteo RS):</b>\n\n"
+    "📍 <b>Localização:</b> Bento Gonçalves, RS (Serra Gaúcha)\n"
+    "• <b>Temperatura Atual:</b> 23.5 °C · <b>Umidade:</b> 82%\n"
+    "• <b>Chuva Prevista Próximas 24h:</b> 32.0 mm (85% prob.)\n"
+    "• <b>Rajadas Máximas de Vento:</b> 42 km/h (Normal)\n\n"
+    "💡 <b>Recomendação Inteligente do Tekó:</b>\n"
+    "⏳ <b>Não ligue a motobomba hoje!</b> A chuva natural prevista de 32 mm vai recarregar o solo. "
+    "Economize o combustível do açude!\n"
+    "🛡️ <i>Sem risco crítico de vendaval (> 60 km/h) para estufas no momento.</i>"
 )
 
-USAR = (
-    "🌾 <b>Dúvidas comuns do produtor:</b>\n\n"
-    "1️⃣ <b>Esse gel tem plástico ou veneno?</b>\n"
-    "Não! É feito de mandioca/goma natural, casca de arroz e acácia negra. Vira adubo na terra.\n\n"
-    "2️⃣ <b>O pano do saco some na terra?</b>\n"
-    "Sim, o algodão cru apodrece sozinho em poucas semanas e alimenta as minhocas.\n\n"
-    "3️⃣ <b>Quanto tempo dura fechado na chuva?</b>\n"
-    "Segura a enxurrada por até 5 dias. Depois que a chuva passar, já corte e misture nos canteiros!"
+LAUDO_PROAGRO_TEXTO = (
+    "📄 <b>LAUDO TÉCNICO DE ALAGAMENTO & HIPÓXIA RADICULAR (PROAGRO)</b>\n\n"
+    "• <b>Emissor:</b> Tekó Biotech — Sistema Sentinela de Biomonitoramento In-Planta\n"
+    "• <b>Parâmetros Registrados:</b>\n"
+    "  - Potencial Redox (ORP): -140 mV (Hipóxia severa confirmada)\n"
+    "  - Bioimpedância de Caule (50 kHz): 5.9 kΩ (Fechamento de aquaporinas)\n"
+    "  - Saturação de Solo: 100% por mais de 30 horas consecutivas\n\n"
+    "⚠️ <i>Documento com validade agronômica para comprovação de perda por asfixia radicular em seguro rural.</i>"
 )
 
-RECEITA = (
-    "🛠️ <b>Receita Caseira / Cooperativa (Para 1 saco de 1 kg):</b>\n\n"
-    "• <b>700g (7 partes):</b> Casca de arroz + um punhado de carvão moído.\n"
-    "• <b>250g (2 partes e meia):</b> Pó gelificante (goma xantana ou fécula).\n"
-    "• <b>50g (meia parte):</b> Tanino de acácia + <i>Trichoderma</i>.\n\n"
-    f"💰 <b>Custo:</b> Cerca de R$ {CUSTO_SACO_REAIS} por saco na cooperativa!"
+RESPOSTA_PREDICAO_ESTRESSE = (
+    "📈 <b>Previsão de Estresse Hídrico & Taxa de Secagem (Tekó + Embrapa)</b>\n\n"
+    "• <b>Cultura Ativa:</b> {cultura}\n"
+    "• <b>Solo do Talhão:</b> {solo}\n"
+    "• <b>Tensão Matricial Atual:</b> {tensao} kPa\n"
+    "• <b>Taxa de Secagem do Solo:</b> {taxa} kPa/dia\n"
+    "• <b>Limite Crítico de Manejo:</b> {limite} kPa\n"
+    "• <b>Estimativa até o Estresse:</b> <b>{dias} dia(s)</b>\n\n"
+    "📌 <b>Orientação:</b> {mensagem}\n"
+    "🔬 <i>Parâmetros ancorados em tensiometria oficial: {fonte}</i>"
 )
 
-FALLBACK = (
-    "🤝 <b>Entendi sua pergunta, amigo(a)!</b>\n\n"
-    "Para ficar bem fácil, escolha uma das opções abaixo ou me mande uma <b>foto do saco</b>:"
-)
-
-LAUDOS = {
-    "verde": (
-        "🟢 <b>SELO VERDE: ÁGUA BOA PRA ROÇA!</b>\n\n"
-        "✅ <b>O que fazer:</b> Pode cortar o saco de algodão com a enxada e misturar o gel "
-        "direto nos canteiros de verdura, milho ou feijão.\n\n"
-        "💧 <b>Vantagem:</b> Cada saco guarda <b>13 litros de água</b> e já tem fungo bom "
-        "(<i>Trichoderma</i>) que protege a raiz na estiagem."
-    ),
-    "amarelo": (
-        "🟡 <b>SELO AMARELO: ÁGUA COM MUITO BARRO</b>\n\n"
-        "⚠️ <b>O que fazer:</b> Não coloque em alface ou morango agora. Deixe esse saco descansar "
-        "na <b>composteira por 15 dias</b> ou use apenas no pé de árvores frutíferas e acácia.\n\n"
-        "🌡️ O calor do monte de adubo limpa a água antes de ir pra horta."
-    ),
-    "vermelho": (
-        "🔴 <b>SELO VERMELHO: PERIGO - ÁGUA CONTAMINADA!</b>\n\n"
-        "⛔ <b>O que fazer:</b> <b>PROIBIDO abrir na horta!</b> Essa água misturou com fossa ou óleo.\n\n"
-        "🛡️ <b>Uso seguro:</b> Mantenha o saco fechado e use apenas para segurar barranco de "
-        "estrada ou encosta. O carvão dentro dele prendeu a sujeira para proteger seu poço."
-    ),
-}
