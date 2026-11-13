@@ -1,5 +1,5 @@
 /**
- * PhytoSense RS — Gráficos Interativos e Simulador de Economia
+ * Tekó Biotech — Gráficos Interativos e Simulador de Economia
  * Hackathon das Engenharias UERGS 2026
  * 1. Divergência Dia 6 (Saúde no Caule vs. Sensor de Solo)
  * 2. Comparativo de Consumo Energético Diário (mAh/dia)
@@ -38,7 +38,7 @@ function renderChartDivergencia() {
         labels: ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4', 'Dia 5', 'Dia 6 (Enchente)', 'Dia 7'],
         datasets: [
           {
-            label: '🌱 PhytoSense (Caule Real %)',
+            label: '🌱 Tekó Biotech (Caule Real %)',
             data: DADOS_GRAFICO_DIVERGENCIA.saudeCaule,
             borderColor: '#ff6b00',
             backgroundColor: 'rgba(255, 107, 0, 0.15)',
@@ -114,7 +114,7 @@ function renderChartEnergia() {
     chartEnergiaInstance = new window.Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['ESP32 Direto', 'PhytoSense RS', 'Geração P-MFC'],
+        labels: ['ESP32 Direto', 'Tekó Biotech', 'Geração P-MFC'],
         datasets: [{
           label: 'Consumo / Geração Diária (mAh/dia)',
           data: DADOS_GRAFICO_ENERGIA.consumo,

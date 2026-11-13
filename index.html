@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>PhytoSense RS — Biossensor In-Planta & Drenagem Rural</title>
+  <title>Tekó Biotech — Biossensor In-Planta & Drenagem Rural</title>
   <meta name="description" content="Sistema de biossensor eletrofisiológico in-planta (bioimpedância de caule e ORP de raiz) para agricultura familiar no Rio Grande do Sul.">
   <meta name="theme-color" content="#0b0b0b">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon.svg">
-  <link rel="stylesheet" href="css/styles.css?v=9">
+  <link rel="stylesheet" href="css/styles.css?v=10">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=9"></script>
+  <script type="module" src="js/app.js?v=10"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -22,14 +22,17 @@
     <div class="topo-marca">
       <img src="icons/icon.svg" alt="" class="topo-icone" width="36" height="36">
       <div>
-        <p class="topo-titulo">PhytoSense RS</p>
+        <p class="topo-titulo">Tekó Biotech</p>
         <p class="topo-sub">Biossensor In-Planta · UERGS 2026</p>
       </div>
     </div>
-    <button type="button" class="btn-voz-topo" id="btn-ouvir-planta" aria-pressed="false" aria-label="Ouvir diagnóstico da lavoura por voz">
-      <span id="voz-icone" aria-hidden="true">🔊</span>
-      <span id="voz-texto">Ouvir Planta</span>
-    </button>
+    <div class="topo-acoes">
+      <a href="slides.html" class="btn-slides-topo" title="Abrir Slides do Pitch">📽️ Slides</a>
+      <button type="button" class="btn-voz-topo" id="btn-ouvir-planta" aria-pressed="false" aria-label="Ouvir diagnóstico da lavoura por voz">
+        <span id="voz-icone" aria-hidden="true">🔊</span>
+        <span id="voz-texto">Ouvir Planta</span>
+      </button>
+    </div>
   </header>
 
   <!-- Região Live para Leitores de Tela -->
@@ -243,7 +246,7 @@
         <h2 id="t-chat" style="font-size: 1rem; font-weight: 800;">💬 Dúvidas Rápidas do Produtor Rural</h2>
         <div class="chat-janela" id="chat-mensagens" role="log" aria-live="polite">
           <div class="msg-chat msg-bot">
-            <strong>🌱 PhytoSense RS:</strong> Olá, amigo(a) produtor(a)! Toque em uma dúvida abaixo para entender como nosso biossensor protege sua lavoura:
+            <strong>🌱 Tekó Biotech:</strong> Olá, amigo(a) produtor(a)! Toque em uma dúvida abaixo para entender como nosso biossensor protege sua lavoura:
           </div>
         </div>
         <p class="chat-perguntas-titulo">Perguntas Frequentes na Roça:</p>
@@ -295,7 +298,7 @@
       <article class="card-grafico-box">
         <h2>1. Divergência Crítica de Enchente: Caule vs. Solo</h2>
         <p class="grafico-legenda-alerta">
-          ⚠️ <strong>O Grande Perigo:</strong> No Dia 6 (enchente), o sensor de solo tradicional marca <strong>100%</strong> de água, enquanto o biossensor de caule PhytoSense detecta asfixia radicular (<strong>25%</strong>) por fechamento das aquaporinas.
+          ⚠️ <strong>O Grande Perigo:</strong> No Dia 6 (enchente), o sensor de solo tradicional marca <strong>100%</strong> de água, enquanto o biossensor de caule Tekó Biotech detecta asfixia radicular (<strong>25%</strong>) por fechamento das aquaporinas.
         </p>
         <div class="grafico-container">
           <canvas id="canvas-grafico-divergencia" role="img" aria-label="Gráfico de linha comparando saúde hídrica no caule versus sensor de solo ao longo de 7 dias"></canvas>
@@ -306,7 +309,7 @@
       <article class="card-grafico-box">
         <h2>2. Autonomia Energética (Consumo Diário em Log)</h2>
         <p style="font-size: 0.84rem; color: #a1a1aa;">
-          Comparativo entre o ESP32 comum (1.800 mAh/dia), o PhytoSense em Deep Sleep (14 mAh/dia) e a geração autônoma P-MFC (45 mAh/dia).
+          Comparativo entre o ESP32 comum (1.800 mAh/dia), o Tekó Biotech em Deep Sleep (14 mAh/dia) e a geração autônoma P-MFC (45 mAh/dia).
         </p>
         <div class="grafico-container-pequeno">
           <canvas id="canvas-grafico-energia" role="img" aria-label="Gráfico de barras comparando consumo energético diário"></canvas>
@@ -573,7 +576,7 @@
       </div>
 
       <div class="laudo-corpo">
-        <p><strong>Emissor:</strong> PhytoSense RS — Sistema Sentinela de Biomonitoramento In-Planta</p>
+        <p><strong>Emissor:</strong> Tekó Biotech — Sistema Sentinela de Biomonitoramento In-Planta</p>
         <p><strong>Data/Hora de Emissão:</strong> <span id="laudo-data-emissao">--/--/----</span></p>
         <p><strong>Classificação do Sinistro:</strong> Asfixia Radicular por Hipóxia Severa Decorrente de Enchente Pluvial</p>
 

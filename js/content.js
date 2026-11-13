@@ -1,5 +1,5 @@
 /**
- * PhytoSense RS — Base de Conhecimento e Conteúdo
+ * Tekó Biotech — Base de Conhecimento e Conteúdo
  * Hackathon das Engenharias UERGS 2026
  * Desafio 02: Água para o Futuro e Drenagem Urbana (Agricultura Familiar no RS)
  */
@@ -310,7 +310,7 @@ export const FAQ_PRODUTOR = [
   },
   {
     pergunta: 'Como isso me ajuda a pedir o seguro PROAGRO?',
-    resposta: 'Em enchentes, os peritos tradicionais acham que a lavoura tem água suficiente porque o chão está molhado. O PhytoSense RS gera um laudo oficial comprovando que a raiz sofreu hipóxia (anóxia radicular abaixo de -100 mV) e que as aquaporinas fecharam, provando cientificamente o sinistro e acelerando a indenização do banco.'
+    resposta: 'Em enchentes, os peritos tradicionais acham que a lavoura tem água suficiente porque o chão está molhado. O Tekó Biotech gera um laudo oficial comprovando que a raiz sofreu hipóxia (anóxia radicular abaixo de -100 mV) e que as aquaporinas fecharam, provando cientificamente o sinistro e acelerando a indenização do banco.'
   }
 ];
 
@@ -339,13 +339,13 @@ export const PILARES_ENGENHARIA = [
 
 export const DADOS_GRAFICO_DIVERGENCIA = {
   labels: ['Dia 1 (Normal)', 'Dia 2 (Seco)', 'Dia 3 (Irrigado)', 'Dia 4 (Normal)', 'Dia 5 (Chuva leve)', 'Dia 6 (ENCHENTE)', 'Dia 7 (Pós-Enchente)'],
-  saudeCaule: [82, 60, 88, 84, 85, 25, 20],        // PhytoSense: despenca no Dia 6 devido à asfixia radicular
+  saudeCaule: [82, 60, 88, 84, 85, 25, 20],        // Tekó Biotech: despenca no Dia 6 devido à asfixia radicular
   sensorSolo: [65, 42, 75, 68, 80, 100, 100],      // Sensor Comum de Solo: marca 100% e engana o produtor!
   limiteCritico: [40, 40, 40, 40, 40, 40, 40]
 };
 
 export const DADOS_GRAFICO_ENERGIA = {
-  labels: ['ESP32 Comum (Ligado Direto)', 'PhytoSense RS (Deep Sleep 10µA)', 'Geração Bio-Solar (P-MFC + Mini Painel)'],
+  labels: ['ESP32 Comum (Ligado Direto)', 'Tekó Biotech (Deep Sleep 10µA)', 'Geração Bio-Solar (P-MFC + Mini Painel)'],
   consumo: [1800, 14, 45], // mAh/dia (escala logarítmica)
   cores: ['#ef4444', '#10b981', '#38bdf8']
 };

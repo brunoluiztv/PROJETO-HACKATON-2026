@@ -1,5 +1,5 @@
 /**
- * PhytoSense RS — Dark Mode de Alto Contraste para Uso no Campo
+ * Tekó Biotech — Dark Mode de Alto Contraste para Uso no Campo
  * Hackathon das Engenharias UERGS 2026
  * WCAG 2.2 AA / AAA (Contraste superior a 7:1)
  */
@@ -103,6 +103,36 @@ body {
   font-size: 0.75rem;
   color: var(--cor-laranja);
   font-weight: 600;
+}
+
+.topo-acoes {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-slides-topo {
+  min-height: var(--touch-minimo);
+  padding: 8px 12px;
+  background: #1f1f23;
+  color: #38bdf8;
+  border: 1px solid #38bdf8;
+  border-radius: 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-slides-topo:hover,
+.btn-slides-topo:focus-visible {
+  background: #38bdf8;
+  color: #0b0b0b;
+  outline: 3px solid #ffffff;
 }
 
 /* Botão de Voz Acessível no Topo */

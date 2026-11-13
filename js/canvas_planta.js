@@ -1,5 +1,5 @@
 /**
- * PhytoSense RS — Renderização Interativa da Planta Sentinela
+ * Tekó Biotech — Renderização Interativa da Planta Sentinela
  * Desenha o caule verde, o clipe laranja biocompatível (50kHz / 1kHz),
  * a rizosfera com a haste basal P-MFC (ORP) e a onda senoidal bioelétrica.
  */

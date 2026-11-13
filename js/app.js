@@ -1,5 +1,5 @@
 /**
- * PhytoSense RS — Aplicação Mobile / Telegram Mini App
+ * Tekó Biotech — Aplicação Mobile / Telegram Mini App
  * Hackathon das Engenharias UERGS 2026
  */
 
@@ -19,8 +19,8 @@ import { iniciarTelegram } from './telegram.js?v=7';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
-let tipoSoloAtual = localStorage.getItem('phytosense_tipo_solo') || 'franco';
-let perfilCulturaAtual = localStorage.getItem('phytosense_perfil_cultura') || 'olericultura_alface_argissolo';
+let tipoSoloAtual = localStorage.getItem('teko_tipo_solo') || localStorage.getItem('phytosense_tipo_solo') || 'franco';
+let perfilCulturaAtual = localStorage.getItem('teko_perfil_cultura') || localStorage.getItem('phytosense_perfil_cultura') || 'olericultura_alface_argissolo';
 let tensaoAtualKpa = 21.5;
 let isSpeaking = false;
 
@@ -123,7 +123,7 @@ function initSeletorSolo() {
       if (!solo || !CONFIG_SOLOS[solo]) return;
 
       tipoSoloAtual = solo;
-      localStorage.setItem('phytosense_tipo_solo', solo);
+      localStorage.setItem('teko_tipo_solo', solo);
       atualizarBotoesSoloUi(solo);
       
       // Reavalia estado e água disponível
@@ -203,7 +203,7 @@ function initSeletorCultura() {
       if (!cultura || !PERFIS_CULTURA[cultura]) return;
 
       perfilCulturaAtual = cultura;
-      localStorage.setItem('phytosense_perfil_cultura', cultura);
+      localStorage.setItem('teko_perfil_cultura', cultura);
       atualizarBotoesCulturaUi(cultura);
       atualizarPredicaoUi(tensaoAtualKpa);
       renderChartSecagem(cultura);
@@ -525,7 +525,7 @@ function enviarPerguntaSimulada(pergunta, resposta) {
   // Digitando...
   const msgDigitando = document.createElement('div');
   msgDigitando.className = 'msg-chat msg-bot digitando';
-  msgDigitando.innerHTML = `<em>PhytoSense RS está respondendo...</em>`;
+  msgDigitando.innerHTML = `<em>Tekó Biotech está respondendo...</em>`;
   chatContainer.appendChild(msgDigitando);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 
@@ -533,7 +533,7 @@ function enviarPerguntaSimulada(pergunta, resposta) {
     msgDigitando.remove();
     const msgBot = document.createElement('div');
     msgBot.className = 'msg-chat msg-bot';
-    msgBot.innerHTML = `<strong>🌱 PhytoSense RS:</strong> ${escapeHtml(resposta)}`;
+    msgBot.innerHTML = `<strong>🌱 Tekó Biotech:</strong> ${escapeHtml(resposta)}`;
     chatContainer.appendChild(msgBot);
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }, 450);
@@ -642,6 +642,7 @@ function escapeHtml(str) {
  */
 function initPollingBackend() {
   const getApiUrl = () => {
+    if (window.TEKO_API_URL) return window.TEKO_API_URL.replace(/\/+$/, '');
     if (window.PHYTOSENSE_API_URL) return window.PHYTOSENSE_API_URL.replace(/\/+$/, '');
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1' || host === '') {

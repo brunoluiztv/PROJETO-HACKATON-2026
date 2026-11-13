@@ -1,5 +1,5 @@
-/* Service Worker: Cache para uso offline no campo (PhytoSense RS) */
-const VERSAO = "phytosense-v5";
+/* Service Worker: Cache para uso offline no campo (Tekó Biotech) */
+const VERSAO = "teko-v6";
 const ARQUIVOS = [
   "./",
   "index.html",
