@@ -334,7 +334,7 @@ export const TELEMETRIA_ESTADOS = {
   },
   hipoxia: {
     id: 'hipoxia',
-    titulo: '🌊 AFOGADA / PÓS-ENCHENTE',
+    titulo: '🌊 ENCHARCADA',
     resumoCurto: 'Quantidade de Água: 2.0 kPa (Saturado / Alagado)',
     badge: 'Risco de Asfixia Radicular',
     badgeClass: 'badge-vermelho',

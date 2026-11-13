@@ -21,7 +21,7 @@ BOTOES = {
 PALAVRAS = [
     ("planta", ("planta", "caule", "sentinela", "como está", "saude", "saúde")),
     ("bomba", ("irrigar", "regar", "bomba", "água", "agua", "seco", "sede")),
-    ("chuva", ("chuva", "enchente", "alagamento", "afogada", "raiz", "hipoxia", "hipóxia")),
+    ("chuva", ("chuva", "enchente", "alagamento", "encharcada", "afogada", "raiz", "hipoxia", "hipóxia")),
     ("bateria", ("energia", "bateria", "pilha", "solar", "manutencao", "manutenção", "choque")),
     ("painel", ("grafico", "gráfico", "painel", "laudo", "proagro", "seguro", "relatorio", "relatório")),
     ("solo", ("solo", "terra", "textura", "arenoso", "argiloso", "franco")),
