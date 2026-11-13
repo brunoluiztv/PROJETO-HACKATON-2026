@@ -9,10 +9,13 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/teko_emblem.png" type="image/png">
   <link rel="apple-touch-icon" href="icons/teko_emblem.png">
-  <link rel="stylesheet" href="css/styles.css?v=17">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Hanken+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=19">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=18"></script>
+  <script type="module" src="js/app.js?v=19"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -36,6 +39,7 @@
         </button>
       </div>
       <a href="slides.html" class="btn-slides-topo" title="Abrir Slides do Pitch">📺 Slides</a>
+      <a href="https://github.com/brunoluiztv/PROJETO-HACKATON-2026/blob/main/docs/BIOSSENSOR-LOGICA-E-MERCADO.md" target="_blank" rel="noopener" class="btn-slides-topo" title="Lógica do Biossensor & Mercado">🔬 Lógica</a>
       <button type="button" class="btn-voz-topo" id="btn-ouvir-planta" aria-pressed="false" aria-label="Ouvir diagnóstico da lavoura por voz">
         <span id="voz-icone" aria-hidden="true">🔊</span>
         <span id="voz-texto">Ouvir Planta</span>
@@ -405,6 +409,37 @@
           <span>📄</span>
           <span>Emitir Laudo Técnico Pericial do Talhão</span>
         </button>
+      </article>
+
+      <!-- Card Explicativo: Lógica do Biossensor & Diferencial Mercadológico -->
+      <article class="card-biossensor-doc" aria-labelledby="t-biossensor-doc">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <h2 id="t-biossensor-doc" style="font-size: 1.1rem; font-weight: 800; color: var(--texto-branco);">🔬 Lógica do Biossensor Duplo & Mercado</h2>
+          <span style="font-size: 0.75rem; background: var(--cor-verde-bg); color: var(--cor-verde); padding: 3px 8px; border-radius: 6px; font-weight: 700; border: 1px solid var(--cor-verde);">Diferencial Tecnológico</span>
+        </div>
+        <p style="font-size: 0.86rem; color: var(--texto-secundario); margin-top: 6px; line-height: 1.45;">
+          Como a bioimpedância celular no caule e o potencial Redox da rizosfera decodificam a saúde da lavoura por tipo de solo:
+        </p>
+        <div class="biossensor-mini-grid">
+          <div class="biossensor-mini-item">
+            <strong style="color: var(--cor-laranja);">🌱 Caule (50k / 1 kHz):</strong> Mede o turgor celular da seiva e detecta a <em>seca invisível</em> até 36h antes da folha murchar.
+          </div>
+          <div class="biossensor-mini-item">
+            <strong style="color: var(--cor-azul);">🌊 Raiz (ORP &lt; -100 mV):</strong> Alerta de asfixia radicular em enchentes. Bloqueia a bomba para não matar por hipóxia.
+          </div>
+          <div class="biossensor-mini-item">
+            <strong style="color: var(--cor-verde);">🚜 3 Solos do RS:</strong> Calibração de física de poros para Arenoso (10 kPa), Franco (22 kPa) e Argiloso (33 kPa).
+          </div>
+          <div class="biossensor-mini-item">
+            <strong style="color: #f59e0b);">📄 Laudo PROAGRO:</strong> Emissão de dados auditáveis em 1 clique para acelerar indenizações do seguro rural.
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <a href="https://github.com/brunoluiztv/PROJETO-HACKATON-2026/blob/main/docs/BIOSSENSOR-LOGICA-E-MERCADO.md" target="_blank" rel="noopener" class="btn-doc-completo">
+            <span>📖 Ver Lógica Completa, Fórmulas Bioelétricas & Análise de Mercado</span>
+            <span>↗</span>
+          </a>
+        </div>
       </article>
     </section>
 
