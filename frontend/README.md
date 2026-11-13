@@ -2,6 +2,8 @@
 
 Primeira implementação do plano de frontend adaptável. Combina o acompanhamento do protótipo React com navegação para celular e computador, identidade AgroSponge e conteúdos da aplicação da equipe. Toda medição é explicitamente simulada. Sensores e critérios finais permanecem em definição.
 
+Para conectar vários nós à API no notebook, seguir o [contrato v1](../docs/CONTRATO-API-V1.md) e o [plano da equipe](../docs/PLANO-EQUIPE-MVP.md). O mock atual ainda representa uma sessão por canal; seleção de nó/canal, sessão de inicialização e recência fornecida pela API são as próximas adaptações.
+
 ## Executar
 
 Com Node.js compatível com Vite 6 e npm:

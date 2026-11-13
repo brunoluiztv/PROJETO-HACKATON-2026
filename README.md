@@ -1,160 +1,129 @@
-<div align="center">
+# Plataforma IoT de Monitoramento para Agricultura Familiar
 
-![AgroSponge RS — Hackathon das Engenharias UERGS 2026](assets/social-preview.png)
+Projeto desenvolvido no **Hackathon das Engenharias UERGS 2026** por uma equipe de três desenvolvedores. O objetivo é coletar medições em pontos distribuídos, armazenar o histórico e permitir ao agricultor consultar informações pelo celular, computador e Telegram.
 
-# 🌱 AgroSponge RS
-### Biossensor de Enxurrada & Guarda d'Água para a Agricultura Familiar
+**O nome definitivo do projeto, os sensores e as grandezas a medir estão em definição.** A arquitetura permite adaptar a apresentação dos resultados sem vincular todo o sistema a um único sensor.
 
-[![Hackathon UERGS 2026](https://img.shields.io/badge/Hackathon-UERGS%202026-ff007f?style=for-the-badge&logo=target)](https://github.com/brunoluiztv/PROJETO-HACKATON-2026)
-[![GitHub Pages Live](https://img.shields.io/badge/Web_App-GitHub%20Pages%20(HTTPS)-00e5ff?style=for-the-badge&logo=github)](https://brunoluiztv.github.io/PROJETO-HACKATON-2026/)
-[![Telegram Bot](https://img.shields.io/badge/Telegram_Bot-Assistente-2AABEE?style=for-the-badge&logo=telegram)](bot/)
-[![Acessibilidade WCAG](https://img.shields.io/badge/Acessibilidade-WCAG%202.2%20AA-4caf50?style=for-the-badge&logo=w3c)](docs/ACESSIBILIDADE-UX.md)
-[![Licença MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-ff6d00?style=for-the-badge)](LICENSE)
+## Documentação principal
 
-<p align="center">
-  <strong>“PROGRAME A MUDANÇA. PROJETE O FUTURO.”</strong><br>
-  <em>Projeto desenvolvido no Hackathon das Engenharias UERGS 2026</em>
-</p>
+Comece pelo **[PLANO-DO-PROJETO.md](PLANO-DO-PROJETO.md)**, na raiz do repositório. Ele reúne:
 
-[🌐 Acessar Web App Online](https://brunoluiztv.github.io/PROJETO-HACKATON-2026/) • [🤖 Configurar Bot](docs/CONFIGURACAO-TELEGRAM.md) • [♿ Guia de Acessibilidade](docs/ACESSIBILIDADE-UX.md) • [📋 Resumo do Projeto](docs/CHAT-ANTIGRAVITY.md)
+- Arquitetura e responsabilidades dos componentes.
+- Divisão de trabalho dos três desenvolvedores e organização Git.
+- Contrato proposto de integração da API.
+- Etapas de entrega, critérios de aceite e roteiro de demonstração.
 
----
+Documentos complementares: [plano do frontend adaptável](docs/PLANO-FRONTEND-ADAPTAVEL.md), [relatório técnico](docs/RELATORIO-PROJETO.md) e [instruções do frontend](frontend/README.md). Registros anteriores são mantidos para consulta; o plano central descreve a arquitetura acordada para a integração.
 
-</div>
+## Arquitetura do MVP
 
-## Desenvolvimento e documentação consolidada
-
-Este repositório fica em `hackathon/PROJETO-HACKATON-2026/` e inclui o protótipo React anterior em `dashboard/`. Seus demais caminhos internos permanecem os mesmos.
-
-O [relatório geral e análise do código](docs/RELATORIO-PROJETO.md) registra o estado verificável da implementação e as decisões de evolução: ESP32 com armazenamento local, painel web local, dashboard remoto e Telegram. **Sensores e grandezas continuam em definição.** A aplicação web e o bot abaixo já têm código; a integração com ESP32 e API de medições é uma próxima etapa.
-
-O [plano do frontend adaptável](docs/PLANO-FRONTEND-ADAPTAVEL.md) compara as interfaces existentes e propõe uma versão configurável por tipo de análise, com etapas de migração e critérios de validação.
-
-A primeira implementação está em **[frontend/](frontend/README.md)**: monitoramento responsivo com perfis numéricos, categóricos e booleanos, dados simulados, histórico, CSV e conteúdos da equipe. Para executar: `cd frontend`, `npm install` e `npm run dev`. A instalação neste ambiente foi bloqueada por DNS; build e validação visual ainda estão pendentes. A versão em `web/` continua preservada.
-
-## 📌 Contexto & Desafio
-
-O Rio Grande do Sul enfrenta a alternância violenta entre **enxurradas extremas** e **estiagens severas**. O pequeno produtor familiar perde sua produção tanto pelo excesso quanto pela falta d'água, sem ter ferramentas acessíveis para armazenar água das chuvas de maneira segura ou para saber se a água recolhida está contaminada.
-
-O **AgroSponge RS** resolve essa dor com uma tecnologia social de baixo custo (cerca de **R$ 5,80 por saco**) associada a um ecossistema digital inclusivo:
-1. **Saco de Algodão Cru Filtrante**: recheado com 700g de casca de arroz e carvão ativado moído, 250g de goma vegetal gelificante e 50g de tanino de acácia com fungo protetor (*Trichoderma*).
-2. **Biossensor Colorimétrico**: fitinha selo reativa colada no saco que indica visualmente a qualidade da água retida.
-3. **Assistente Digital Multiplataforma**: Bot de Telegram empático e acessível por áudio/foto + Web App PWA que funciona sem internet no campo + Extensão de acessibilidade para produtores com baixa visão, dislexia ou dificuldades de leitura.
-
----
-
-## 🎨 Selo Colorimétrico: Como Funciona
-
-| Selo | Condição da Água | O que fazer | Vantagem para a Roça |
-|:---:|:---|:---|:---|
-| 🟢 **VERDE** | **Água Limpa** | Cortar o saco de algodão com a enxada e misturar o gel direto nos canteiros de verdura, milho ou feijão. | Guarda **13 litros de água** em gel por saco e protege as raízes na estiagem com *Trichoderma*. |
-| 🟡 **AMARELO** | **Água com Barro** | Não colocar em hortaliças folhosas. Deixar descansar na composteira por 15 dias ou usar no pé de árvores frutíferas e acácia. | O calor do monte de adubo higieniza a matéria orgânica antes do uso. |
-| 🔴 **VERMELHO** | **Perigo / Contaminada** | **PROIBIDO abrir na horta.** Manter o saco fechado e usar na contenção de barrancos ou encostas. | O carvão ativado aprisionou óleos e coliformes, protegendo o lençol freático e o poço. |
-
-> 🛡️ **Segurança em Primeiro Lugar**: O bot utiliza visão computacional com recorte central (ROI 30%). Se a iluminação for precária ou a cor não for conclusiva, o algoritmo **nunca chuta verde**. Ele aciona o modo de segurança e oferece botões táteis para confirmação.
-
----
-
-## 🏗️ Estrutura do Ecossistema
-
+```mermaid
+flowchart TD
+    N1["Nó ESP32 + sensores"] -->|ESP-NOW| G["ESP32 gateway"]
+    N2["Outro nó ESP32 + sensores"] -->|ESP-NOW| G
+    G --> F["Armazenamento persistente e painel local"]
+    G -->|Wi-Fi + HTTP na rede local| A["Notebook: FastAPI"]
+    A --> D["SQLite: leituras, regras e alertas"]
+    A --> W["Dashboard React: celular e PC"]
+    B["Bot Python"] <-->|API| A
+    B <-->|Internet| T["Telegram: consultas, avisos e link do painel"]
 ```
+
+Os nós coletam e transmitem. O gateway recebe os dados, mantém pendências e encaminha à API. O backend valida, armazena e avalia regras; dashboard e bot consultam a mesma fonte de dados. O token do Telegram permanece no notebook.
+
+A configuração inicial utiliza **notebook local**, com FastAPI e SQLite. O armazenamento e o painel embarcados serão centralizados no gateway. As funcionalidades planejadas ainda precisam ser integradas e validadas.
+
+## Estado do desenvolvimento
+
+| Componente | Situação |
+| --- | --- |
+| Frontend integrado | Implementado em `frontend/`, com dados simulados e perfis numéricos, categóricos e booleanos. |
+| Histórico e exportação | Gráficos, tabela, períodos e CSV disponíveis na demonstração do frontend. |
+| Bot Telegram | Código inicial existente; comandos de monitoramento e integração com a API ainda precisam ser concluídos. |
+| Hardware | Sketches iniciais disponíveis em `ESPs32 - Hard/`; integração com o contrato e ensaio completo precisam ser validados. |
+| API e banco de medições | Planejados; implementação pendente neste repositório. |
+| Fila persistente, sincronização e alertas | Especificados no plano; validação integrada pendente. |
+| Sensores e critérios de análise | Em definição. |
+
+O frontend ainda não está conectado a medições físicas. Os exemplos apresentados são simulações, sem comprovação de concentração, contaminação ou classificação agronômica. Critérios reais dependem da escolha dos sensores, calibração e validação do método.
+
+Alguns arquivos e conteúdos herdados ainda usam a identidade e a proposta anteriores. Sua existência preserva o histórico de desenvolvimento; a apresentação atual do projeto é a plataforma de monitoramento descrita neste README. A adaptação da interface e do bot será feita nas próximas entregas.
+
+## Organização do repositório
+
+```text
 PROJETO-HACKATON-2026/
-├── assets/                          # Identidade visual oficial do Hackathon UERGS 2026
-│   ├── hackathon-poster.jpg         # Pôster original do evento
-│   └── social-preview.png           # Banner OpenGraph em alta resolução
-├── bot/                             # Assistente AgroSponge para Telegram
-│   ├── agrosponge_telegram_bot.py   # Entrada principal com polling
-│   ├── classificador.py             # Visão computacional RGB com fail-safe
-│   ├── conteudo.py                  # Textos acolhedores e laudos técnicos
-│   ├── roteamento.py                # Processamento de linguagem natural simplificado
-│   ├── setup_telegram_bot.py        # Configuração automática de comandos e Menu WebApp
-│   ├── assets/                      # Avatar oficial 512x512 para o @BotFather
-│   ├── Dockerfile & railway.json    # Infraestrutura para deploy contínuo 24/7 na Railway
-│   └── tests/                       # Suite de testes unitários (pytest)
-├── web/                             # Web App PWA Mobile-First
-│   ├── index.html                   # Estrutura semântica acessível (WCAG 2.2 AA)
-│   ├── css/styles.css               # Design tokens, temas claro/escuro e alvos >= 48px
-│   ├── js/                          # Calculadora de estiagem e gráficos vetoriais SVG
-│   ├── manifest.webmanifest         # Configuração de instalação PWA
-│   └── sw.js                        # Cache-first offline para uso sem sinal no campo
-├── extension/                       # Extensão de Acessibilidade Web (Manifest V3)
-│   ├── popup.html & popup.js        # Painel flutuante (Alt+A) com controles inclusivos
-│   └── content.js & content.css     # Ampliação de texto, modo dislexia e voz pt-BR
-└── docs/                            # Documentação técnica e registros de projeto
-    ├── CONFIGURACAO-TELEGRAM.md     # Guia prático para BotFather, Mini App e setup
-    ├── ACESSIBILIDADE-UX.md         # Checklist ergonômico e boas práticas de UX
-    └── CHAT-ANTIGRAVITY.md          # Histórico de decisões de engenharia
+├── README.md
+├── PLANO-DO-PROJETO.md       # Referência central da equipe e contrato da API
+├── frontend/                # Interface integrada em React, TypeScript e Vite
+├── bot/                     # Bot Python e testes existentes
+├── ESPs32 - Hard/           # Sketches iniciais do nó e da central
+├── docs/                    # Relatórios, planos e registros técnicos
+├── web/                     # Aplicação anterior e conteúdo reutilizado
+├── dashboard/               # Primeiro protótipo React, referência histórica
+├── extension/               # Extensão de acessibilidade existente
+└── assets/                  # Materiais de apresentação existentes
 ```
 
----
+Concentrar novas telas em `frontend/`. Essa aplicação ainda importa conteúdo de `web/js/content.js`; preservar esse arquivo até concluir sua adaptação. A estrutura futura de backend e firmware está detalhada no plano central.
 
-## 🚀 Como Executar
+## Executar o frontend
 
-### 1. Web App PWA (Navegador ou Celular)
-O Web App já está publicado em HTTPS no GitHub Pages:
-👉 **[https://brunoluiztv.github.io/PROJETO-HACKATON-2026/](https://brunoluiztv.github.io/PROJETO-HACKATON-2026/)**
+Com Node.js e npm instalados, a partir da raiz do repositório:
 
-Para rodar localmente:
 ```bash
-cd web
-python -m http.server 8080
-# Abra http://localhost:8080 no navegador
+cd frontend
+npm ci
+npm run dev
 ```
 
-### 2. Bot do Telegram
+Abra o endereço **Local** informado pelo Vite, normalmente `http://localhost:5173`. Mantenha o terminal aberto.
+
+Para acessar pelo celular, conecte celular e notebook à mesma rede e abra o endereço **Network** informado pelo Vite. `localhost` no celular aponta para o próprio celular.
+
+Para verificar e gerar o build:
+
+```bash
+npm test
+npm run build
+npm run preview
+```
+
+O build gera `frontend/dist/`. O roteiro de validação está no [README do frontend](frontend/README.md). A instalação exige acesso ao servidor de pacotes npm; houve timeout no Wi-Fi usado durante o desenvolvimento, enquanto a conexão móvel permitiu prosseguir.
+
+## Bot Telegram
+
+O código inicial e seus requisitos estão em [bot/](bot/). Para preparar o ambiente em Linux/macOS:
+
 ```bash
 cd bot
-# 1. Ativar o ambiente virtual Python
-python -m venv .venv
-.\.venv\Scripts\activate   # No Linux/macOS: source .venv/bin/activate
-
-# 2. Instalar dependências
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
-# 3. Configurar seu token
-copy .env.example .env
-# Adicione seu TELEGRAM_TOKEN gerado no @BotFather
-
-# 4. Configurar comandos e botão de menu no Telegram automaticamente
-python setup_telegram_bot.py
-
-# 5. Iniciar o assistente
-python agrosponge_telegram_bot.py
+cp .env.example .env
 ```
-> Para rodar os testes unitários de segurança: `pytest -v`
 
-### 3. Extensão de Acessibilidade (Chrome ou Edge)
-1. Acesse `chrome://extensions` ou `edge://extensions` no navegador.
-2. Ative o **Modo do Desenvolvedor** no canto superior direito.
-3. Clique em **Carregar sem compactação** e selecione a pasta `extension/`.
-4. Abra o Web App e aperte `Alt + A` para controlar o tamanho da fonte, modo dislexia e leitura em voz alta.
+Preencha o token e a URL apropriada em `.env`, sem versionar credenciais. O [guia existente](docs/CONFIGURACAO-TELEGRAM.md) documenta a configuração inicial; textos, comandos e identidade ainda precisam ser adaptados à plataforma atual.
 
----
+O MVP prevê `/start`, `/status`, `/sensores`, `/alertas`, `/painel` e `/ajuda`, além de envio de alertas com link do dashboard. O estado da ocorrência e as retentativas de notificação deverão ser persistidos pela API.
 
-## ♿ Destaques de UX & Acessibilidade
+No ensaio local, `/painel` deve enviar um link comum com o IP do notebook. O botão Mini App da implementação anterior exige HTTPS e precisa de tratamento diferente para um endereço HTTP local. Esse link local não é acessível fora da rede do notebook.
 
-- **Design para o Polegar**: Toda a navegação e botões principais estão concentrados na parte inferior da tela, facilitando a operação com uma só mão na lavoura.
-- **Áreas de Toque Generosas**: Alvos interativos com altura mínima de 48px, prevenindo toques acidentais por mãos calejadas ou com luvas de trabalho.
-- **Dupla Codificação da Informação**: A cor nunca é o único indicador. O selo combina **cor de alto contraste + símbolo geométrico (✔, !, ✖) + texto em caixa alta**.
-- **Autonomia Offline**: O Service Worker armazena em cache todos os recursos essenciais. O agricultor pode consultar laudos e calcular a água necessária mesmo sem conexão 4G ou Wi-Fi.
+## Funcionamento sem internet
 
----
+- Se a internet externa cair, mas a rede local e o notebook continuarem funcionando, a coleta, a API e o dashboard local poderão continuar após a integração.
+- Se o notebook ou a API estiver indisponível, o gateway deverá armazenar pendências para sincronização posterior.
+- O painel local leve do gateway permitirá consulta próxima, dentro da retenção disponível.
+- Telegram depende de internet; falhas de envio não devem bloquear aquisição e persistência.
+- Dados apenas em RAM nos nós podem ser perdidos após desligamento. Garantias de retenção exigem armazenamento persistente e teste.
 
-## 🤝 Realização & Apoiadores
+## Próximas entregas
 
-<div align="center">
+1. Implementar ingestão e consulta da API conforme o contrato central, usando JSON simulado.
+2. Conectar o frontend à API com seleção de nó e canal.
+3. Integrar nó, gateway, armazenamento e reenvio sem duplicações.
+4. Implementar regras experimentais, persistência de ocorrências e notificações Telegram.
+5. Escolher e calibrar sensores, adaptando seus perfis de análise.
+6. Validar o fluxo completo no celular e PC, incluindo interrupção e recuperação de conexão.
 
-Projeto concebido para o **Hackathon das Engenharias UERGS 2026**
-
-![Apoiadores](assets/hackathon-poster.jpg)
-
-**Apoiadores & Entidades:**
-`#include <gurias>` • `Universidade Estadual do Rio Grande do Sul (UERGS)` • `RS Talentos` • `Engenharia de Bioprocessos e Biotecnologia` • `Engenharia de Controle e Automação` • `CARF` • `NIT UERGS`
-
-</div>
-
----
-
-<p align="center">
-  Desenvolvido com carinho para fortalecer a resiliência climática das famílias agricultoras do Rio Grande do Sul.
-</p>
+Cada desenvolvedor trabalha em branch própria, com entregas pequenas e revisão por outro membro. Alterações no contrato devem acompanhar a documentação e ser combinadas com a equipe.

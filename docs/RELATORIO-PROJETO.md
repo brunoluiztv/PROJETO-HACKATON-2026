@@ -2,6 +2,8 @@
 
 Atualização: 12 de novembro de 2026.
 
+**Decisão posterior da equipe:** a topologia passa a ter nós ESP32 e uma ESP32 gateway, com API e SQLite no notebook local. O armazenamento e painel embarcados ficam no gateway. O [plano da equipe](PLANO-EQUIPE-MVP.md) e o [contrato v1](CONTRATO-API-V1.md) são as referências para a próxima integração e prevalecem sobre os exemplos anteriores de placa única e `/api/measurements` registrados abaixo.
+
 Este documento consolida o código encontrado no repositório da equipe, o protótipo React anterior e as decisões tomadas para a próxima etapa. As funcionalidades propostas abaixo ainda dependem de implementação e validação.
 
 O [plano do frontend adaptável](PLANO-FRONTEND-ADAPTAVEL.md) detalha a comparação das duas interfaces, os perfis de análise, a evolução do contrato para resultados numéricos, categóricos e booleanos e a migração proposta.
