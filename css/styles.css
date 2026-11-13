@@ -5,11 +5,13 @@
  */
 
 :root {
-  --bg-principal: #0b0b0b;
-  --bg-card: #151515;
-  --bg-card-hover: #1c1c1c;
-  --borda-suave: #262626;
-  --borda-destaque: #3f3f46;
+  /* Modo Escuro de Alto Contraste (Default Rural UERGS) */
+  --bg-principal: #09090b;
+  --bg-card: #141416;
+  --bg-card-hover: #1c1c20;
+  --borda-suave: #3f3f46;       /* Borda demarcada e nítida conforme padrão da imagem */
+  --borda-destaque: #52525b;
+  --borda-fina: 1px solid var(--borda-suave);
 
   --cor-laranja: #ff6b00;
   --cor-laranja-glow: rgba(255, 107, 0, 0.25);
@@ -25,9 +27,43 @@
   --cor-vermelho-bg: rgba(239, 68, 68, 0.15);
   --cor-azul: #38bdf8;
 
+  --topo-bg: rgba(17, 17, 17, 0.96);
+  --nav-bg: rgba(17, 17, 17, 0.96);
+  --canvas-bg: #09090b;
+  --sombra-card: 0 4px 18px rgba(0, 0, 0, 0.45);
+
   --nav-altura: 64px;
   --touch-minimo: 48px;
-  --raio-borda: 12px;
+  --raio-borda: 14px;
+}
+
+/* Modo Claro de Alto Contraste (Luz Solar Rural) */
+[data-theme="light"] {
+  --bg-principal: #f4f4f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --borda-suave: #d4d4d8;       /* Borda cinza demarcada no modo claro */
+  --borda-destaque: #a1a1aa;
+  --borda-fina: 1px solid var(--borda-suave);
+
+  --cor-laranja: #ea580c;
+  --cor-laranja-glow: rgba(234, 88, 12, 0.2);
+  --texto-branco: #09090b;      /* Texto escuro no claro */
+  --texto-secundario: #52525b;
+  --texto-terciario: #71717a;
+
+  --cor-verde: #059669;
+  --cor-verde-bg: rgba(5, 150, 105, 0.12);
+  --cor-amarelo: #d97706;
+  --cor-amarelo-bg: rgba(217, 119, 6, 0.12);
+  --cor-vermelho: #dc2626;
+  --cor-vermelho-bg: rgba(220, 38, 38, 0.12);
+  --cor-azul: #0284c7;
+
+  --topo-bg: rgba(255, 255, 255, 0.96);
+  --nav-bg: rgba(255, 255, 255, 0.96);
+  --canvas-bg: #ffffff;
+  --sombra-card: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 *, *::before, *::after {
@@ -65,31 +101,39 @@ body {
    Header Superior
    ========================================================================== */
 .topo-app {
-  background-color: #111111;
+  background-color: var(--topo-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--borda-suave);
-  padding: 12px 16px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   position: sticky;
   top: 0;
   z-index: 80;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .topo-marca {
   display: flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
 }
 
 .topo-icone {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
   border-radius: 8px;
-  background: #18181b;
-  padding: 4px;
-  border: 1px solid var(--cor-laranja);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.topo-marca-textos {
+  display: flex;
+  flex-direction: column;
 }
 
 .topo-titulo {
@@ -100,15 +144,55 @@ body {
 }
 
 .topo-sub {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--cor-laranja);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .topo-acoes {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Switch de Tema Segmentado (Escuro / Claro) estilo Dark Reader
+   ========================================================================== */
+.switch-tema-segmented {
+  display: inline-flex;
+  background: rgba(125, 125, 125, 0.12);
+  border: 1px solid var(--borda-suave);
+  border-radius: 20px;
+  padding: 2px;
+  gap: 2px;
+  align-items: center;
+}
+
+.btn-tema-opt {
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  padding: 5px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  min-height: 32px;
+}
+
+.btn-tema-opt:hover {
+  color: var(--texto-branco);
+}
+
+.btn-tema-opt.ativo {
+  background: var(--cor-laranja);
+  color: #ffffff !important;
+  box-shadow: 0 0 10px var(--cor-laranja-glow);
 }
 
 .btn-slides-topo {
@@ -211,12 +295,14 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--borda-suave);
   border-radius: var(--raio-borda);
-  padding: 12px;
+  box-shadow: var(--sombra-card);
+  padding: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   overflow: hidden;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 #canvas-planta {
@@ -225,8 +311,9 @@ body {
   height: 340px;
   display: block;
   border-radius: 10px;
-  background: #09090b;
+  background: var(--canvas-bg);
   border: 1px solid var(--borda-suave);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .canvas-legenda {
@@ -1058,13 +1145,16 @@ body {
   left: 0;
   right: 0;
   height: var(--nav-altura);
-  background: #111111;
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--borda-suave);
   display: flex;
   align-items: center;
   justify-content: space-around;
   z-index: 100;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .nav-tab-btn {
@@ -1752,5 +1842,189 @@ body {
 
 .gateway-log-box .log-erro {
   color: #ef4444;
+}
+
+/* ==========================================================================
+   Modo Claro de Alto Contraste (Light Mode - Rural Daylight)
+   ========================================================================== */
+[data-theme="light"] body {
+  background-color: var(--bg-principal);
+  color: var(--texto-branco);
+}
+
+[data-theme="light"] .card-canvas-planta,
+[data-theme="light"] .card-solo-seletor,
+[data-theme="light"] .cultura-seletor-box,
+[data-theme="light"] .predicao-box,
+[data-theme="light"] .card-chat-simulador,
+[data-theme="light"] .simulador-hectares-box,
+[data-theme="light"] .card-grafico-box,
+[data-theme="light"] .card-pilar,
+[data-theme="light"] .clima-box,
+[data-theme="light"] .receita-box,
+[data-theme="light"] .ninhura-box,
+[data-theme="light"] .card-bom,
+[data-theme="light"] .modal-conteudo {
+  background: var(--bg-card);
+  border-color: var(--borda-suave);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .modo-operacao-box {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .modo-operacao-desc {
+  color: #475569;
+}
+
+[data-theme="light"] .btn-estado {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-estado:hover {
+  border-color: var(--cor-laranja);
+}
+
+[data-theme="light"] .btn-estado.ativo {
+  background: #fff7ed;
+  border-color: var(--cor-laranja);
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.15);
+}
+
+[data-theme="light"] .btn-estado-info strong {
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-estado-info small {
+  color: #64748b;
+}
+
+[data-theme="light"] .btn-solo {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-solo.solo-ativo {
+  background: #fff7ed;
+  border-color: var(--cor-laranja);
+  color: #9a3412;
+  box-shadow: 0 0 10px rgba(234, 88, 12, 0.15);
+}
+
+[data-theme="light"] .btn-cultura {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-cultura.cultura-ativa {
+  background: #ecfdf5;
+  border-color: var(--cor-verde);
+  color: #065f46;
+}
+
+[data-theme="light"] .chat-janela {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .chat-msg.bot {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .chat-msg.produtor {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+[data-theme="light"] .chat-input-campo {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .simulador-display-num,
+[data-theme="light"] .sim-card-metrica,
+[data-theme="light"] .clima-card-metrica,
+[data-theme="light"] .telemetria-dado-item,
+[data-theme="light"] .ninhura-no-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .sim-card-metrica .sim-label,
+[data-theme="light"] .clima-card-metrica .clima-lbl,
+[data-theme="light"] .telemetria-dado-item .dado-lbl {
+  color: #64748b;
+}
+
+[data-theme="light"] .sim-card-metrica .sim-val,
+[data-theme="light"] .clima-card-metrica .clima-val,
+[data-theme="light"] .telemetria-dado-item .dado-val {
+  color: #0f172a;
+}
+
+[data-theme="light"] .select-municipio-rs,
+[data-theme="light"] .input-hectares-num {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .tabela-bom,
+[data-theme="light"] .tabela-gateway-nos,
+[data-theme="light"] .tabela-solo {
+  color: #0f172a;
+}
+
+[data-theme="light"] .tabela-bom th,
+[data-theme="light"] .tabela-gateway-nos th,
+[data-theme="light"] .tabela-solo th {
+  color: #475569;
+  border-bottom-color: #cbd5e1;
+}
+
+[data-theme="light"] .tabela-bom td,
+[data-theme="light"] .tabela-gateway-nos td,
+[data-theme="light"] .tabela-solo td {
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .card-bom {
+  background: #ffffff;
+  border-color: #d4d4d8;
+}
+
+[data-theme="light"] .gateway-log-box {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+[data-theme="light"] .nav-tab-btn {
+  color: #64748b;
+}
+
+[data-theme="light"] .nav-tab-btn.active {
+  color: var(--cor-laranja);
+}
+
+[data-theme="light"] .btn-slides-topo {
+  background: #f0f9ff;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+[data-theme="light"] .btn-voz-topo {
+  background: #ffffff;
+  border-color: var(--cor-laranja);
+  color: #0f172a;
 }
 

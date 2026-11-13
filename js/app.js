@@ -4,8 +4,8 @@
  * 4 Abas Especializadas: 1. Planta | 2. Triagem & Receita | 3. Gráficos & Hectares | 4. Engenharia & Gateway
  */
 
-import { initPlantCanvas } from './canvas_planta.js?v=15';
-import { initCharts, renderChartSecagem } from './charts.js?v=15';
+import { initPlantCanvas } from './canvas_planta.js?v=17';
+import { initCharts, renderChartSecagem } from './charts.js?v=17';
 import { 
   TELEMETRIA_ESTADOS, 
   FAQ_PRODUTOR, 
@@ -16,8 +16,8 @@ import {
   calcularAguaDisponivel, 
   classificarEstadoSolo,
   calcularPredicaoSecagem
-} from './content.js?v=15';
-import { iniciarTelegram } from './telegram.js?v=15';
+} from './content.js?v=17';
+import { iniciarTelegram } from './telegram.js?v=17';
 
 let plantCanvasController = null;
 let estadoAtual = 'hidratada';
@@ -29,6 +29,7 @@ let dadosClimaCache = null;
 let localizacaoAtiva = { nome: 'Porto Alegre (Metropolitana)', lat: -30.0346, lon: -51.2177 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeManager();
   iniciarTelegram();
   initServiceWorker();
   initTabs();
@@ -46,6 +47,62 @@ document.addEventListener('DOMContentLoaded', () => {
   processarUrlParams();
   initPollingBackend();
 });
+
+/**
+ * 0. Gerenciamento de Tema (Modo Escuro / Claro Rural)
+ */
+function initThemeManager() {
+  const btnEscuro = document.getElementById('btn-tema-escuro');
+  const btnClaro = document.getElementById('btn-tema-claro');
+
+  function aplicarTema(tema, salvar = true) {
+    if (tema === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      if (btnClaro) {
+        btnClaro.classList.add('ativo');
+        btnClaro.setAttribute('aria-checked', 'true');
+      }
+      if (btnEscuro) {
+        btnEscuro.classList.remove('ativo');
+        btnEscuro.setAttribute('aria-checked', 'false');
+      }
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (btnEscuro) {
+        btnEscuro.classList.add('ativo');
+        btnEscuro.setAttribute('aria-checked', 'true');
+      }
+      if (btnClaro) {
+        btnClaro.classList.remove('ativo');
+        btnClaro.setAttribute('aria-checked', 'false');
+      }
+    }
+
+    if (salvar) {
+      try {
+        localStorage.setItem('teko_theme', tema);
+      } catch (e) {}
+    }
+
+    if (typeof window.recarregarGraficosTema === 'function') {
+      window.recarregarGraficosTema();
+    }
+  }
+
+  const temaSalvo = localStorage.getItem('teko_theme');
+  if (temaSalvo === 'light') {
+    aplicarTema('light', false);
+  } else {
+    aplicarTema('dark', false);
+  }
+
+  if (btnEscuro) {
+    btnEscuro.addEventListener('click', () => aplicarTema('dark'));
+  }
+  if (btnClaro) {
+    btnClaro.addEventListener('click', () => aplicarTema('light'));
+  }
+}
 
 /**
  * 1. Gerenciamento do Service Worker

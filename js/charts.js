@@ -6,11 +6,24 @@
  * 3. Simulador de Hectares e Economia na Irrigação
  */
 
-import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA, CONFIG_SOLOS } from './content.js?v=15';
+import { DADOS_GRAFICO_DIVERGENCIA, DADOS_GRAFICO_ENERGIA, PERFIS_CULTURA, CONFIG_SOLOS } from './content.js?v=17';
 
 let chartDivergenciaInstance = null;
 let chartEnergiaInstance = null;
 let chartSecagemInstance = null;
+
+function getChartThemeColors() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  return {
+    isLight,
+    textColor: isLight ? '#0f172a' : '#ffffff',
+    subtextColor: isLight ? '#475569' : '#94a3b8',
+    gridColor: isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+    tooltipBg: isLight ? '#ffffff' : '#0f172a',
+    tooltipTitle: isLight ? '#0f172a' : '#ffffff',
+    tooltipBody: isLight ? '#334155' : '#cbd5e1'
+  };
+}
 
 export function initCharts() {
   renderChartDivergencia();
@@ -32,6 +45,7 @@ function renderChartDivergencia() {
     }
 
     const ctx = canvas.getContext('2d');
+    const theme = getChartThemeColors();
     chartDivergenciaInstance = new window.Chart(ctx, {
       type: 'line',
       data: {
@@ -67,12 +81,14 @@ function renderChartDivergencia() {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            labels: { color: '#ffffff', font: { size: 10, family: 'sans-serif' } }
+            labels: { color: theme.textColor, font: { size: 10, family: 'sans-serif' } }
           },
           tooltip: {
-            backgroundColor: '#0f172a',
-            titleColor: '#ffffff',
-            bodyColor: '#cbd5e1',
+            backgroundColor: theme.tooltipBg,
+            titleColor: theme.tooltipTitle,
+            bodyColor: theme.tooltipBody,
+            borderColor: theme.gridColor,
+            borderWidth: 1,
             callbacks: {
               label: (item) => item.datasetIndex === 0
                 ? `🌱 Tekó In-Planta: ${item.raw}% (Turgor Celular Real)`
@@ -85,14 +101,14 @@ function renderChartDivergencia() {
             min: 0,
             max: 110,
             ticks: {
-              color: '#94a3b8',
+              color: theme.subtextColor,
               callback: (v) => `${v}%`
             },
-            grid: { color: 'rgba(255, 255, 255, 0.08)' }
+            grid: { color: theme.gridColor }
           },
           x: {
-            ticks: { color: '#94a3b8', font: { size: 10 } },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            ticks: { color: theme.subtextColor, font: { size: 10 } },
+            grid: { color: theme.gridColor }
           }
         }
       }
@@ -116,6 +132,7 @@ function renderChartEnergia() {
     }
 
     const ctx = canvas.getContext('2d');
+    const theme = getChartThemeColors();
     chartEnergiaInstance = new window.Chart(ctx, {
       type: 'bar',
       data: {
@@ -126,7 +143,7 @@ function renderChartEnergia() {
           backgroundColor: DADOS_GRAFICO_ENERGIA.cores,
           borderRadius: 6,
           borderWidth: 1,
-          borderColor: '#ffffff'
+          borderColor: theme.isLight ? '#cbd5e1' : '#ffffff'
         }]
       },
       options: {
@@ -136,19 +153,24 @@ function renderChartEnergia() {
           y: {
             type: 'logarithmic',
             ticks: {
-              color: '#94a3b8',
+              color: theme.subtextColor,
               callback: (v) => `${v} mAh`
             },
-            grid: { color: 'rgba(255, 255, 255, 0.08)' }
+            grid: { color: theme.gridColor }
           },
           x: {
-            ticks: { color: '#ffffff', font: { size: 10 } },
+            ticks: { color: theme.textColor, font: { size: 10 } },
             grid: { display: false }
           }
         },
         plugins: {
           legend: { display: false },
           tooltip: {
+            backgroundColor: theme.tooltipBg,
+            titleColor: theme.tooltipTitle,
+            bodyColor: theme.tooltipBody,
+            borderColor: theme.gridColor,
+            borderWidth: 1,
             callbacks: {
               label: (item) => `${item.raw} mAh/dia`
             }
@@ -379,6 +401,7 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
     }
 
     const ctx = canvas.getContext('2d');
+    const theme = getChartThemeColors();
     chartSecagemInstance = new window.Chart(ctx, {
       type: 'line',
       data: {
@@ -387,12 +410,12 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
           {
             label: `🌱 Tensão no Solo (${perfil.cultura} - kPa)`,
             data: serieTensao,
-            borderColor: '#38bdf8',
-            backgroundColor: 'rgba(56, 189, 248, 0.15)',
+            borderColor: '#ff6b00',
+            backgroundColor: 'rgba(255, 107, 0, 0.15)',
             borderWidth: 3,
             fill: true,
             tension: 0.3,
-            pointBackgroundColor: '#38bdf8',
+            pointBackgroundColor: '#ff6b00',
             pointRadius: 5
           },
           {
@@ -420,12 +443,14 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            labels: { color: '#ffffff', font: { size: 10 } }
+            labels: { color: theme.textColor, font: { size: 10 } }
           },
           tooltip: {
-            backgroundColor: '#18181b',
-            titleColor: '#ffffff',
-            bodyColor: '#cbd5e1',
+            backgroundColor: theme.tooltipBg,
+            titleColor: theme.tooltipTitle,
+            bodyColor: theme.tooltipBody,
+            borderColor: theme.gridColor,
+            borderWidth: 1,
             callbacks: {
               label: (ctx) => `${ctx.dataset.label}: ${ctx.raw} kPa`
             }
@@ -436,14 +461,14 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
             min: 5,
             max: Math.max(60, perfil.manejoKpa + 15),
             ticks: {
-              color: '#94a3b8',
+              color: theme.subtextColor,
               callback: (v) => `${v} kPa`
             },
-            grid: { color: 'rgba(255, 255, 255, 0.08)' }
+            grid: { color: theme.gridColor }
           },
           x: {
-            ticks: { color: '#94a3b8' },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            ticks: { color: theme.subtextColor },
+            grid: { color: theme.gridColor }
           }
         }
       }
@@ -452,6 +477,16 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
     drawNativeSecagemChart(canvas, serieTensao, perfil);
   }
 }
+
+/**
+ * Recarrega todos os gráficos ao trocar o tema (Dark / Light)
+ */
+window.recarregarGraficosTema = function() {
+  renderChartDivergencia();
+  renderChartEnergia();
+  const perfilAtivo = localStorage.getItem('teko_perfil_cultura') || 'olericultura_alface_argissolo';
+  renderChartSecagem(perfilAtivo);
+};
 
 function drawNativeSecagemChart(canvas, serieTensao, perfil) {
   const ctx = canvas.getContext('2d');
