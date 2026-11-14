@@ -2118,4 +2118,576 @@ h2, h3, .subtitulo-secao, .btn-solo strong, .receita-rotulo {
   color: var(--brand-carbon);
 }
 
+/* ==========================================================================
+   Novos Componentes: Fases da Lavoura, Van Genuchten & Receita Prescritiva
+   ========================================================================== */
+.fase-cultura-box {
+  background: #111113;
+  border: 1px solid var(--borda-suave);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fase-cultura-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.select-fase-cultura {
+  width: 100%;
+  padding: 8px 10px;
+  background: #18181b;
+  border: 1px solid var(--borda-suave);
+  border-radius: 6px;
+  color: var(--texto-branco);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fase-detalhes-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.fase-pill-dado {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--borda-suave);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.76rem;
+  color: var(--texto-branco);
+}
+
+.fase-pill-dado strong {
+  color: var(--cor-laranja);
+}
+
+.receita-topo-linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.receita-titulo {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--cor-laranja);
+}
+
+.receita-subtexto {
+  font-size: 0.82rem;
+  color: var(--texto-secundario);
+  margin-bottom: 12px;
+}
+
+.receita-box-operacional {
+  background: #18181b;
+  border: 1px solid var(--borda-suave);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.receita-box-rotulo {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.receita-status-bomba {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--cor-verde);
+  margin: 4px 0;
+}
+
+.receita-tempo-bomba {
+  font-size: 0.84rem;
+  color: var(--texto-branco);
+  font-weight: 600;
+}
+
+.receita-explicacao-agronomica {
+  font-size: 0.88rem;
+  color: var(--texto-branco);
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+
+.receita-aviso-clima {
+  font-size: 0.8rem;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #38bdf8;
+}
+
+.card-matriz-fases-box,
+.card-van-genuchten-box {
+  background: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-borda);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.secao-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tabela-secao-titulo {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--cor-azul);
+}
+
+.tabela-secao-sub {
+  font-size: 0.82rem;
+  color: var(--texto-secundario);
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.badge-fases-embrapa {
+  font-size: 0.72rem;
+  background: rgba(182, 217, 76, 0.15);
+  color: var(--brand-bio-lime);
+  border: 1px solid var(--brand-bio-lime);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.tabs-cultura-fases {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-tab-fase {
+  background: #18181b;
+  border: 1px solid var(--borda-suave);
+  border-radius: 6px;
+  color: var(--texto-secundario);
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-tab-fase.ativo {
+  background: rgba(226, 123, 72, 0.15);
+  border-color: var(--cor-laranja);
+  color: var(--cor-laranja);
+}
+
+.tabela-fases,
+.tabela-van-genuchten {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.tabela-fases th,
+.tabela-fases td,
+.tabela-van-genuchten th,
+.tabela-van-genuchten td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--borda-suave);
+}
+
+.tag-rssi {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.tag-bateria-ok {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.gateway-log-topo {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.log-header-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.btn-simular-alerta {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid #f59e0b;
+  color: #f59e0b;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ninhura-gateway-sub {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+}
+
+.ninhura-backend-titulo {
+  font-weight: 800;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.txt-status-saturado { color: #38bdf8; }
+.txt-status-cc { color: #10b981; }
+.txt-status-estresse { color: #f59e0b; }
+.txt-status-severo { color: #ef4444; }
+.txt-status-pmp { color: #fca5a5; }
+
+/* ==========================================================================
+   EXPANSÃO COMPLETA DO MODO CLARO (WCAG 2.2 AA)
+   ========================================================================== */
+[data-theme="light"] .fase-cultura-box {
+  background: #FAF6EE;
+  border-color: #d8cfc0;
+}
+
+[data-theme="light"] .fase-cultura-label {
+  color: #404742;
+}
+
+[data-theme="light"] .select-fase-cultura {
+  background: #ffffff;
+  border-color: #d8cfc0;
+  color: #252A26;
+}
+
+[data-theme="light"] .fase-pill-dado {
+  background: #ffffff;
+  border-color: #d8cfc0;
+  color: #252A26;
+}
+
+[data-theme="light"] .fase-pill-dado strong {
+  color: var(--brand-terracotta);
+}
+
+[data-theme="light"] .receita-titulo {
+  color: var(--brand-terracotta);
+}
+
+[data-theme="light"] .receita-subtexto {
+  color: #404742;
+}
+
+[data-theme="light"] .receita-box-operacional {
+  background: #FAF6EE;
+  border: 1.5px solid #d8cfc0;
+}
+
+[data-theme="light"] .receita-box-rotulo {
+  color: #404742;
+}
+
+[data-theme="light"] .receita-status-bomba {
+  color: var(--brand-forest);
+}
+
+[data-theme="light"] .receita-tempo-bomba {
+  color: #252A26;
+}
+
+[data-theme="light"] .receita-explicacao-agronomica {
+  color: #252A26;
+}
+
+[data-theme="light"] .receita-aviso-clima {
+  background: #f0f9ff;
+  border-left-color: #0284c7;
+  color: #0369a1;
+}
+
+[data-theme="light"] .card-matriz-fases-box,
+[data-theme="light"] .card-van-genuchten-box {
+  background: #ffffff;
+  border-color: #d8cfc0;
+}
+
+[data-theme="light"] .tabela-secao-titulo {
+  color: #0369a1;
+}
+
+[data-theme="light"] .tabela-secao-sub {
+  color: #404742;
+}
+
+[data-theme="light"] .badge-fases-embrapa {
+  background: rgba(36, 76, 60, 0.12);
+  color: var(--brand-forest);
+  border-color: var(--brand-forest);
+}
+
+[data-theme="light"] .btn-tab-fase {
+  background: #FAF6EE;
+  border-color: #d8cfc0;
+  color: #404742;
+}
+
+[data-theme="light"] .btn-tab-fase.ativo {
+  background: #fff7ed;
+  border-color: var(--brand-terracotta);
+  color: #9a3412;
+}
+
+[data-theme="light"] .card-ad-medidor {
+  background: #FAF6EE;
+  border-color: #d8cfc0;
+}
+
+[data-theme="light"] .ad-cabecalho {
+  color: #252A26;
+}
+
+[data-theme="light"] .ad-cabecalho strong {
+  color: var(--brand-forest);
+}
+
+[data-theme="light"] .ad-trilho {
+  background: #e5dec9;
+}
+
+[data-theme="light"] .ad-explicacao {
+  color: #404742;
+}
+
+[data-theme="light"] .card-predicao-box {
+  background: #FAF6EE;
+  border-color: #d8cfc0;
+}
+
+[data-theme="light"] .predicao-label {
+  color: #404742;
+}
+
+[data-theme="light"] .predicao-val {
+  color: #252A26;
+}
+
+[data-theme="light"] .predicao-mensagem {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+[data-theme="light"] .clima-item {
+  background: #ffffff;
+  border-color: #d8cfc0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .clima-item-label {
+  color: #404742;
+  font-weight: 700;
+}
+
+[data-theme="light"] .clima-item-val {
+  color: #252A26;
+}
+
+[data-theme="light"] .clima-coords-sub {
+  color: #404742;
+}
+
+[data-theme="light"] .clima-banner-recomendacao {
+  background: rgba(36, 76, 60, 0.1);
+  border-left-color: var(--brand-forest);
+  color: #1e3f2e;
+  font-weight: 600;
+}
+
+[data-theme="light"] .btn-porte-propriedade {
+  background: #FAF6EE;
+  border-color: #d8cfc0;
+  color: #252A26;
+}
+
+[data-theme="light"] .btn-porte-propriedade.ativo {
+  background: #fff7ed;
+  border-color: var(--brand-terracotta);
+  color: #9a3412;
+}
+
+[data-theme="light"] .box-econ {
+  background: #FAF6EE;
+  border-color: #d8cfc0;
+}
+
+[data-theme="light"] .box-econ small {
+  color: #404742;
+}
+
+[data-theme="light"] .box-econ strong {
+  color: var(--brand-terracotta);
+}
+
+[data-theme="light"] .box-economia-enchente {
+  background: #f0f9ff;
+  border: 1.5px dashed #0284c7;
+  color: #0369a1;
+}
+
+[data-theme="light"] .box-economia-enchente strong {
+  color: #075985;
+}
+
+[data-theme="light"] .tabela-estado-hidrico th,
+[data-theme="light"] .tabela-gateway-nos th,
+[data-theme="light"] .tabela-fases th,
+[data-theme="light"] .tabela-van-genuchten th {
+  background: #FAF6EE;
+  color: #252A26;
+  border-bottom: 2px solid #d8cfc0;
+  font-weight: 800;
+}
+
+[data-theme="light"] .tag-kpa {
+  background: #e7dfce;
+  border: 1px solid #d8cfc0;
+  color: #252A26;
+}
+
+[data-theme="light"] .tag-rssi {
+  color: #0284c7;
+}
+
+[data-theme="light"] .tag-bateria-ok {
+  color: #166534;
+}
+
+[data-theme="light"] .log-header-label {
+  color: #404742;
+}
+
+[data-theme="light"] .linha-saturado td { background: rgba(2, 132, 199, 0.08); }
+[data-theme="light"] .linha-cc td { background: rgba(36, 76, 60, 0.08); }
+[data-theme="light"] .linha-estresse td { background: rgba(217, 119, 6, 0.08); }
+[data-theme="light"] .linha-severo td { background: rgba(220, 38, 38, 0.08); }
+[data-theme="light"] .linha-pmp td { background: rgba(127, 29, 29, 0.1); }
+
+[data-theme="light"] .txt-status-saturado { color: #0369a1; font-weight: 600; }
+[data-theme="light"] .txt-status-cc { color: #166534; font-weight: 600; }
+[data-theme="light"] .txt-status-estresse { color: #9a3412; font-weight: 600; }
+[data-theme="light"] .txt-status-severo { color: #991b1b; font-weight: 600; }
+[data-theme="light"] .txt-status-pmp { color: #7f1d1d; font-weight: 700; }
+
+[data-theme="light"] .gateway-log-box {
+  background: #FAF6EE;
+  border-color: #d8cfc0;
+  color: #252A26;
+}
+
+[data-theme="light"] .gateway-log-box .log-destaque {
+  color: #0284c7;
+  font-weight: 700;
+}
+
+[data-theme="light"] .gateway-log-box .log-alerta {
+  color: #b45309;
+  font-weight: 700;
+}
+
+[data-theme="light"] .gateway-log-box .log-erro {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+[data-theme="light"] .ninhura-diagrama-grid {
+  background: #FAF6EE;
+  border: 1.5px solid #d8cfc0;
+}
+
+[data-theme="light"] .ninhura-camada-header {
+  color: #404742;
+}
+
+[data-theme="light"] .ninhura-no-card {
+  background: #ffffff;
+  border-color: #d8cfc0;
+  color: #252A26;
+}
+
+[data-theme="light"] .ninhura-gateway-card {
+  background: #eff6ff;
+  border: 1.5px solid #3b82f6;
+  color: #1e3a8a;
+}
+
+[data-theme="light"] .ninhura-gateway-sub {
+  color: #1d4ed8;
+}
+
+[data-theme="light"] .ninhura-backend-card {
+  background: #f0fdfa;
+  border: 1.5px solid #0d9488;
+}
+
+[data-theme="light"] .ninhura-backend-titulo {
+  color: #0f766e;
+}
+
+[data-theme="light"] .ninhura-subbox {
+  background: #ffffff;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+[data-theme="light"] .ninhura-subbox small {
+  color: #0f766e;
+}
+
+[data-theme="light"] .ninhura-subbox strong {
+  color: #134e4a;
+}
+
+[data-theme="light"] .ninhura-app-card {
+  background: #ffffff;
+  border-color: #d8cfc0;
+  color: #252A26;
+}
+
+[data-theme="light"] .ninhura-app-card small {
+  color: #404742;
+}
+
+[data-theme="light"] .box-decisao-engenharia {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #78350f;
+}
+
 

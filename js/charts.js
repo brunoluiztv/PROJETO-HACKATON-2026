@@ -379,21 +379,22 @@ export function initHectaresSimulator() {
 /**
  * 4. Gráfico 3: Taxa de Secagem & Limite Embrapa (7 Dias)
  */
-export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', dadosCustom = null) {
+export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', dadosCustom = null, limiteOverride = null) {
   const canvas = document.getElementById('canvas-grafico-secagem');
   if (!canvas) return;
 
   const perfil = PERFIS_CULTURA[idPerfil] || PERFIS_CULTURA.olericultura_alface_argissolo;
+  const limiteKpa = (limiteOverride != null && !isNaN(limiteOverride)) ? Number(limiteOverride) : perfil.manejoKpa;
   const spanLimite = document.getElementById('grafico-limite-embrapa-val');
-  if (spanLimite) spanLimite.textContent = `${perfil.manejoKpa} kPa (${perfil.cultura})`;
+  if (spanLimite) spanLimite.textContent = `${limiteKpa} kPa (${perfil.cultura})`;
 
   const labels = ['D-5', 'D-4', 'D-3', 'D-2', 'D-1', 'Hoje'];
   let serieTensao = dadosCustom || (idPerfil.includes('alface')
     ? [14.0, 16.5, 19.0, 21.5, 23.5, 25.5]
     : [22.0, 24.0, 26.5, 28.0, 30.0, 32.0]);
 
-  const serieLimite = labels.map(() => perfil.manejoKpa);
-  const serieAlerta = labels.map(() => perfil.alertaKpa);
+  const serieLimite = labels.map(() => limiteKpa);
+  const serieAlerta = labels.map(() => Math.max(10, limiteKpa - 8));
 
   if (window.Chart) {
     if (chartSecagemInstance) {

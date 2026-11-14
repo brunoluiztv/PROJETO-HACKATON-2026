@@ -19,6 +19,20 @@ export const CONFIG_SOLOS = {
     descricao: 'Drena rapidamente por gravidade (macroporos). Início do estresse hídrico em 30 kPa.',
     orientacaoBomba: 'Turnos curtos e frequentes. Em 30 kPa já necessita de irrigação imediata.'
   },
+  franco_arenoso: {
+    id: 'franco_arenoso',
+    nome: 'Solo Franco-Arenoso / Médio',
+    nomeCurto: 'Franco / Médio',
+    icone: '🌾',
+    ccKpa: 22.0,
+    estresseKpa: 45.0,
+    severoKpa: 80.0,
+    murchaKpa: 1500.0,
+    litrosDiaHaPoupados: 4200,
+    reaisDiaHaPoupados: 38.0,
+    descricao: 'Textura média equilibrada. Capacidade de campo ideal em 22 kPa e estresse em 45 kPa.',
+    orientacaoBomba: 'Gotejamento matinal cirúrgico (40 min às 6h) antes da evaporação do meio-dia.'
+  },
   franco: {
     id: 'franco',
     nome: 'Solo Franco / Médio',
@@ -32,6 +46,20 @@ export const CONFIG_SOLOS = {
     reaisDiaHaPoupados: 38.0,
     descricao: 'Textura média equilibrada. Capacidade de campo ideal em 22 kPa e estresse em 45 kPa.',
     orientacaoBomba: 'Gotejamento matinal cirúrgico (40 min às 6h) antes da evaporação do meio-dia.'
+  },
+  franco_argiloso: {
+    id: 'franco_argiloso',
+    nome: 'Solo Franco-Argiloso',
+    nomeCurto: 'Franco-Argiloso',
+    icone: '🍂',
+    ccKpa: 28.0,
+    estresseKpa: 55.0,
+    severoKpa: 100.0,
+    murchaKpa: 1500.0,
+    litrosDiaHaPoupados: 4800,
+    reaisDiaHaPoupados: 43.0,
+    descricao: 'Boa retenção de água e aeração moderada. Início do estresse aos 55 kPa.',
+    orientacaoBomba: 'Rega espaçada com vazão moderada para garantir infiltração profunda.'
   },
   argiloso: {
     id: 'argiloso',
@@ -48,6 +76,220 @@ export const CONFIG_SOLOS = {
     orientacaoBomba: 'Demora a secar. Em 33 kPa não ligue a bomba, pois há água de sobra para as raízes.'
   }
 };
+
+/**
+ * 11 Classes Texturais com Parâmetros Hidráulicos de Van Genuchten
+ * Ancoragem científica: Van Genuchten (1980) & Física do Solo Aplicada
+ */
+export const VAN_GENUCHTEN_SOLOS = [
+  { classe: 'Areia (Sand)', thetaR: 0.045, thetaS: 0.43, theta_r: 0.045, theta_s: 0.43, alpha: 1.45, n: 2.68, m: 0.627, ccKpa: 10, pmpKpa: 1500, categoria: 'arenoso' },
+  { classe: 'Areia Franca (Loamy Sand)', thetaR: 0.057, thetaS: 0.41, theta_r: 0.057, theta_s: 0.41, alpha: 1.24, n: 2.28, m: 0.561, ccKpa: 15, pmpKpa: 1500, categoria: 'arenoso' },
+  { classe: 'Franco-Arenoso (Sandy Loam)', thetaR: 0.065, thetaS: 0.41, theta_r: 0.065, theta_s: 0.41, alpha: 0.75, n: 1.89, m: 0.471, ccKpa: 20, pmpKpa: 1500, categoria: 'franco_arenoso' },
+  { classe: 'Franco (Loam)', thetaR: 0.078, thetaS: 0.43, theta_r: 0.078, theta_s: 0.43, alpha: 0.36, n: 1.56, m: 0.359, ccKpa: 25, pmpKpa: 1500, categoria: 'franco_arenoso' },
+  { classe: 'Franco-Siltoso (Silt Loam)', thetaR: 0.067, thetaS: 0.45, theta_r: 0.067, theta_s: 0.45, alpha: 0.20, n: 1.41, m: 0.291, ccKpa: 30, pmpKpa: 1500, categoria: 'franco_arenoso' },
+  { classe: 'Franco-Argilo-Arenoso (Sandy Clay Loam)', thetaR: 0.100, thetaS: 0.39, theta_r: 0.100, theta_s: 0.39, alpha: 0.59, n: 1.48, m: 0.324, ccKpa: 28, pmpKpa: 1500, categoria: 'franco_argiloso' },
+  { classe: 'Franco-Argiloso (Clay Loam)', thetaR: 0.095, thetaS: 0.41, theta_r: 0.095, theta_s: 0.41, alpha: 0.19, n: 1.31, m: 0.237, ccKpa: 33, pmpKpa: 1500, categoria: 'franco_argiloso' },
+  { classe: 'Franco-Argilo-Siltoso (Silty Clay Loam)', thetaR: 0.089, thetaS: 0.43, theta_r: 0.089, theta_s: 0.43, alpha: 0.10, n: 1.23, m: 0.187, ccKpa: 33, pmpKpa: 1500, categoria: 'franco_argiloso' },
+  { classe: 'Argila Arenosa (Sandy Clay)', thetaR: 0.100, thetaS: 0.38, theta_r: 0.100, theta_s: 0.38, alpha: 0.27, n: 1.23, m: 0.187, ccKpa: 35, pmpKpa: 1500, categoria: 'argiloso' },
+  { classe: 'Argila Siltosa (Silty Clay)', thetaR: 0.070, thetaS: 0.36, theta_r: 0.070, theta_s: 0.36, alpha: 0.05, n: 1.09, m: 0.083, ccKpa: 38, pmpKpa: 1500, categoria: 'argiloso' },
+  { classe: 'Argila (Clay)', thetaR: 0.068, thetaS: 0.38, theta_r: 0.068, theta_s: 0.38, alpha: 0.08, n: 1.09, m: 0.083, ccKpa: 40, pmpKpa: 1500, categoria: 'argiloso' }
+];
+
+/**
+ * Matriz Fenológica das 4 Culturas com Tamanho de Raiz, Limiares por Solo e Kc
+ * Fontes Oficiais: Embrapa-RR (1997), Embrapa Hortaliças (2008), FAO-56
+ */
+export const MATRIZ_FASES_CULTURA = {
+  milho: {
+    id: 'milho',
+    nome: 'Milho',
+    icone: '🌽',
+    fases: [
+      {
+        fase: 'Nascendo / Milho na canela',
+        raizMm: 150,
+        limiaresKpa: { arenoso: 20, franco_arenoso: 25, franco: 25, franco_argiloso: 30, argiloso: 35 },
+        kc: 0.40,
+        fonte: 'Embrapa-RR (1997), Tabela 17 — fase I (ponto médio 0,30–0,50)'
+      },
+      {
+        fase: 'Crescendo / Milho na cintura',
+        raizMm: 350,
+        limiaresKpa: { arenoso: 40, franco_arenoso: 45, franco: 45, franco_argiloso: 55, argiloso: 60 },
+        kc: 0.83,
+        fonte: 'Embrapa-RR (1997), Tabela 17 — fase II (ponto médio 0,80–0,85)'
+      },
+      {
+        fase: 'Soltando pendão e boneca',
+        raizMm: 500,
+        limiaresKpa: { arenoso: 30, franco_arenoso: 35, franco: 35, franco_argiloso: 45, argiloso: 50 },
+        kc: 1.13,
+        fonte: 'Embrapa-RR (1997), Tabela 17 — fase III (ponto médio 1,05–1,20)'
+      },
+      {
+        fase: 'Enchendo grão',
+        raizMm: 500,
+        limiaresKpa: { arenoso: 40, franco_arenoso: 45, franco: 45, franco_argiloso: 55, argiloso: 60 },
+        kc: 0.88,
+        fonte: 'Embrapa-RR (1997), Tabela 17 — fase IV (ponto médio 0,80–0,95)'
+      },
+      {
+        fase: 'Grão duro / Secando para colheita',
+        raizMm: 500,
+        limiaresKpa: { arenoso: 65, franco_arenoso: 70, franco: 70, franco_argiloso: 80, argiloso: 85 },
+        kc: 0.58,
+        fonte: 'Embrapa-RR (1997), Tabela 17 — fase V (ponto médio 0,55–0,60)'
+      }
+    ]
+  },
+  tomate: {
+    id: 'tomate',
+    nome: 'Tomate de Mesa',
+    icone: '🍅',
+    fases: [
+      {
+        fase: 'Pegamento da muda (Recém-plantado)',
+        raizMm: 150,
+        limiaresKpa: { arenoso: 12, franco_arenoso: 15, franco: 15, franco_argiloso: 20, argiloso: 25 },
+        kc: 0.60,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase inicial'
+      },
+      {
+        fase: 'Crescendo rama / Antes da florada',
+        raizMm: 250,
+        limiaresKpa: { arenoso: 25, franco_arenoso: 30, franco: 30, franco_argiloso: 35, argiloso: 40 },
+        kc: 0.90,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase vegetativa'
+      },
+      {
+        fase: 'Florada e pegamento de fruto (Chumbinho)',
+        raizMm: 350,
+        limiaresKpa: { arenoso: 18, franco_arenoso: 22, franco: 22, franco_argiloso: 28, argiloso: 35 },
+        kc: 1.15,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase de produção'
+      },
+      {
+        fase: 'Fruto crescendo / Enchendo penca',
+        raizMm: 400,
+        limiaresKpa: { arenoso: 20, franco_arenoso: 25, franco: 25, franco_argiloso: 30, argiloso: 35 },
+        kc: 1.15,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase de produção'
+      },
+      {
+        fase: 'Amadurecendo / Colheita (Tomate pintando)',
+        raizMm: 400,
+        limiaresKpa: { arenoso: 35, franco_arenoso: 45, franco: 45, franco_argiloso: 55, argiloso: 65 },
+        kc: 0.90,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase de maturação'
+      }
+    ]
+  },
+  feijao: {
+    id: 'feijao',
+    nome: 'Feijão Seco',
+    icone: '🫘',
+    fases: [
+      {
+        fase: 'Nascendo / Soltando as primeiras folhas',
+        raizMm: 120,
+        limiaresKpa: { arenoso: 20, franco_arenoso: 25, franco: 25, franco_argiloso: 30, argiloso: 35 },
+        kc: 0.40,
+        fonte: 'FAO-56 — feijão seco: Kc inicial 0,40'
+      },
+      {
+        fase: 'Crescendo rama / Fechando a linha',
+        raizMm: 250,
+        limiaresKpa: { arenoso: 35, franco_arenoso: 40, franco: 40, franco_argiloso: 50, argiloso: 55 },
+        kc: 0.80,
+        fonte: 'FAO-56 — desenvolvimento (interpolação 0,40 a 1,15)'
+      },
+      {
+        fase: 'Soltando flor e canivete (Vagem nova)',
+        raizMm: 300,
+        limiaresKpa: { arenoso: 25, franco_arenoso: 30, franco: 30, franco_argiloso: 35, argiloso: 45 },
+        kc: 1.15,
+        fonte: 'FAO-56 — feijão seco: Kc médio 1,15'
+      },
+      {
+        fase: 'Enchendo o grão na vagem',
+        raizMm: 300,
+        limiaresKpa: { arenoso: 30, franco_arenoso: 35, franco: 35, franco_argiloso: 45, argiloso: 50 },
+        kc: 1.15,
+        fonte: 'FAO-56 — feijão seco: Kc médio 1,15'
+      },
+      {
+        fase: 'Vagem amarelando / Secando para colheita',
+        raizMm: 300,
+        limiaresKpa: { arenoso: 60, franco_arenoso: 70, franco: 70, franco_argiloso: 80, argiloso: 90 },
+        kc: 0.35,
+        fonte: 'FAO-56 — feijão seco: Kc final 0,35 (maturação no campo)'
+      }
+    ]
+  },
+  alface: {
+    id: 'alface',
+    nome: 'Alface',
+    icone: '🥬',
+    fases: [
+      {
+        fase: 'Pegamento da muda (Transplante)',
+        raizMm: 80,
+        limiaresKpa: { arenoso: 10, franco_arenoso: 12, franco: 12, franco_argiloso: 15, argiloso: 18 },
+        kc: 0.70,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase inicial'
+      },
+      {
+        fase: 'Soltando folha / Crescimento inicial',
+        raizMm: 150,
+        limiaresKpa: { arenoso: 12, franco_arenoso: 15, franco: 15, franco_argiloso: 20, argiloso: 25 },
+        kc: 0.85,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase vegetativa'
+      },
+      {
+        fase: 'Formando cabeça / Fechando canteiro',
+        raizMm: 200,
+        limiaresKpa: { arenoso: 15, franco_arenoso: 18, franco: 18, franco_argiloso: 22, argiloso: 25 },
+        kc: 1.05,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase de formação de cabeça'
+      },
+      {
+        fase: 'Ponto de colheita (Pé formado)',
+        raizMm: 200,
+        limiaresKpa: { arenoso: 15, franco_arenoso: 20, franco: 20, franco_argiloso: 25, argiloso: 30 },
+        kc: 0.95,
+        fonte: 'Embrapa Hortaliças (2008), Tabela A1 — fase de colheita'
+      }
+    ]
+  }
+};
+
+/**
+ * Calcula a umidade volumétrica θ (cm³/cm³) a partir da sucção matricial h (kPa)
+ * pelo modelo analítico de Van Genuchten (1980):
+ * θ(h) = θr + (θs - θr) / [1 + (α * |h|)^n]^(1 - 1/n)
+ */
+export function calcularUmidadeVanGenuchten(hKpa, classeTextural = 'Franco (Loam)') {
+  const solo = VAN_GENUCHTEN_SOLOS.find(s => s.classe === classeTextural) || VAN_GENUCHTEN_SOLOS[3];
+  const h = Math.max(0.001, Math.abs(parseFloat(hKpa) || 0.001));
+  const m = 1.0 - (1.0 / solo.n);
+  const denominador = Math.pow(1.0 + Math.pow(solo.alpha * h, solo.n), m);
+  const theta = solo.thetaR + ((solo.thetaS - solo.thetaR) / denominador);
+  return Math.round(theta * 1000) / 1000;
+}
+
+/**
+ * Calcula a lâmina de irrigação da cultura:
+ * ETc = ET0 * Kc (mm/dia e litros/m²)
+ */
+export function calcularLaminaIrrigacao(et0 = 4.0, kc = 1.0) {
+  const etcMmDia = Math.max(0.5, Math.round(et0 * kc * 10) / 10);
+  return {
+    etcMmDia,
+    laminaMmDia: etcMmDia,
+    litrosM2: etcMmDia,
+    litrosPorHectare: Math.round(etcMmDia * 10000)
+  };
+}
 
 export const MUNICIPIOS_RS = {
   // 1. Serra & Encosta Superior (Hortifrutigranjeiros, Maçã & Uva)
@@ -173,11 +415,12 @@ export const PERFIS_CULTURA = {
  * Calcula a previsão de estresse hídrico (dias restantes) com base
  * na taxa de secagem (ΔkPa/dia) e no limite crítico da Embrapa.
  */
-export function calcularPredicaoSecagem(tensaoAtualKpa, idPerfil = 'olericultura_alface_argissolo', taxaSecagem = 2.0) {
+export function calcularPredicaoSecagem(tensaoAtualKpa, idPerfil = 'olericultura_alface_argissolo', taxaSecagem = 2.0, limiteOverrideKpa = null) {
   const p = PERFIS_CULTURA[idPerfil] || PERFIS_CULTURA.olericultura_alface_argissolo;
   const t = Math.max(0.0, parseFloat(tensaoAtualKpa) || p.ccKpa);
   const taxa = Math.max(0.5, parseFloat(taxaSecagem) || 2.0);
-  const deltaAteManejo = p.manejoKpa - t;
+  const limiteManejo = (limiteOverrideKpa !== null && !isNaN(limiteOverrideKpa)) ? parseFloat(limiteOverrideKpa) : p.manejoKpa;
+  const deltaAteManejo = limiteManejo - t;
 
   let diasRestantes = 0.0;
   let status = 'IDEAL';
@@ -188,13 +431,13 @@ export function calcularPredicaoSecagem(tensaoAtualKpa, idPerfil = 'olericultura
     diasRestantes = 0.0;
     status = 'CRITICO_IRRIGAR_JA';
     cor = '#ef4444';
-    mensagem = `🚨 URGENTE: Limite Embrapa (${p.manejoKpa} kPa) ultrapassado! Tensão: ${t.toFixed(1)} kPa. Irrigue imediatamente.`;
+    mensagem = `🚨 URGENTE: Limite Embrapa (${limiteManejo} kPa) ultrapassado! Tensão: ${t.toFixed(1)} kPa. Irrigue imediatamente.`;
   } else {
     diasRestantes = Math.round((deltaAteManejo / taxa) * 10) / 10;
-    if (diasRestantes <= 1.0 || t >= p.alertaKpa) {
+    if (diasRestantes <= 1.0 || t >= (limiteManejo * 0.8)) {
       status = 'ALERTA_IMINENTE';
       cor = diasRestantes <= 1.0 ? '#ef4444' : '#f59e0b';
-      mensagem = `⚠️ ATENÇÃO: ${p.cultura} secando a ${taxa.toFixed(1)} kPa/dia. Restam ${diasRestantes} dia(s) para o limite (${p.manejoKpa} kPa).`;
+      mensagem = `⚠️ ATENÇÃO: ${p.cultura} secando a ${taxa.toFixed(1)} kPa/dia. Restam ${diasRestantes} dia(s) para o limite (${limiteManejo} kPa).`;
     } else if (diasRestantes <= 3.0) {
       status = 'ATENCAO_PREVENTIVA';
       cor = '#f59e0b';
@@ -202,7 +445,7 @@ export function calcularPredicaoSecagem(tensaoAtualKpa, idPerfil = 'olericultura
     } else {
       status = 'IDEAL';
       cor = '#10b981';
-      mensagem = `🌿 BOM ESTADO: Solo com água plena. Previsão de ${diasRestantes} dias até o ponto de manejo.`;
+      mensagem = `🌿 BOM ESTADO: Solo com água plena. Previsão de ${diasRestantes} dias até o ponto de manejo (${limiteManejo} kPa).`;
     }
   }
 
@@ -211,6 +454,7 @@ export function calcularPredicaoSecagem(tensaoAtualKpa, idPerfil = 'olericultura
     tensaoAtualKpa: t,
     taxaSecagemKpaDia: taxa,
     diasRestantes,
+    limiteManejoKpa: limiteManejo,
     status,
     cor,
     mensagem
