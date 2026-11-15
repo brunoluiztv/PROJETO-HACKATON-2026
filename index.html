@@ -66,7 +66,7 @@
       <div class="card-canvas-planta" id="card-canvas-planta">
         <div class="visualizador-header">
           <span class="badge-visualizador">🌾 Planta Sentinela</span>
-          <div class="visualizador-controles" role="group" aria-label="Modo de visualização da planta sentinela">
+          <fieldset class="visualizador-controles" aria-label="Modo de visualização da planta sentinela">
             <button type="button" id="btn-view-2d" class="btn-toggle-view ativo" aria-pressed="true" aria-label="Visualização 2D esquemática fitoeletrônica">
               <span aria-hidden="true">🌿</span> 2D
             </button>
@@ -76,11 +76,11 @@
             <button type="button" id="btn-reset-cam-3d" class="btn-toggle-view btn-reset-cam" aria-label="Redefinir rotação e ângulo do modelo 3D" hidden title="Redefinir Câmera">
               <span aria-hidden="true">🔄</span>
             </button>
-          </div>
+          </fieldset>
         </div>
 
         <canvas id="canvas-planta" role="img" aria-label="Desenho animado do caule com biossensor de bioimpedância e raiz com haste bioenergética P-MFC"></canvas>
-        <canvas id="canvas-planta-3d" role="img" tabindex="0" aria-label="Modelo tridimensional interativo do caule sentinela com clipe de hidrogel KCl e haste P-MFC" hidden></canvas>
+        <canvas id="canvas-planta-3d" tabindex="0" aria-label="Modelo tridimensional interativo do caule sentinela com clipe de hidrogel KCl e haste P-MFC" hidden></canvas>
 
         <p class="canvas-legenda">Clipe de Grafite + Bio-hidrogel KCl (50k/1kHz) · Haste P-MFC Geobacter (ORP)</p>
         <p id="canvas-3d-hint" class="canvas-3d-hint" hidden>

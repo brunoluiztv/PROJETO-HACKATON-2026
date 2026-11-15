@@ -75,7 +75,9 @@ export function isWebGLAvailable() {
       window.WebGLRenderingContext &&
       (canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
     );
-  } catch (e) {
+  } catch (err) {
+    // Exceção capturada intencionalmente quando WebGL está desabilitado no navegador; aciona fallback 2D.
+    console.debug('[Tekó 3D] WebGL indisponível:', err);
     return false;
   }
 }
@@ -129,7 +131,7 @@ export function initPlant3D(canvasElement) {
   const motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   let prefersReducedMotion = motionQuery ? motionQuery.matches : false;
 
-  if (motionQuery && motionQuery.addEventListener) {
+  if (motionQuery?.addEventListener) {
     motionQuery.addEventListener('change', (e) => {
       prefersReducedMotion = e.matches;
     });
@@ -630,6 +632,37 @@ export function initPlant3D(canvasElement) {
   // 8. Loop de Renderização e Animação Fitoelétrica
   let tempo = 0;
 
+  function atualizarFluxoSeiva(cfg) {
+    if (!sapPoints) return;
+    const posicoes = sapPoints.geometry.attributes.position.array;
+    const veloc = prefersReducedMotion ? cfg.velocidadeParticulas * 0.3 : cfg.velocidadeParticulas;
+
+    for (let i = 1; i < posicoes.length; i += 3) {
+      posicoes[i] += veloc;
+      if (posicoes[i] > 1.6) {
+        posicoes[i] = -0.35;
+      }
+    }
+    sapPoints.geometry.attributes.position.needsUpdate = true;
+  }
+
+  function atualizarHaloETelemetria(cfg) {
+    if (pMfcHalo) {
+      const pulsacaoHalo = 1.0 + 0.15 * Math.sin(tempo * 2.5);
+      pMfcHalo.scale.set(pulsacaoHalo, pulsacaoHalo, 1.0);
+      pMfcHalo.material.opacity = 0.5 + 0.35 * Math.abs(Math.sin(tempo * 2.0)) * cfg.intensidadeHalo;
+    }
+
+    if (esp32Led) {
+      const ledBrilho = Math.sin(tempo * 4.0) > 0.6 ? 1.0 : 0.2;
+      esp32Led.material.color.setHex(ledBrilho > 0.5 ? 0x10b981 : 0x064e3b);
+    }
+
+    if (floodMesh?.visible && !prefersReducedMotion) {
+      floodMesh.position.y = -0.36 + Math.sin(tempo * 1.8) * 0.008;
+    }
+  }
+
   function animar() {
     if (!isRunning) return;
 
@@ -640,7 +673,6 @@ export function initPlant3D(canvasElement) {
     currentYaw += (targetYaw - currentYaw) * 0.1;
     currentPitch += (targetPitch - currentPitch) * 0.1;
 
-    // Rotação suave contínua em repouso (se não estiver arrastando e usuário não solicitou movimento reduzido)
     if (!isDragging && !prefersReducedMotion) {
       targetYaw += 0.0018;
     }
@@ -656,39 +688,11 @@ export function initPlant3D(canvasElement) {
       stemMesh.scale.set(escalaX, 1.0, escalaX);
     }
 
-    // C. Fluxo de Partículas Apoplásticas a 1 kHz no Xilema
-    if (sapPoints) {
-      const posicoes = sapPoints.geometry.attributes.position.array;
-      const veloc = prefersReducedMotion ? cfg.velocidadeParticulas * 0.3 : cfg.velocidadeParticulas;
+    // C. Fluxo de Partículas Apoplásticas a 1 kHz e Halo P-MFC
+    atualizarFluxoSeiva(cfg);
+    atualizarHaloETelemetria(cfg);
 
-      for (let i = 1; i < posicoes.length; i += 3) {
-        posicoes[i] += veloc;
-        if (posicoes[i] > 1.6) {
-          posicoes[i] = -0.35;
-        }
-      }
-      sapPoints.geometry.attributes.position.needsUpdate = true;
-    }
-
-    // D. Halo Bioelétrico P-MFC (Oscilação de Potencial Redox Geobacter)
-    if (pMfcHalo) {
-      const pulsacaoHalo = 1.0 + 0.15 * Math.sin(tempo * 2.5);
-      pMfcHalo.scale.set(pulsacaoHalo, pulsacaoHalo, 1.0);
-      pMfcHalo.material.opacity = 0.5 + 0.35 * Math.abs(Math.sin(tempo * 2.0)) * cfg.intensidadeHalo;
-    }
-
-    // E. Pulso do LED de Telemetria ESP32
-    if (esp32Led) {
-      const ledBrilho = Math.sin(tempo * 4.0) > 0.6 ? 1.0 : 0.2;
-      esp32Led.material.color.setHex(ledBrilho > 0.5 ? 0x10b981 : 0x064e3b);
-    }
-
-    // F. Ondulação da Lâmina de Água de Enchente na Hipóxia
-    if (floodMesh && floodMesh.visible && !prefersReducedMotion) {
-      floodMesh.position.y = -0.36 + Math.sin(tempo * 1.8) * 0.008;
-    }
-
-    // G. Renderização do Frame WebGL
+    // D. Renderização do Frame WebGL
     renderer.render(scene, camera);
 
     animFrameId = requestAnimationFrame(animar);
@@ -721,7 +725,10 @@ export function initPlant3D(canvasElement) {
     if (renderer) {
       try {
         renderer.dispose();
-      } catch (e) {}
+      } catch (err) {
+        // Falha não-crítica ao liberar contexto WebGL já encerrado.
+        console.debug('[Tekó 3D] Aviso ao liberar WebGL:', err);
+      }
       renderer = null;
     }
 

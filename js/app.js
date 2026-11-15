@@ -250,7 +250,7 @@ function initCanvas() {
 
     if (!plant3DController && canvas3DEl) {
       plant3DController = initPlant3D(canvas3DEl);
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const isLight = document.documentElement.dataset.theme === 'light';
       if (plant3DController) {
         plant3DController.setTheme(isLight);
         plant3DController.setState(estadoAtual);

@@ -358,6 +358,9 @@ h2, h3, .subtitulo-secao, .btn-solo strong, .receita-rotulo {
   display: flex;
   align-items: center;
   gap: 6px;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 
 .btn-toggle-view {
