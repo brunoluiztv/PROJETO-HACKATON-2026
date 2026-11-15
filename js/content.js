@@ -270,7 +270,7 @@ export const MATRIZ_FASES_CULTURA = {
  */
 export function calcularUmidadeVanGenuchten(hKpa, classeTextural = 'Franco (Loam)') {
   const solo = VAN_GENUCHTEN_SOLOS.find(s => s.classe === classeTextural) || VAN_GENUCHTEN_SOLOS[3];
-  const h = Math.max(0.001, Math.abs(parseFloat(hKpa) || 0.001));
+  const h = Math.max(0.001, Math.abs(Number.parseFloat(hKpa) || 0.001));
   const m = 1.0 - (1.0 / solo.n);
   const denominador = Math.pow(1.0 + Math.pow(solo.alpha * h, solo.n), m);
   const theta = solo.thetaR + ((solo.thetaS - solo.thetaR) / denominador);
@@ -417,9 +417,11 @@ export const PERFIS_CULTURA = {
  */
 export function calcularPredicaoSecagem(tensaoAtualKpa, idPerfil = 'olericultura_alface_argissolo', taxaSecagem = 2.0, limiteOverrideKpa = null) {
   const p = PERFIS_CULTURA[idPerfil] || PERFIS_CULTURA.olericultura_alface_argissolo;
-  const t = Math.max(0.0, parseFloat(tensaoAtualKpa) || p.ccKpa);
-  const taxa = Math.max(0.5, parseFloat(taxaSecagem) || 2.0);
-  const limiteManejo = (limiteOverrideKpa !== null && !isNaN(limiteOverrideKpa)) ? parseFloat(limiteOverrideKpa) : p.manejoKpa;
+  const t = Math.max(0.0, Number.parseFloat(tensaoAtualKpa) || p.ccKpa);
+  const taxa = Math.max(0.5, Number.parseFloat(taxaSecagem) || 2.0);
+  const limiteManejo = (limiteOverrideKpa !== null && !Number.isNaN(limiteOverrideKpa)) 
+    ? Number.parseFloat(limiteOverrideKpa) 
+    : p.manejoKpa;
   const deltaAteManejo = limiteManejo - t;
 
   let diasRestantes = 0.0;

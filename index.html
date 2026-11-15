@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/styles.css?v=22">
   <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script type="module" src="js/app.js?v=22"></script>
+  <script type="module" src="js/app.js?v=23"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -62,10 +62,30 @@
         <p class="desc-aba">Monitoramento bioelétrico direto no caule e rizosfera em tempo real.</p>
       </div>
 
-      <!-- Canvas Interativo (Altura 340px, Despoluído e com Osciloscópio à Direita) -->
-      <div class="card-canvas-planta">
+      <!-- Canvas Interativo (Alternância 2D Esquemática e 3D Three.js WebGL) -->
+      <div class="card-canvas-planta" id="card-canvas-planta">
+        <div class="visualizador-header">
+          <span class="badge-visualizador">🌾 Planta Sentinela</span>
+          <div class="visualizador-controles" role="group" aria-label="Modo de visualização da planta sentinela">
+            <button type="button" id="btn-view-2d" class="btn-toggle-view ativo" aria-pressed="true" aria-label="Visualização 2D esquemática fitoeletrônica">
+              <span aria-hidden="true">🌿</span> 2D
+            </button>
+            <button type="button" id="btn-view-3d" class="btn-toggle-view" aria-pressed="false" aria-label="Visualização 3D interativa Three.js">
+              <span aria-hidden="true">🪐</span> 3D
+            </button>
+            <button type="button" id="btn-reset-cam-3d" class="btn-toggle-view btn-reset-cam" aria-label="Redefinir rotação e ângulo do modelo 3D" hidden title="Redefinir Câmera">
+              <span aria-hidden="true">🔄</span>
+            </button>
+          </div>
+        </div>
+
         <canvas id="canvas-planta" role="img" aria-label="Desenho animado do caule com biossensor de bioimpedância e raiz com haste bioenergética P-MFC"></canvas>
+        <canvas id="canvas-planta-3d" role="img" tabindex="0" aria-label="Modelo tridimensional interativo do caule sentinela com clipe de hidrogel KCl e haste P-MFC" hidden></canvas>
+
         <p class="canvas-legenda">Clipe de Grafite + Bio-hidrogel KCl (50k/1kHz) · Haste P-MFC Geobacter (ORP)</p>
+        <p id="canvas-3d-hint" class="canvas-3d-hint" hidden>
+          <small>💡 Arraste para girar em 3D · Use as setas do teclado para navegar · Pressione R para resetar</small>
+        </p>
       </div>
 
       <!-- Painel de Modos: Simulação de Bancada vs Telemetria Autônoma -->
@@ -534,7 +554,9 @@
           📈 <strong>Métrica Principal do Sensor (kPa):</strong> Monitoramento contínuo da retenção hídrica em Azul Ciano (Tensão no Solo), Amarelo Dourado (Alerta de Atenção) e Vermelho (Limite Crítico de Manejo Embrapa: <span id="grafico-limite-embrapa-val">28 kPa</span>).
         </p>
         <div class="grafico-container">
-          <canvas id="canvas-grafico-secagem" role="img" aria-label="Gráfico de tendência de quantidade de água e secagem em kPa ao longo dos 7 dias com diferenciação cromática"></canvas>
+          <canvas id="canvas-grafico-secagem" aria-label="Gráfico de tendência de quantidade de água e secagem em kPa ao longo dos 7 dias com diferenciação cromática">
+            Gráfico de tendência de quantidade de água e secagem em kPa ao longo dos 7 dias com diferenciação cromática.
+          </canvas>
         </div>
       </article>
 

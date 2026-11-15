@@ -1,5 +1,5 @@
 /* Service Worker: Cache para uso offline no campo (Tekó Biotech) */
-const VERSAO = "teko-v8";
+const VERSAO = "teko-v9";
 const ARQUIVOS = [
   "./",
   "index.html",
@@ -8,6 +8,8 @@ const ARQUIVOS = [
   "js/canvas_planta.js",
   "js/charts.js",
   "js/content.js",
+  "js/simulador_3d.js",
+  "js/vendor/three.module.min.js",
   "js/telegram.js",
   "icons/icon.svg",
   "manifest.webmanifest",

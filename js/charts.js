@@ -384,7 +384,7 @@ export function renderChartSecagem(idPerfil = 'olericultura_alface_argissolo', d
   if (!canvas) return;
 
   const perfil = PERFIS_CULTURA[idPerfil] || PERFIS_CULTURA.olericultura_alface_argissolo;
-  const limiteKpa = (limiteOverride != null && !isNaN(limiteOverride)) ? Number(limiteOverride) : perfil.manejoKpa;
+  const limiteKpa = (limiteOverride != null && !Number.isNaN(limiteOverride)) ? Number(limiteOverride) : perfil.manejoKpa;
   const spanLimite = document.getElementById('grafico-limite-embrapa-val');
   if (spanLimite) spanLimite.textContent = `${limiteKpa} kPa (${perfil.cultura})`;
 
